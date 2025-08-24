@@ -124,6 +124,68 @@
   border: 1px solid var(--color-success);
 }
 
+.success-content {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.success-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.success-text h3 {
+  margin: 0 0 0.5rem 0;
+  color: var(--color-success);
+  font-size: 1.1rem;
+}
+
+.success-text p {
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.next-steps {
+  background: rgba(255, 255, 255, 0.5);
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin: 1rem 0;
+}
+
+.next-steps p {
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.next-steps ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.next-steps li {
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+}
+
+.btn-outline:hover {
+  background: var(--color-primary);
+  color: white;
+}
+
 .btn-full {
   width: 100%;
   justify-content: center;
@@ -201,5 +263,18 @@
   .btn {
     padding: 0.75rem 1rem;
     font-size: 0.875rem;
+  }
+  
+  .success-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .success-actions {
+    flex-direction: column;
+  }
+  
+  .success-actions .btn {
+    width: 100%;
   }
 }

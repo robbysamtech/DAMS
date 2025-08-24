@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -16,7 +16,6 @@ const Register = () => {
   const [success, setSuccess] = useState('');
   
   const { register } = useAuth();
-  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,6 +52,7 @@ const Register = () => {
     setSuccess('');
 
     try {
+      console.log('Submitting registration...');
       const result = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -60,16 +60,34 @@ const Register = () => {
         password: formData.password
       });
       
+      console.log('Registration result:', result);
+      
       if (result.success) {
-        setSuccess('Registration successful! Your account is pending admin approval.');
-        // Don't navigate immediately - let user see the success message
-        setTimeout(() => {
-          navigate('/dashboard');
-        }, 3000);
+        if (result.message) {
+          // Show the custom message from AuthContext
+          console.log('Setting success message:', result.message);
+          setSuccess(result.message);
+        } else {
+          console.log('Setting default success message');
+          setSuccess('Registration successful! You can now log in.');
+        }
+        
+        // Clear the form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          password: '',
+          confirmPassword: ''
+        });
+        
+        // Don't redirect - let user see the success message and choose what to do next
       } else {
+        console.log('Registration failed:', result.error);
         setError(result.error);
       }
     } catch (err) {
+      console.error('Registration error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -98,7 +116,32 @@ const Register = () => {
             
             {success && (
               <div className="alert alert-success">
-                {success}
+                <div className="success-content">
+                  <div className="success-icon">✅</div>
+                  <div className="success-text">
+                    <h3>Registration Successful!</h3>
+                    <p>{success}</p>
+                    <div className="next-steps">
+                      <p><strong>What happens next?</strong></p>
+                      <ul>
+                        <li>An administrator will review your registration</li>
+                        <li>You'll receive an email notification once approved</li>
+                        <li>You can then log in and access the platform</li>
+                      </ul>
+                    </div>
+                    <div className="success-actions">
+                      <Link to="/login" className="btn btn-secondary">
+                        Go to Login
+                      </Link>
+                      <button 
+                        onClick={() => setSuccess('')} 
+                        className="btn btn-outline"
+                      >
+                        Register Another Account
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
 

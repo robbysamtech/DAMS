@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const { user, isAdmin, isCreator, isConsumer } = useAuth();
+  const { user, isCreator, isConsumer } = useAuth();
 
   return (
     <div className="dashboard">
@@ -110,30 +110,7 @@ const Dashboard = () => {
                 </div>
               )}
 
-              {isAdmin && (
-                <div className="dashboard-section">
-                  <h2>Administrative Tools</h2>
-                  <div className="action-grid">
-                    <button className="action-card">
-                      <span className="action-icon">👥</span>
-                      <h3>User Management</h3>
-                      <p>Approve and manage users</p>
-                    </button>
-                    
-                    <button className="action-card">
-                      <span className="action-icon">📊</span>
-                      <h3>System Analytics</h3>
-                      <p>View platform statistics</p>
-                    </button>
-                    
-                    <button className="action-card">
-                      <span className="action-icon">⚙️</span>
-                      <h3>Platform Settings</h3>
-                      <p>Configure system options</p>
-                    </button>
-                  </div>
-                </div>
-              )}
+
             </>
           )}
         </div>

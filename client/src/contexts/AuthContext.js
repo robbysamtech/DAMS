@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -16,19 +16,9 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // Configure axios defaults
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      fetchUserProfile();
-    } else {
-      setLoading(false);
-    }
-  }, [token]);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
-      const response = await axios.get('/api/auth/profile');
+      const response = await axios.get('http://localhost:5001/api/auth/profile');
       setUser(response.data.user);
     } catch (error) {
       console.error('Error fetching user profile:', error);
@@ -36,11 +26,20 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      fetchUserProfile();
+    } else {
+      setLoading(false);
+    }
+  }, [token, fetchUserProfile]);
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post('/api/auth/login', { email, password });
+      const response = await axios.post('http://localhost:5001/api/auth/login', { email, password });
       const { token: newToken, user: userData } = response.data;
       
       setToken(newToken);
@@ -59,16 +58,36 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('/api/auth/register', userData);
-      const { token: newToken, user: newUser } = response.data;
+      console.log('AuthContext: Making registration request...');
+      const response = await axios.post('http://localhost:5001/api/auth/register', userData);
+      console.log('AuthContext: Registration response:', response.data);
       
-      setToken(newToken);
-      setUser(newUser);
-      localStorage.setItem('token', newToken);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      const { user: newUser, message } = response.data;
       
-      return { success: true };
+      // For pending approval, don't set token or log user in
+      // Only set user data temporarily for success message
+      if (newUser.status === 'pending') {
+        console.log('AuthContext: User is pending, returning success with message');
+        return { 
+          success: true, 
+          user: newUser,
+          message: message || 'Registration successful! Your account is pending admin approval.'
+        };
+      } else {
+        console.log('AuthContext: User is approved, logging in');
+        // If somehow user is approved immediately, log them in
+        const { token: newToken } = response.data;
+        if (newToken) {
+          setToken(newToken);
+          setUser(newUser);
+          localStorage.setItem('token', newToken);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+        }
+        
+        return { success: true, user: newUser };
+      }
     } catch (error) {
+      console.error('AuthContext: Registration error:', error);
       return {
         success: false,
         error: error.response?.data?.error || 'Registration failed'
@@ -85,7 +104,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put('/api/auth/profile', profileData);
+      const response = await axios.put('http://localhost:5001/api/auth/profile', profileData);
       setUser(response.data.user);
       return { success: true };
     } catch (error) {
@@ -98,7 +117,7 @@ export const AuthProvider = ({ children }) => {
 
   const changePassword = async (currentPassword, newPassword) => {
     try {
-      await axios.put('/api/auth/change-password', { currentPassword, newPassword });
+      await axios.put('http://localhost:5001/api/auth/change-password', { currentPassword, newPassword });
       return { success: true };
     } catch (error) {
       return {
@@ -110,6 +129,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    token,
     loading,
     login,
     register,

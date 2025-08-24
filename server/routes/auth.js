@@ -1,6 +1,7 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Generate JWT token
@@ -35,12 +36,9 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    // Generate token for immediate access (but with limited permissions)
-    const token = generateToken(user._id);
-
+    // Don't generate token for pending users - they need admin approval first
     res.status(201).json({
       message: 'Registration successful! Your account is pending admin approval.',
-      token,
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -111,7 +109,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Get Current User Profile
-router.get('/profile', async (req, res) => {
+router.get('/profile', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
     res.json({ user });
@@ -122,7 +120,7 @@ router.get('/profile', async (req, res) => {
 });
 
 // Update User Profile
-router.put('/profile', async (req, res) => {
+router.put('/profile', auth, async (req, res) => {
   try {
     const { firstName, lastName, phone, department, bio, socialLinks } = req.body;
     
@@ -151,7 +149,7 @@ router.put('/profile', async (req, res) => {
 });
 
 // Change Password
-router.put('/change-password', async (req, res) => {
+router.put('/change-password', auth, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 

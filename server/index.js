@@ -27,13 +27,19 @@ const peopleRoutes = require('./routes/people');
 const eventsRoutes = require('./routes/events');
 
 // Security middleware
-app.use(helmet());
-app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Rate limiting
+// CORS configuration - more permissive for development
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://127.0.0.1:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Rate limiting - exclude auth endpoints from strict limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
@@ -59,7 +65,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams', {
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminAuth, adminRoutes);
+app.use('/api/admin', auth, adminAuth, adminRoutes);
 app.use('/api/ministry', auth, ministryRoutes);
 app.use('/api/people', auth, peopleRoutes);
 app.use('/api/events', auth, eventsRoutes);

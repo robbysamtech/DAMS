@@ -19,17 +19,13 @@ router.get('/pending-users', async (req, res) => {
   }
 });
 
-// Approve or reject user registration
+// Approve user registration
 router.put('/users/:userId/approve', async (req, res) => {
   try {
     const { userId } = req.params;
-    const { action, role, notes } = req.body;
+    const { role } = req.body;
 
-    if (!['approve', 'reject'].includes(action)) {
-      return res.status(400).json({ error: 'Invalid action. Must be "approve" or "reject".' });
-    }
-
-    if (action === 'approve' && !['consumer', 'creator'].includes(role)) {
+    if (!['consumer', 'creator'].includes(role)) {
       return res.status(400).json({ error: 'Invalid role. Must be "consumer" or "creator".' });
     }
 
@@ -38,27 +34,18 @@ router.put('/users/:userId/approve', async (req, res) => {
       return res.status(404).json({ error: 'User not found.' });
     }
 
-    if (action === 'approve') {
-      user.status = 'active';
-      user.role = role;
-      user.approvalDetails = {
-        approvedBy: req.user._id,
-        approvedAt: new Date(),
-        approvalNotes: notes || ''
-      };
-    } else {
-      user.status = 'rejected';
-      user.approvalDetails = {
-        approvedBy: req.user._id,
-        approvedAt: new Date(),
-        rejectionReason: notes || 'No reason provided'
-      };
-    }
+    user.status = 'active';
+    user.role = role;
+    user.approvalDetails = {
+      approvedBy: req.user._id,
+      approvedAt: new Date(),
+      approvalNotes: 'Approved by admin'
+    };
 
     await user.save();
 
     res.json({
-      message: `User ${action === 'approve' ? 'approved' : 'rejected'} successfully!`,
+      message: 'User approved successfully!',
       user: {
         id: user._id,
         firstName: user.firstName,
@@ -70,8 +57,45 @@ router.put('/users/:userId/approve', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error approving/rejecting user:', error);
+    console.error('Error approving user:', error);
     res.status(500).json({ error: 'Failed to process user approval.' });
+  }
+});
+
+// Reject user registration
+router.put('/users/:userId/reject', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { reason } = req.body;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    user.status = 'rejected';
+    user.approvalDetails = {
+      approvedBy: req.user._id,
+      approvedAt: new Date(),
+      rejectionReason: reason || 'No reason provided'
+    };
+
+    await user.save();
+
+    res.json({
+      message: 'User rejected successfully!',
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        status: user.status,
+        approvalDetails: user.approvalDetails
+      }
+    });
+  } catch (error) {
+    console.error('Error rejecting user:', error);
+    res.status(500).json({ error: 'Failed to process user rejection.' });
   }
 });
 

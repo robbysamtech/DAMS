@@ -4,7 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import './Header.css';
 
 const Header = () => {
-  const { user, logout, isAdmin, isCreator, isConsumer, isPending } = useAuth();
+  const { user, logout, isAdmin } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
