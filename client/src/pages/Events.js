@@ -19,6 +19,8 @@ const Events = () => {
     location: '',
     eventImage: null
   });
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const fetchEvents = async () => {
     try {
@@ -31,6 +33,7 @@ const Events = () => {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('Events fetched:', data.events);
         setEvents(data.events || []);
         setFilteredEvents(data.events || []);
       } else {
@@ -101,6 +104,7 @@ const Events = () => {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Image upload response:', data);
         return data.imageUrl;
       }
     } catch (err) {
@@ -119,10 +123,15 @@ const Events = () => {
       }
 
       const eventData = {
-        ...formData,
+        title: formData.title,
+        description: formData.description,
+        date: formData.date,
+        time: formData.time,
+        location: formData.location,
         eventImage: imageUrl
       };
-      delete eventData.eventImage; // Remove the file object
+
+      console.log('Sending event data to server:', eventData);
 
       const response = await fetch('http://localhost:5001/api/events', {
         method: 'POST',
@@ -135,6 +144,7 @@ const Events = () => {
 
       if (response.ok) {
         const newEvent = await response.json();
+        console.log('New event created:', newEvent.event);
         setEvents(prev => [newEvent.event, ...prev]);
         resetForm();
         setShowCreateForm(false);
@@ -171,10 +181,13 @@ const Events = () => {
       }
 
       const eventData = {
-        ...formData,
+        title: formData.title,
+        description: formData.description,
+        date: formData.date,
+        time: formData.time,
+        location: formData.location,
         eventImage: imageUrl
       };
-      delete eventData.eventImage; // Remove the file object
 
       const response = await fetch(`http://localhost:5001/api/events/${editingEvent._id}`, {
         method: 'PUT',
@@ -213,6 +226,16 @@ const Events = () => {
       eventImage: null
     });
     setEditingEvent(null);
+  };
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedEvent(null);
   };
 
   const deleteEvent = async (eventId) => {
@@ -476,8 +499,10 @@ const Events = () => {
             </div>
           ) : (
             <div className="events-grid">
-              {filteredEvents.map(event => (
-                <div key={event._id} className="event-card">
+              {filteredEvents.map(event => {
+                console.log('Rendering event:', event);
+                return (
+                <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
                   {event.eventImage && (
                     <div className="event-image">
                       <img 
@@ -490,24 +515,33 @@ const Events = () => {
                   
                   <div className="event-header">
                     <h3>{event.title}</h3>
-                    {user?.role === 'creator' && (
-                      <div className="event-actions">
-                        <button 
-                          onClick={() => handleEdit(event)}
-                          className="btn-edit"
-                          title="Edit event"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          onClick={() => deleteEvent(event._id)}
-                          className="btn-delete"
-                          title="Delete event"
-                        >
-                          🗑️
-                        </button>
-                      </div>
-                    )}
+                    <div className="event-actions">
+                      <span className="click-hint" title="Click to view details">👁️</span>
+                      {user?.role === 'creator' && (
+                        <>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEdit(event);
+                            }}
+                            className="btn-edit"
+                            title="Edit event"
+                          >
+                            ✏️
+                          </button>
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteEvent(event._id);
+                            }}
+                            className="btn-delete"
+                            title="Delete event"
+                          >
+                            🗑️
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                   
                   <div className="event-details">
@@ -531,11 +565,103 @@ const Events = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
       </div>
+
+      {/* Event Detail Modal */}
+      {showModal && selectedEvent && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="modal-close" onClick={closeModal}>&times;</button>
+            
+            <div className="modal-body">
+              {/* Left Half - Image */}
+              <div className="modal-left">
+                {selectedEvent.eventImage ? (
+                  <div className="modal-image-container">
+                    <img 
+                      src={selectedEvent.eventImage} 
+                      alt={selectedEvent.title}
+                      className="modal-image"
+                    />
+                  </div>
+                ) : (
+                  <div className="modal-image-placeholder">
+                    <span className="placeholder-icon">📅</span>
+                    <p>No Image Available</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Right Half - Event Details */}
+              <div className="modal-right">
+                <div className="modal-header">
+                  <h2>{selectedEvent.title}</h2>
+                  <div className="modal-meta">
+                    <span className="modal-date">
+                      <span className="icon">📅</span>
+                      {formatDate(selectedEvent.date)}
+                    </span>
+                    <span className="modal-time">
+                      <span className="icon">🕒</span>
+                      {selectedEvent.time}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="modal-description">
+                  <h3>Description</h3>
+                  <p>{selectedEvent.description}</p>
+                </div>
+                
+                <div className="modal-location">
+                  <h3>Location</h3>
+                  <p>
+                    <span className="icon">📍</span>
+                    {selectedEvent.location}
+                  </p>
+                </div>
+                
+                {selectedEvent.category && (
+                  <div className="modal-category">
+                    <h3>Category</h3>
+                    <p>{selectedEvent.category}</p>
+                  </div>
+                )}
+                
+                {selectedEvent.tags && selectedEvent.tags.length > 0 && (
+                  <div className="modal-tags">
+                    <h3>Tags</h3>
+                    <div className="tags-list">
+                      {selectedEvent.tags.map((tag, index) => (
+                        <span key={index} className="tag">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {selectedEvent.maxAttendees && (
+                  <div className="modal-attendees">
+                    <h3>Maximum Attendees</h3>
+                    <p>{selectedEvent.maxAttendees} people</p>
+                  </div>
+                )}
+                
+                {selectedEvent.registrationRequired && (
+                  <div className="modal-registration">
+                    <h3>Registration</h3>
+                    <p>Registration is required for this event</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

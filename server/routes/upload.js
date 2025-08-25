@@ -26,9 +26,10 @@ router.post('/', upload.single('image'), async (req, res) => {
       format: 'jpeg'
     });
 
-    // Convert paths to URLs
-    const imageUrl = `/uploads/${path.basename(processedImagePath)}`;
-    const thumbnailUrl = `/uploads/${path.basename(thumbnailPath)}`;
+    // Convert paths to URLs - use full URL for frontend
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${baseUrl}/uploads/${path.basename(processedImagePath)}`;
+    const thumbnailUrl = `${baseUrl}/uploads/${path.basename(thumbnailPath)}`;
 
     res.json({
       message: 'Image uploaded successfully',
