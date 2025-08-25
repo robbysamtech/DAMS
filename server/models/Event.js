@@ -5,13 +5,13 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 100
+    maxlength: 200
   },
   description: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 1000
+    maxlength: 5000
   },
   date: {
     type: Date,
@@ -25,7 +25,7 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    maxlength: 200
+    maxlength: 500
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
@@ -40,7 +40,7 @@ const eventSchema = new mongoose.Schema({
   category: {
     type: String,
     trim: true,
-    maxlength: 100
+    maxlength: 200
   },
   eventType: {
     type: String,
@@ -61,7 +61,7 @@ const eventSchema = new mongoose.Schema({
   tags: [{
     type: String,
     trim: true,
-    maxlength: 50
+    maxlength: 100
   }],
   relatedMinistrySection: {
     type: mongoose.Schema.Types.ObjectId,

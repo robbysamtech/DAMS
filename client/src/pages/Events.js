@@ -20,7 +20,7 @@ const Events = () => {
     eventImage: null
   });
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showFullScreen, setShowFullScreen] = useState(false);
 
   const fetchEvents = async () => {
     try {
@@ -230,11 +230,11 @@ const Events = () => {
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
-    setShowModal(true);
+    setShowFullScreen(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const closeFullScreen = () => {
+    setShowFullScreen(false);
     setSelectedEvent(null);
   };
 
@@ -572,91 +572,91 @@ const Events = () => {
         </div>
       </div>
 
-      {/* Event Detail Modal */}
-      {showModal && selectedEvent && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeModal}>&times;</button>
+      {/* Full Screen Event View */}
+      {showFullScreen && selectedEvent && (
+        <div className="fullscreen-overlay">
+          <div className="fullscreen-content">
+            <button className="fullscreen-back" onClick={closeFullScreen}>
+              ← Back to Events
+            </button>
             
-            <div className="modal-body">
-              {/* Left Half - Image */}
-              <div className="modal-left">
+            <div className="fullscreen-body">
+              {/* Left side - Image */}
+              <div className="fullscreen-left">
                 {selectedEvent.eventImage ? (
-                  <div className="modal-image-container">
+                  <div className="fullscreen-image-container">
                     <img 
                       src={selectedEvent.eventImage} 
                       alt={selectedEvent.title}
-                      className="modal-image"
+                      className="fullscreen-image"
                     />
                   </div>
                 ) : (
-                  <div className="modal-image-placeholder">
+                  <div className="fullscreen-image-placeholder">
                     <span className="placeholder-icon">📅</span>
                     <p>No Image Available</p>
                   </div>
                 )}
               </div>
               
-              {/* Right Half - Event Details */}
-              <div className="modal-right">
-                <div className="modal-header">
-                  <h2>{selectedEvent.title}</h2>
-                  <div className="modal-meta">
-                    <span className="modal-date">
-                      <span className="icon">📅</span>
-                      {formatDate(selectedEvent.date)}
-                    </span>
-                    <span className="modal-time">
-                      <span className="icon">🕒</span>
-                      {selectedEvent.time}
-                    </span>
+              {/* Right side - Event Details */}
+              <div className="fullscreen-right">
+                <div className="fullscreen-header">
+                  <h1>{selectedEvent.title}</h1>
+                </div>
+                
+                <div className="fullscreen-meta">
+                  <div className="fullscreen-date">
+                    <span className="icon">📅</span>
+                    <span>{formatDate(selectedEvent.date)}</span>
                   </div>
-                </div>
-                
-                <div className="modal-description">
-                  <h3>Description</h3>
-                  <p>{selectedEvent.description}</p>
-                </div>
-                
-                <div className="modal-location">
-                  <h3>Location</h3>
-                  <p>
+                  <div className="fullscreen-time">
+                    <span className="icon">🕒</span>
+                    <span>{selectedEvent.time}</span>
+                  </div>
+                  <div className="fullscreen-location">
                     <span className="icon">📍</span>
-                    {selectedEvent.location}
-                  </p>
+                    <span>{selectedEvent.location}</span>
+                  </div>
                 </div>
                 
-                {selectedEvent.category && (
-                  <div className="modal-category">
-                    <h3>Category</h3>
-                    <p>{selectedEvent.category}</p>
+                <div className="fullscreen-description">
+                  <h3>📝 Description</h3>
+                  <div className="description-content">
+                    <p>{selectedEvent.description}</p>
                   </div>
-                )}
+                </div>
                 
-                {selectedEvent.tags && selectedEvent.tags.length > 0 && (
-                  <div className="modal-tags">
-                    <h3>Tags</h3>
-                    <div className="tags-list">
-                      {selectedEvent.tags.map((tag, index) => (
-                        <span key={index} className="tag">{tag}</span>
-                      ))}
+                <div className="fullscreen-details">
+                  {selectedEvent.category && (
+                    <div className="fullscreen-category">
+                      <h3>🏷️ Category</h3>
+                      <p>{selectedEvent.category}</p>
                     </div>
-                  </div>
-                )}
-                
-                {selectedEvent.maxAttendees && (
-                  <div className="modal-attendees">
-                    <h3>Maximum Attendees</h3>
-                    <p>{selectedEvent.maxAttendees} people</p>
-                  </div>
-                )}
-                
-                {selectedEvent.registrationRequired && (
-                  <div className="modal-registration">
-                    <h3>Registration</h3>
-                    <p>Registration is required for this event</p>
-                  </div>
-                )}
+                  )}
+                  {selectedEvent.tags && selectedEvent.tags.length > 0 && (
+                    <div className="fullscreen-tags">
+                      <h3>🏷️ Tags</h3>
+                      <div className="tags-list">
+                        {selectedEvent.tags.map((tag, index) => (
+                          <span key={index} className="tag">{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {selectedEvent.maxAttendees && (
+                    <div className="fullscreen-category">
+                      <h3>👥 Max Attendees</h3>
+                      <p>{selectedEvent.maxAttendees} people</p>
+                    </div>
+                  )}
+                  {selectedEvent.registrationRequired && (
+                    <div className="fullscreen-category">
+                      <h3>📋 Registration</h3>
+                      <p>Registration is required for this event</p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
