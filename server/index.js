@@ -25,6 +25,7 @@ const adminRoutes = require('./routes/admin');
 const ministryRoutes = require('./routes/ministry');
 const peopleRoutes = require('./routes/people');
 const eventsRoutes = require('./routes/events');
+const uploadRoutes = require('./routes/upload');
 
 // Security middleware
 app.use(helmet({
@@ -69,6 +70,7 @@ app.use('/api/admin', auth, adminAuth, adminRoutes);
 app.use('/api/ministry', auth, ministryRoutes);
 app.use('/api/people', auth, peopleRoutes);
 app.use('/api/events', auth, eventsRoutes);
+app.use('/api/upload', auth, uploadRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

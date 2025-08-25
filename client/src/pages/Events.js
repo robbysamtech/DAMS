@@ -5,15 +5,19 @@ import './Events.css';
 const Events = () => {
   const { user, token } = useAuth();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     date: '',
     time: '',
-    location: ''
+    location: '',
+    eventImage: null
   });
 
   const fetchEvents = async () => {
@@ -28,6 +32,7 @@ const Events = () => {
       if (response.ok) {
         const data = await response.json();
         setEvents(data.events || []);
+        setFilteredEvents(data.events || []);
       } else {
         setError('Failed to fetch events');
       }
@@ -44,37 +49,94 @@ const Events = () => {
     }
   }, [token]);
 
+  // Real-time search filtering
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredEvents(events);
+      return;
+    }
+
+    const filtered = events.filter(event => {
+      const query = searchQuery.toLowerCase();
+      return (
+        event.title?.toLowerCase().includes(query) ||
+        event.description?.toLowerCase().includes(query) ||
+        event.location?.toLowerCase().includes(query) ||
+        event.category?.toLowerCase().includes(query) ||
+        event.tags?.some(tag => tag.toLowerCase().includes(query))
+      );
+    });
+    setFilteredEvents(filtered);
+  }, [searchQuery, events]);
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    const { name, value, files } = e.target;
+    if (name === 'eventImage' && files) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: files[0]
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  const handleImageUpload = async (imageFile) => {
+    if (!imageFile) return null;
+    
+    const formData = new FormData();
+    formData.append('image', imageFile);
+    
+    try {
+      const response = await fetch('http://localhost:5001/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.imageUrl;
+      }
+    } catch (err) {
+      console.error('Error uploading image:', err);
+    }
+    return null;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
+      let imageUrl = null;
+      if (formData.eventImage) {
+        imageUrl = await handleImageUpload(formData.eventImage);
+      }
+
+      const eventData = {
+        ...formData,
+        eventImage: imageUrl
+      };
+      delete eventData.eventImage; // Remove the file object
+
       const response = await fetch('http://localhost:5001/api/events', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(eventData)
       });
 
       if (response.ok) {
         const newEvent = await response.json();
         setEvents(prev => [newEvent.event, ...prev]);
-        setFormData({
-          title: '',
-          description: '',
-          date: '',
-          time: '',
-          location: ''
-        });
+        resetForm();
         setShowCreateForm(false);
         setError('');
       } else {
@@ -84,6 +146,73 @@ const Events = () => {
     } catch (err) {
       setError('Error creating event');
     }
+  };
+
+  const handleEdit = (event) => {
+    setEditingEvent(event);
+    setFormData({
+      title: event.title,
+      description: event.description,
+      date: event.date.split('T')[0], // Convert ISO date to YYYY-MM-DD
+      time: event.time,
+      location: event.location,
+      eventImage: null
+    });
+    setShowCreateForm(true);
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    
+    try {
+      let imageUrl = editingEvent.eventImage; // Keep existing image if no new one
+      if (formData.eventImage) {
+        imageUrl = await handleImageUpload(formData.eventImage);
+      }
+
+      const eventData = {
+        ...formData,
+        eventImage: imageUrl
+      };
+      delete eventData.eventImage; // Remove the file object
+
+      const response = await fetch(`http://localhost:5001/api/events/${editingEvent._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(eventData)
+      });
+
+      if (response.ok) {
+        const updatedEvent = await response.json();
+        setEvents(prev => prev.map(event => 
+          event._id === editingEvent._id ? updatedEvent.event : event
+        ));
+        resetForm();
+        setEditingEvent(null);
+        setShowCreateForm(false);
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to update event');
+      }
+    } catch (err) {
+      setError('Error updating event');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      date: '',
+      time: '',
+      location: '',
+      eventImage: null
+    });
+    setEditingEvent(null);
   };
 
   const deleteEvent = async (eventId) => {
@@ -142,10 +271,35 @@ const Events = () => {
           </div>
         )}
 
+        {/* Search Bar */}
+        <div className="search-section">
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search events by title, description, location, or tags..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+            <span className="search-icon">🔍</span>
+          </div>
+          <div className="search-results">
+            {searchQuery && (
+              <p>Found {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''}</p>
+            )}
+          </div>
+        </div>
+
         {user?.role === 'creator' && (
           <div className="create-event-section">
             <button 
-              onClick={() => setShowCreateForm(!showCreateForm)}
+              onClick={() => {
+                if (editingEvent) {
+                  resetForm();
+                } else {
+                  setShowCreateForm(!showCreateForm);
+                }
+              }}
               className="btn btn-primary"
               style={{
                 backgroundColor: '#2563eb',
@@ -164,8 +318,8 @@ const Events = () => {
             </button>
 
             {showCreateForm && (
-              <form onSubmit={handleSubmit} className="create-event-form">
-                <h3>Create New Event</h3>
+              <form onSubmit={editingEvent ? handleUpdate : handleSubmit} className="create-event-form">
+                <h3>{editingEvent ? 'Edit Event' : 'Create New Event'}</h3>
                 
                 <div className="form-group">
                   <label htmlFor="title">Event Title</label>
@@ -237,6 +391,28 @@ const Events = () => {
                   />
                 </div>
 
+                <div className="form-group">
+                  <label htmlFor="eventImage">Event Image (Optional)</label>
+                  <input
+                    type="file"
+                    id="eventImage"
+                    name="eventImage"
+                    onChange={handleInputChange}
+                    className="form-input"
+                    accept="image/*"
+                  />
+                  {editingEvent?.eventImage && (
+                    <div className="current-image">
+                      <p>Current image:</p>
+                      <img 
+                        src={editingEvent.eventImage} 
+                        alt="Current event" 
+                        className="current-image-preview"
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div className="form-actions">
                   <button 
                     type="submit" 
@@ -254,11 +430,14 @@ const Events = () => {
                       minWidth: '120px'
                     }}
                   >
-                    Create Event
+                    {editingEvent ? 'Update Event' : 'Create Event'}
                   </button>
                   <button 
                     type="button" 
-                    onClick={() => setShowCreateForm(false)}
+                    onClick={() => {
+                      resetForm();
+                      setShowCreateForm(false);
+                    }}
                     className="btn btn-secondary"
                     style={{
                       backgroundColor: '#64748b',
@@ -282,29 +461,52 @@ const Events = () => {
         )}
 
         <div className="events-list">
-          <h2>Upcoming Events ({events.length})</h2>
+          <h2>Events ({filteredEvents.length})</h2>
           
-          {events.length === 0 ? (
+          {filteredEvents.length === 0 ? (
             <div className="no-events">
-              <p>No events scheduled yet.</p>
-              {user?.role === 'creator' && (
+              {searchQuery ? (
+                <p>No events found matching "{searchQuery}".</p>
+              ) : (
+                <p>No events scheduled yet.</p>
+              )}
+              {user?.role === 'creator' && !searchQuery && (
                 <p>Create your first event to get started!</p>
               )}
             </div>
           ) : (
             <div className="events-grid">
-              {events.map(event => (
+              {filteredEvents.map(event => (
                 <div key={event._id} className="event-card">
+                  {event.eventImage && (
+                    <div className="event-image">
+                      <img 
+                        src={event.eventImage} 
+                        alt={event.title}
+                        className="event-image-preview"
+                      />
+                    </div>
+                  )}
+                  
                   <div className="event-header">
                     <h3>{event.title}</h3>
                     {user?.role === 'creator' && (
-                      <button 
-                        onClick={() => deleteEvent(event._id)}
-                        className="btn-delete"
-                        title="Delete event"
-                      >
-                        🗑️
-                      </button>
+                      <div className="event-actions">
+                        <button 
+                          onClick={() => handleEdit(event)}
+                          className="btn-edit"
+                          title="Edit event"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          onClick={() => deleteEvent(event._id)}
+                          className="btn-delete"
+                          title="Delete event"
+                        >
+                          🗑️
+                        </button>
+                      </div>
                     )}
                   </div>
                   
