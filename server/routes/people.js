@@ -196,6 +196,11 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
     }
 
     // Check if user can manage this person
+    console.log('Checking permissions...');
+    console.log('Person creator ID:', person.creator);
+    console.log('User ID:', req.user._id);
+    console.log('Can manage result:', person.canManage(req.user._id));
+    
     if (!person.canManage(req.user._id)) {
       return res.status(403).json({ error: 'You do not have permission to edit this person profile.' });
     }
@@ -243,6 +248,24 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
     });
   } catch (error) {
     console.error('Error updating person:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Check for validation errors
+    if (error.name === 'ValidationError') {
+      console.error('Validation errors:', error.errors);
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: Object.values(error.errors).map(e => e.message)
+      });
+    }
+    
+    // Check for other specific errors
+    if (error.code === 11000) {
+      return res.status(400).json({ error: 'Duplicate field value' });
+    }
+    
     res.status(500).json({ error: 'Failed to update person profile.' });
   }
 });
