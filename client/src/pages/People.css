@@ -335,7 +335,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   line-height: 1.6;
   margin: 0;
   flex: 1; /* Take all available space */
-  min-height: 100%; /* Fill the entire content area height */
+  min-height: 360px; /* Match the image height exactly */
   max-height: none; /* Remove max height restriction */
   overflow-y: auto; /* Change back to auto since we're not forcing scrollbar */
   padding: 12px 16px;
@@ -396,7 +396,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
 
 .person-image {
   flex: 0 0 50%; /* Photo takes exactly half the tile width */
-  height: 360px; /* Increased height to fill more of the taller tile */
+  height: 360px; /* Keep original image height */
   border-radius: 8px;
   overflow: hidden;
   position: relative;
@@ -432,15 +432,14 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   align-items: flex-start; /* Align content to left */
   padding-right: 20px;
-  height: 360px; /* Match the image height exactly */
-  justify-content: space-between; /* Distribute content evenly */
+  height: auto; /* Let it size naturally */
 }
 
 .person-content {
   flex: 1; /* Takes remaining space - entire right side */
   display: flex;
   flex-direction: column;
-  height: 360px; /* Match the image height exactly */
+  height: auto; /* Let it size naturally */
   justify-content: flex-start; /* Align content to top */
 }
 
