@@ -56,7 +56,6 @@ const personSchema = new mongoose.Schema({
   },
   bio: {
     type: String,
-    maxlength: 1000,
     trim: true
   },
   socialLinks: {
