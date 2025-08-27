@@ -514,26 +514,26 @@ const People = () => {
                     {person.bio && (
                       <p className="person-bio">{person.bio}</p>
                     )}
-                    
-                    {user?.role === 'creator' && (
-                      <div className="person-actions">
-                        <button 
-                          onClick={() => handleEdit(person)}
-                          className="edit-btn"
-                          title="Edit person"
-                        >
-                          ✏️
-                        </button>
-                        <button 
-                          onClick={() => deletePerson(person._id)}
-                          className="delete-btn"
-                          title="Delete person"
-                        >
-                          🗑️ Delete
-                        </button>
-                      </div>
-                    )}
                   </div>
+                  
+                  {user?.role === 'creator' && (
+                    <div className="person-actions">
+                      <button 
+                        onClick={() => handleEdit(person)}
+                        className="edit-btn"
+                        title="Edit person"
+                      >
+                        ✏️
+                      </button>
+                      <button 
+                        onClick={() => deletePerson(person._id)}
+                        className="delete-btn"
+                        title="Delete person"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               )})}
             </div>
