@@ -522,7 +522,7 @@ const People = () => {
                           className="edit-btn"
                           title="Edit person"
                         >
-                          ✏️ Edit
+                          ✏️
                         </button>
                         <button 
                           onClick={() => deletePerson(person._id)}

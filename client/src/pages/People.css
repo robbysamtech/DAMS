@@ -422,13 +422,16 @@
 }
 
 .edit-btn {
-  background: var(--color-primary);
-  color: white;
+  background: none;
+  color: var(--color-text);
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .edit-btn:hover {
-  background: var(--color-primary-dark);
-  transform: translateY(-1px);
+  background: var(--color-background-secondary);
+  transform: scale(1.1);
 }
 
 .delete-btn {
