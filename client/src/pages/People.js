@@ -223,10 +223,7 @@ const People = () => {
   return (
     <div className="people-page">
       <div className="container">
-        <div className="people-header">
-          <h1>Ministry Team</h1>
-          <p>Manage your ministry team members</p>
-        </div>
+
 
         {error && (
           <div className="alert alert-error">
