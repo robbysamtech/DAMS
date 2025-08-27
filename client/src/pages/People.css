@@ -312,7 +312,7 @@
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 20px;
+  padding: 20px 20px 40px 20px; /* Increased bottom padding for buttons */
   margin-bottom: 20px;
   box-shadow: var(--shadow-light);
   transition: all 0.3s ease;
@@ -409,7 +409,7 @@
   justify-content: flex-end;
   margin-top: auto;
   position: absolute;
-  bottom: 0;
+  bottom: -20px; /* Move buttons to the very bottom of the tile */
   right: 0;
 }
 
