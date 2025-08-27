@@ -479,7 +479,10 @@ const People = () => {
             </div>
           ) : (
             <div className="people-grid">
-              {people.map(person => (
+              {people.map(person => {
+                console.log('Person data:', person);
+                console.log('Profile photo path:', person.profilePhoto);
+                return (
                 <div key={person._id} className="person-card">
                   <div className="person-image">
                     {person.profilePhoto ? (
@@ -487,12 +490,16 @@ const People = () => {
                         src={`http://localhost:5001/${person.profilePhoto}`} 
                         alt={`${person.firstName} ${person.lastName}`}
                         className="person-photo"
+                        onError={(e) => {
+                          console.error('Image failed to load:', person.profilePhoto);
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
                       />
-                    ) : (
-                      <div className="person-photo-placeholder">
-                        <span>👤</span>
-                      </div>
-                    )}
+                    ) : null}
+                    <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
+                      <span>👤</span>
+                    </div>
                   </div>
                   
                   <div className="person-content">
@@ -540,7 +547,7 @@ const People = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </div>
