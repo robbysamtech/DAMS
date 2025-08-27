@@ -144,8 +144,11 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
 
     // Add profile photo if uploaded
     if (req.file) {
-      personData.profilePhoto = req.file.path;
+      // Save only the relative path for the frontend to access
+      const relativePath = path.relative(path.join(__dirname, '..'), req.file.path);
+      personData.profilePhoto = relativePath;
       console.log('Profile photo added:', req.file.path);
+      console.log('Relative path saved:', relativePath);
       console.log('File exists check:', fs.existsSync(req.file.path));
       console.log('File stats:', fs.statSync(req.file.path));
     }
