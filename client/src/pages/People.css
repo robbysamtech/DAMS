@@ -330,42 +330,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   opacity: 0.8;
 }
 
-.person-bio {
-  color: var(--color-text);
-  line-height: 1.6;
-  margin: 0;
-  flex: 1; /* Take all available space */
-  min-height: 360px; /* Match the image height exactly */
-  max-height: none; /* Remove max height restriction */
-  overflow-y: auto; /* Change back to auto since we're not forcing scrollbar */
-  padding: 12px 16px;
-  font-size: 1rem;
-  background: var(--color-background-secondary);
-  border-radius: 8px;
-  border: 1px solid var(--color-border);
-  /* Ensure scrollbar is visible */
-  scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #d1d5db #f3f4f6; /* Firefox */
-}
-
-/* Custom scrollbar for person bio in tiles */
-.person-bio::-webkit-scrollbar {
-  width: 8px;
-}
-
-.person-bio::-webkit-scrollbar-track {
-  background: #f3f4f6;
-  border-radius: 4px;
-}
-
-.person-bio::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 4px;
-}
-
-.person-bio::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
-}
+/* Old conflicting person-bio definition removed - using the correct one below */
 
 .loading {
   text-align: center;
