@@ -180,6 +180,34 @@
   color: var(--color-text-tertiary);
 }
 
+/* Scrollable textarea styling */
+textarea.form-input {
+  min-height: 120px;
+  resize: vertical;
+  overflow-y: auto;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+/* Custom scrollbar styling for textarea */
+textarea.form-input::-webkit-scrollbar {
+  width: 8px;
+}
+
+textarea.form-input::-webkit-scrollbar-track {
+  background: var(--color-background-secondary);
+  border-radius: 4px;
+}
+
+textarea.form-input::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+textarea.form-input::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
 .photo-preview {
   margin-top: 1rem;
   text-align: center;
@@ -303,9 +331,31 @@
 }
 
 .person-bio {
-  margin-top: 0.5rem;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
+  color: var(--color-text);
+  line-height: 1.5;
+  margin: 10px 0;
+  max-height: 80px;
+  overflow-y: auto;
+  padding-right: 8px;
+  font-size: 0.9rem;
+}
+
+/* Custom scrollbar for person bio in tiles */
+.person-bio::-webkit-scrollbar {
+  width: 6px;
+}
+
+.person-bio::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.person-bio::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
+
+.person-bio::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
 }
 
 .loading {
