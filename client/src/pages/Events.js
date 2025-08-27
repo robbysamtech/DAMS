@@ -72,6 +72,14 @@ const Events = () => {
     setFilteredEvents(filtered);
   }, [searchQuery, events]);
 
+  // Cleanup fullscreen classes when component unmounts
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove('fullscreen-active');
+      document.documentElement.classList.remove('fullscreen-active');
+    };
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'eventImage' && files) {
@@ -231,11 +239,15 @@ const Events = () => {
   const handleEventClick = (event) => {
     setSelectedEvent(event);
     setShowFullScreen(true);
+    document.body.classList.add('fullscreen-active');
+    document.documentElement.classList.add('fullscreen-active');
   };
 
   const closeFullScreen = () => {
     setShowFullScreen(false);
     setSelectedEvent(null);
+    document.body.classList.remove('fullscreen-active');
+    document.documentElement.classList.remove('fullscreen-active');
   };
 
   const deleteEvent = async (eventId) => {
@@ -268,6 +280,15 @@ const Events = () => {
       day: 'numeric'
     });
   };
+
+  const truncateDescription = (description, maxLength = 120) => {
+    if (description.length <= maxLength) {
+      return description;
+    }
+    return description.substring(0, maxLength).trim() + '...';
+  };
+
+
 
   if (loading) {
     return (
@@ -515,41 +536,14 @@ const Events = () => {
                   
                   <div className="event-header">
                     <h3>{event.title}</h3>
-                    <div className="event-actions">
-                      <span className="click-hint" title="Click to view details">👁️</span>
-                      {user?.role === 'creator' && (
-                        <>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEdit(event);
-                            }}
-                            className="btn-edit"
-                            title="Edit event"
-                          >
-                            ✏️
-                          </button>
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteEvent(event._id);
-                            }}
-                            className="btn-delete"
-                            title="Delete event"
-                          >
-                            🗑️
-                          </button>
-                        </>
-                      )}
-                    </div>
                   </div>
                   
                   <div className="event-details">
-                    <p className="event-description">{event.description}</p>
+                    <p className="event-description">{truncateDescription(event.description)}</p>
                     
                     <div className="event-meta">
                       <div className="event-date">
-                        <span className="icon">📅</span>
+                        <span className="icon">🗓️</span>
                         {formatDate(event.date)}
                       </div>
                       
@@ -564,6 +558,33 @@ const Events = () => {
                       </div>
                     </div>
                   </div>
+                  
+                  <div className="event-actions">
+                    {user?.role === 'creator' && (
+                      <>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(event);
+                          }}
+                          className="btn-edit"
+                          title="Edit event"
+                        >
+                          ✏️
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteEvent(event._id);
+                          }}
+                          className="btn-delete"
+                          title="Delete event"
+                        >
+                          🗑️
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
                 );
               })}
@@ -576,12 +597,8 @@ const Events = () => {
       {showFullScreen && selectedEvent && (
         <div className="fullscreen-overlay">
           <div className="fullscreen-content">
-            {/* Header with back button and event title */}
+            {/* Header with event title only */}
             <div className="fullscreen-header-section">
-              <button className="fullscreen-back-btn" onClick={closeFullScreen}>
-                <span className="back-icon">←</span>
-                <span>Back to Events</span>
-              </button>
               <div className="fullscreen-title-section">
                 <h1 className="fullscreen-main-title">{selectedEvent.title}</h1>
                 <div className="fullscreen-subtitle">
@@ -613,7 +630,7 @@ const Events = () => {
                   ) : (
                     <div className="hero-image-placeholder">
                       <div className="placeholder-content">
-                        <span className="placeholder-icon">📅</span>
+                        <span className="placeholder-icon">🗓️</span>
                         <h3>No Image Available</h3>
                         <p>This event doesn't have an image yet</p>
                       </div>
@@ -624,7 +641,7 @@ const Events = () => {
                 {/* Quick Info Cards */}
                 <div className="quick-info-grid">
                   <div className="info-card primary">
-                    <div className="info-card-icon">📅</div>
+                    <div className="info-card-icon">🗓️</div>
                     <div className="info-card-content">
                       <h4>Date</h4>
                       <p>{formatDate(selectedEvent.date)}</p>
@@ -652,13 +669,22 @@ const Events = () => {
               {/* Right side - Event Details */}
               <div className="fullscreen-right">
                 {/* Description Section */}
-                <div className="detail-section description-section">
+                <div className="detail-section description-section full-height">
                   <div className="section-header">
                     <h2>📝 About This Event</h2>
-                    <div className="section-divider"></div>
                   </div>
-                  <div className="description-content">
-                    <p>{selectedEvent.description}</p>
+                  <div className="description-content scrollable">
+                    <div className="description-text-scrollable">
+                      <p>{selectedEvent.description}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Back button below description */}
+                  <div className="description-back-btn-container">
+                    <button className="fullscreen-back-btn" onClick={closeFullScreen}>
+                      <span className="back-icon">←</span>
+                      <span>Back to Events</span>
+                    </button>
                   </div>
                 </div>
                 

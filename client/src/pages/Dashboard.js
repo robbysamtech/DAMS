@@ -36,7 +36,7 @@ const Dashboard = () => {
                 </div>
                 
                 <div className="stat-card">
-                  <div className="stat-icon">📅</div>
+                  <div className="stat-icon">🗓️</div>
                   <div className="stat-content">
                     <h3>Upcoming Events</h3>
                     <p>View and manage events</p>
@@ -90,7 +90,7 @@ const Dashboard = () => {
                   <h2>Browse Content</h2>
                   <div className="action-grid">
                     <button className="action-card">
-                      <span className="action-icon">📅</span>
+                      <span className="action-icon">🗓️</span>
                       <h3>View Events</h3>
                       <p>See upcoming ministry events</p>
                     </button>

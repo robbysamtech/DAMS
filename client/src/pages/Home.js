@@ -40,7 +40,7 @@ const Home = () => {
           <div className="hero-visual">
             <div className="hero-cards">
               <div className="hero-card hero-card-1">
-                <div className="card-icon">📅</div>
+                <div className="card-icon">🗓️</div>
                 <h3>Events</h3>
                 <p>Manage ministry events</p>
               </div>
