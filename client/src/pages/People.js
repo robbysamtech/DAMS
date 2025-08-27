@@ -492,25 +492,7 @@ const People = () => {
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
                 <div key={person._id} className="person-tile">
-                  <div className="person-image">
-                    {person.profilePhoto ? (
-                      <img 
-                        src={`http://localhost:5001/${person.profilePhoto}`} 
-                        alt={`${person.firstName} ${person.lastName}`}
-                        className="person-photo"
-                        onError={(e) => {
-                          console.error('Image failed to load:', person.profilePhoto);
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
-                      👤
-                    </div>
-                  </div>
-                  
-                  <div className="person-content">
+                  <div className="person-info-left">
                     <div className="person-header">
                       <h3 className="person-name">{person.firstName} {person.lastName}</h3>
                       <p className="person-title">{person.jobTitle}</p>
@@ -519,6 +501,26 @@ const People = () => {
                       )}
                     </div>
                     
+                    <div className="person-image">
+                      {person.profilePhoto ? (
+                        <img 
+                          src={`http://localhost:5001/${person.profilePhoto}`} 
+                          alt={`${person.firstName} ${person.lastName}`}
+                          className="person-photo"
+                          onError={(e) => {
+                            console.error('Image failed to load:', person.profilePhoto);
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
+                        👤
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="person-content">
                     {person.bio && (
                       <p className="person-bio">{person.bio}</p>
                     )}
