@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', async (req, res) => {
   try {
     const { 
-      status = 'published', 
+      status = 'draft', 
       category, 
       eventType, 
       ministrySection, 
@@ -16,7 +16,8 @@ router.get('/', async (req, res) => {
       limit = 20 
     } = req.query;
     
-    const filter = { status };
+    const filter = {};
+    if (status) filter.status = status;
     if (category) filter.category = category;
     if (eventType) filter.eventType = eventType;
     if (ministrySection) filter.relatedMinistrySection = ministrySection;

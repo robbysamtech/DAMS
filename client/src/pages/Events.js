@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import './Events.css';
 
@@ -22,8 +22,18 @@ const Events = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showFullScreen, setShowFullScreen] = useState(false);
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
+    console.log('Starting fetchEvents...');
+    
+    // Add timeout to prevent freezing
+    const timeoutId = setTimeout(() => {
+      console.log('Fetch timeout reached');
+      setError('Request timeout - server may be slow');
+      setLoading(false);
+    }, 10000); // 10 second timeout
+    
     try {
+      console.log('Making API call to events endpoint...');
       const response = await fetch('http://localhost:5001/api/events', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -31,26 +41,42 @@ const Events = () => {
         }
       });
 
+      clearTimeout(timeoutId); // Clear timeout if successful
+      console.log('Response received:', response.status, response.statusText);
+      
       if (response.ok) {
         const data = await response.json();
-        console.log('Events fetched:', data.events);
+        console.log('Events data:', data);
+        console.log('Events array:', data.events);
         setEvents(data.events || []);
         setFilteredEvents(data.events || []);
+        console.log('Events state updated successfully');
       } else {
+        console.error('Response not ok:', response.status);
         setError('Failed to fetch events');
       }
     } catch (err) {
+      clearTimeout(timeoutId); // Clear timeout if error
+      console.error('Error in fetchEvents:', err);
       setError('Error fetching events');
     } finally {
+      console.log('Setting loading to false');
       setLoading(false);
     }
-  };
+  }, [token]);
 
   useEffect(() => {
+    console.log('Events useEffect triggered, token:', !!token);
+    console.log('Token length:', token ? token.length : 0);
+    console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'No token');
+    
     if (token) {
       fetchEvents();
+    } else {
+      console.log('No token available, cannot fetch events');
+      setLoading(false); // Don't keep loading if no token
     }
-  }, [token]);
+  }, [token, fetchEvents]);
 
   // Real-time search filtering
   useEffect(() => {
