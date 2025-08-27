@@ -168,6 +168,24 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
     });
   } catch (error) {
     console.error('Error creating person:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    
+    // Check for validation errors
+    if (error.name === 'ValidationError') {
+      console.error('Validation errors:', error.errors);
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: Object.values(error.errors).map(e => e.message)
+      });
+    }
+    
+    // Check for other specific errors
+    if (error.code === 11000) {
+      return res.status(400).json({ error: 'Duplicate field value' });
+    }
+    
     res.status(500).json({ error: 'Failed to create person profile.' });
   }
 });
