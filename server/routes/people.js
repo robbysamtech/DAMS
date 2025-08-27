@@ -8,7 +8,7 @@ const fs = require('fs');
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const uploadDir = 'uploads/';
+    const uploadDir = path.join(__dirname, 'uploads');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -146,6 +146,8 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
     if (req.file) {
       personData.profilePhoto = req.file.path;
       console.log('Profile photo added:', req.file.path);
+      console.log('File exists check:', fs.existsSync(req.file.path));
+      console.log('File stats:', fs.statSync(req.file.path));
     }
 
     const person = new Person(personData);
