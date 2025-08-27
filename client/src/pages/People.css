@@ -489,8 +489,9 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   background: var(--color-background-secondary);
   border-radius: 12px;
   border: 1px solid var(--color-border);
-  overflow-y: auto;
+  overflow-y: scroll; /* Force scrollbar to always show */
   min-height: 300px;
+  max-height: 300px; /* Fixed height to ensure scrolling */
   /* Custom scrollbar styling */
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f3f4f6;
@@ -498,21 +499,22 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
 
 /* Custom scrollbar for bio */
 .person-bio::-webkit-scrollbar {
-  width: 8px;
+  width: 12px; /* Increased width for better visibility */
 }
 
 .person-bio::-webkit-scrollbar-track {
-  background: #f3f4f6;
-  border-radius: 4px;
+  background: #e5e7eb; /* Darker track for better visibility */
+  border-radius: 6px;
 }
 
 .person-bio::-webkit-scrollbar-thumb {
-  background: #d1d5db;
-  border-radius: 4px;
+  background: #9ca3af; /* Darker thumb for better visibility */
+  border-radius: 6px;
+  border: 2px solid #e5e7eb; /* Border around thumb */
 }
 
 .person-bio::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #6b7280; /* Even darker on hover */
 }
 
 .person-tile:hover {
