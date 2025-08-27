@@ -500,23 +500,23 @@ const People = () => {
                         <p className="person-department">{person.department}</p>
                       )}
                     </div>
-                  </div>
-                  
-                  <div className="person-image">
-                    {person.profilePhoto ? (
-                      <img 
-                        src={`http://localhost:5001/${person.profilePhoto}`} 
-                        alt={`${person.firstName} ${person.lastName}`}
-                        className="person-photo"
-                        onError={(e) => {
-                          console.error('Image failed to load:', person.profilePhoto);
-                          e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
-                      👤
+                    
+                    <div className="person-image">
+                      {person.profilePhoto ? (
+                        <img 
+                          src={`http://localhost:5001/${person.profilePhoto}`} 
+                          alt={`${person.firstName} ${person.lastName}`}
+                          className="person-photo"
+                          onError={(e) => {
+                            console.error('Image failed to load:', person.profilePhoto);
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
+                        👤
+                      </div>
                     </div>
                   </div>
                   

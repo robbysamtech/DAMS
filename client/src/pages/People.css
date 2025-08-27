@@ -395,7 +395,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
 }
 
 .person-image {
-  flex: 0 0 25%; /* Photo takes 25% width */
+  flex: 0 0 50%; /* Photo takes exactly half the tile width */
   height: 360px; /* Keep original image height */
   border-radius: 8px;
   overflow: hidden;
@@ -427,7 +427,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
 }
 
 .person-info-left {
-  flex: 0 0 25%; /* Takes 25% width for name/title/dept */
+  flex: 0 0 50%; /* Left side takes half width */
   display: flex;
   flex-direction: column;
   align-items: flex-start; /* Align content to left */
