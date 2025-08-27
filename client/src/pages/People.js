@@ -144,7 +144,7 @@ const People = () => {
       bio: person.bio || '',
       profilePhoto: null
     });
-    setPhotoPreview(person.profilePhoto || '');
+    setPhotoPreview(null); // Clear any previous preview
     setShowEditForm(true);
     setShowCreateForm(false);
   };
@@ -429,9 +429,17 @@ const People = () => {
                     className="form-input"
                     accept="image/*"
                   />
-                  {photoPreview && (
+                  
+                  {/* Show current image or new preview */}
+                  {(photoPreview || editingPerson.profilePhoto) && (
                     <div className="photo-preview">
-                      <img src={photoPreview} alt="Preview" />
+                      <img 
+                        src={photoPreview || `http://localhost:5001/${editingPerson.profilePhoto}`} 
+                        alt="Preview" 
+                      />
+                      {photoPreview && (
+                        <p className="preview-note">New image preview</p>
+                      )}
                     </div>
                   )}
                 </div>

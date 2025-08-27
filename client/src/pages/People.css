@@ -193,6 +193,13 @@
   border: 3px solid var(--color-border);
 }
 
+.preview-note {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-style: italic;
+}
+
 .form-actions {
   display: flex;
   gap: 1rem;
