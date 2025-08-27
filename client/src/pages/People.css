@@ -389,15 +389,14 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   position: relative;
 }
 
-.person-tile:hover {
-  box-shadow: var(--shadow-medium);
-  transform: translateY(-2px);
-}
-
-/* Header Section - Name, Title, Department */
+/* Top section with header and actions side by side */
 .person-header-section {
-  text-align: center;
+  text-align: left;
   margin-bottom: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .person-name {
@@ -420,6 +419,51 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   color: var(--color-text-light);
   margin: 0;
   font-weight: 500;
+}
+
+.person-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  position: absolute;
+  top: 24px; /* Position at top right of tile */
+  right: 24px; /* Align with right padding of tile */
+}
+
+.person-actions button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-btn {
+  background: none;
+  color: var(--color-text);
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.edit-btn:hover {
+  background: var(--color-background-secondary);
+  transform: scale(1.1);
+}
+
+.delete-btn {
+  background: var(--color-danger);
+  color: white;
+}
+
+.delete-btn:hover {
+  background: var(--color-danger-dark);
+  transform: translateY(-1px);
 }
 
 /* Content Section - Image and Bio side by side */
@@ -506,49 +550,9 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
 
-.person-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  position: absolute;
-  bottom: 10px; /* Position at bottom border of tile */
-  right: 20px; /* Align with right padding of tile */
-}
-
-.person-actions button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.edit-btn {
-  background: none;
-  color: var(--color-text);
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.2s ease;
-}
-
-.edit-btn:hover {
-  background: var(--color-background-secondary);
-  transform: scale(1.1);
-}
-
-.delete-btn {
-  background: var(--color-danger);
-  color: white;
-}
-
-.delete-btn:hover {
-  background: var(--color-danger-dark);
-  transform: translateY(-1px);
+.person-tile:hover {
+  box-shadow: var(--shadow-medium);
+  transform: translateY(-2px);
 }
 
 /* Responsive Design */

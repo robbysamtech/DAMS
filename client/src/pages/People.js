@@ -492,7 +492,7 @@ const People = () => {
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
                 <div key={person._id} className="person-tile">
-                  {/* Header Section - Name, Title, Department */}
+                  {/* Header Section - Name, Title, Department on left, Actions on right */}
                   <div className="person-header-section">
                     <h3 className="person-name">{person.firstName} {person.lastName}</h3>
                     <p className="person-title">{person.jobTitle}</p>
@@ -500,6 +500,26 @@ const People = () => {
                       <p className="person-department">{person.department}</p>
                     )}
                   </div>
+                  
+                  {/* Action Buttons - Top Right */}
+                  {user?.role === 'creator' && (
+                    <div className="person-actions">
+                      <button 
+                        onClick={() => handleEdit(person)}
+                        className="edit-btn"
+                        title="Edit person"
+                      >
+                        ✏️
+                      </button>
+                      <button 
+                        onClick={() => deletePerson(person._id)}
+                        className="delete-btn"
+                        title="Delete person"
+                      >
+                        🗑️ Delete
+                      </button>
+                    </div>
+                  )}
                   
                   {/* Content Section - Image and Bio side by side */}
                   <div className="person-content-section">
@@ -529,26 +549,6 @@ const People = () => {
                       )}
                     </div>
                   </div>
-                  
-                  {/* Action Buttons */}
-                  {user?.role === 'creator' && (
-                    <div className="person-actions">
-                      <button 
-                        onClick={() => handleEdit(person)}
-                        className="edit-btn"
-                        title="Edit person"
-                      >
-                        ✏️
-                      </button>
-                      <button 
-                        onClick={() => deletePerson(person._id)}
-                        className="delete-btn"
-                        title="Delete person"
-                      >
-                        🗑️ Delete
-                      </button>
-                    </div>
-                  )}
                 </div>
               )})}
             </div>
