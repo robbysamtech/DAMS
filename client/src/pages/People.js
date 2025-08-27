@@ -89,6 +89,10 @@ const People = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    console.log('Form submission started');
+    console.log('Form data:', formData);
+    console.log('Token:', token);
+    
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('firstName', formData.firstName);
@@ -100,6 +104,8 @@ const People = () => {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
       }
 
+      console.log('FormData created:', formDataToSend);
+
       const response = await fetch('http://localhost:5001/api/people', {
         method: 'POST',
         headers: {
@@ -108,16 +114,22 @@ const People = () => {
         body: formDataToSend
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (response.ok) {
         const newPerson = await response.json();
+        console.log('Success response:', newPerson);
         setPeople(prev => [newPerson.person, ...prev]);
         resetForm();
         setError('');
       } else {
         const errorData = await response.json();
+        console.log('Error response:', errorData);
         setError(errorData.error || 'Failed to create person');
       }
     } catch (err) {
+      console.error('Exception during submission:', err);
       setError('Error creating person');
     }
   };

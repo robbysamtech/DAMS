@@ -106,6 +106,11 @@ router.get('/:id', async (req, res) => {
 // Create new person
 router.post('/', upload.single('profilePhoto'), async (req, res) => {
   try {
+    console.log('POST /api/people - Request received');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    console.log('Request user:', req.user);
+    
     const {
       firstName,
       lastName,
@@ -115,10 +120,15 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
       bio
     } = req.body;
 
+    console.log('Extracted data:', { firstName, lastName, jobTitle, role, department, bio });
+
     // Check if user can create content
     if (!req.user.canCreateContent()) {
+      console.log('User cannot create content. Role:', req.user.role, 'Status:', req.user.status);
       return res.status(403).json({ error: 'You do not have permission to create people profiles.' });
     }
+
+    console.log('User can create content. Proceeding...');
 
     const personData = {
       firstName,
@@ -130,15 +140,22 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
       bio
     };
 
+    console.log('Person data to save:', personData);
+
     // Add profile photo if uploaded
     if (req.file) {
       personData.profilePhoto = req.file.path;
+      console.log('Profile photo added:', req.file.path);
     }
 
     const person = new Person(personData);
+    console.log('Person model created, saving...');
+    
     await person.save();
+    console.log('Person saved successfully:', person._id);
 
     const populatedPerson = await person.populate('creator', 'firstName lastName');
+    console.log('Person populated:', populatedPerson);
 
     res.status(201).json({
       message: 'Person profile created successfully!',
