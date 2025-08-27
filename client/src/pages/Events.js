@@ -576,87 +576,112 @@ const Events = () => {
       {showFullScreen && selectedEvent && (
         <div className="fullscreen-overlay">
           <div className="fullscreen-content">
-            <button className="fullscreen-back" onClick={closeFullScreen}>
-              ← Back to Events
-            </button>
+            {/* Header with back button and event title */}
+            <div className="fullscreen-header-section">
+              <button className="fullscreen-back-btn" onClick={closeFullScreen}>
+                <span className="back-icon">←</span>
+                <span>Back to Events</span>
+              </button>
+              <div className="fullscreen-title-section">
+                <h1 className="fullscreen-main-title">{selectedEvent.title}</h1>
+                <div className="fullscreen-subtitle">
+                  {selectedEvent.category && (
+                    <span className="category-badge">{selectedEvent.category}</span>
+                  )}
+                </div>
+              </div>
+            </div>
             
             <div className="fullscreen-body">
-              {/* Left side - Image */}
+              {/* Left side - Hero Image Section */}
               <div className="fullscreen-left">
-                {selectedEvent.eventImage ? (
-                  <div className="fullscreen-image-container">
-                    <img 
-                      src={selectedEvent.eventImage} 
-                      alt={selectedEvent.title}
-                      className="fullscreen-image"
-                    />
+                <div className="hero-image-container">
+                  {selectedEvent.eventImage ? (
+                    <div className="hero-image-wrapper">
+                      <img 
+                        src={selectedEvent.eventImage} 
+                        alt={selectedEvent.title}
+                        className="hero-image"
+                      />
+                      <div className="image-overlay">
+                        <div className="image-overlay-content">
+                          <span className="overlay-icon">📸</span>
+                          <p>Event Image</p>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="hero-image-placeholder">
+                      <div className="placeholder-content">
+                        <span className="placeholder-icon">📅</span>
+                        <h3>No Image Available</h3>
+                        <p>This event doesn't have an image yet</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Quick Info Cards */}
+                <div className="quick-info-grid">
+                  <div className="info-card primary">
+                    <div className="info-card-icon">📅</div>
+                    <div className="info-card-content">
+                      <h4>Date</h4>
+                      <p>{formatDate(selectedEvent.date)}</p>
+                    </div>
                   </div>
-                ) : (
-                  <div className="fullscreen-image-placeholder">
-                    <span className="placeholder-icon">📅</span>
-                    <p>No Image Available</p>
+                  
+                  <div className="info-card secondary">
+                    <div className="info-card-icon">🕒</div>
+                    <div className="info-card-content">
+                      <h4>Time</h4>
+                      <p>{selectedEvent.time}</p>
+                    </div>
                   </div>
-                )}
+                  
+                  <div className="info-card accent">
+                    <div className="info-card-icon">📍</div>
+                    <div className="info-card-content">
+                      <h4>Location</h4>
+                      <p>{selectedEvent.location}</p>
+                    </div>
+                  </div>
+                </div>
               </div>
               
               {/* Right side - Event Details */}
               <div className="fullscreen-right">
-                <div className="fullscreen-header">
-                  <h1>{selectedEvent.title}</h1>
-                </div>
-                
-                <div className="fullscreen-meta">
-                  <div className="fullscreen-date">
-                    <span className="icon">📅</span>
-                    <span>{formatDate(selectedEvent.date)}</span>
+                {/* Description Section */}
+                <div className="detail-section description-section">
+                  <div className="section-header">
+                    <h2>📝 About This Event</h2>
+                    <div className="section-divider"></div>
                   </div>
-                  <div className="fullscreen-time">
-                    <span className="icon">🕒</span>
-                    <span>{selectedEvent.time}</span>
-                  </div>
-                  <div className="fullscreen-location">
-                    <span className="icon">📍</span>
-                    <span>{selectedEvent.location}</span>
-                  </div>
-                </div>
-                
-                <div className="fullscreen-description">
-                  <h3>📝 Description</h3>
                   <div className="description-content">
                     <p>{selectedEvent.description}</p>
                   </div>
                 </div>
                 
-                <div className="fullscreen-details">
-                  {selectedEvent.category && (
-                    <div className="fullscreen-category">
-                      <h3>🏷️ Category</h3>
-                      <p>{selectedEvent.category}</p>
+                
+                
+                {/* Tags Section */}
+                {selectedEvent.tags && selectedEvent.tags.length > 0 && (
+                  <div className="detail-section">
+                    <div className="section-header">
+                      <h2>🏷️ Tags</h2>
+                      <div className="section-divider"></div>
                     </div>
-                  )}
-                  {selectedEvent.tags && selectedEvent.tags.length > 0 && (
-                    <div className="fullscreen-tags">
-                      <h3>🏷️ Tags</h3>
-                      <div className="tags-list">
-                        {selectedEvent.tags.map((tag, index) => (
-                          <span key={index} className="tag">{tag}</span>
-                        ))}
-                      </div>
+                    <div className="tags-container">
+                      {selectedEvent.tags.map((tag, index) => (
+                        <span key={index} className="tag-item">{tag}</span>
+                      ))}
                     </div>
-                  )}
-                  {selectedEvent.maxAttendees && (
-                    <div className="fullscreen-category">
-                      <h3>👥 Max Attendees</h3>
-                      <p>{selectedEvent.maxAttendees} people</p>
-                    </div>
-                  )}
-                  {selectedEvent.registrationRequired && (
-                    <div className="fullscreen-category">
-                      <h3>📋 Registration</h3>
-                      <p>Registration is required for this event</p>
-                    </div>
-                  )}
-                </div>
+                  </div>
+                )}
+                
+
+                
+
               </div>
             </div>
           </div>

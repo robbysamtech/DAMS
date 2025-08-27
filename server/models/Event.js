@@ -10,8 +10,7 @@ const eventSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-    trim: true,
-    maxlength: 5000
+    trim: true
   },
   date: {
     type: Date,
