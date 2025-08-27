@@ -492,16 +492,19 @@ const People = () => {
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
                 <div key={person._id} className="person-tile">
-                  <div className="person-info-left">
-                    <div className="person-header">
-                      <h3 className="person-name">{person.firstName} {person.lastName}</h3>
-                      <p className="person-title">{person.jobTitle}</p>
-                      {person.department && (
-                        <p className="person-department">{person.department}</p>
-                      )}
-                    </div>
-                    
-                    <div className="person-image">
+                  {/* Header Section - Name, Title, Department */}
+                  <div className="person-header-section">
+                    <h3 className="person-name">{person.firstName} {person.lastName}</h3>
+                    <p className="person-title">{person.jobTitle}</p>
+                    {person.department && (
+                      <p className="person-department">{person.department}</p>
+                    )}
+                  </div>
+                  
+                  {/* Content Section - Image and Bio side by side */}
+                  <div className="person-content-section">
+                    {/* Image Section */}
+                    <div className="person-image-section">
                       {person.profilePhoto ? (
                         <img 
                           src={`http://localhost:5001/${person.profilePhoto}`} 
@@ -518,14 +521,16 @@ const People = () => {
                         👤
                       </div>
                     </div>
+                    
+                    {/* Bio Section */}
+                    <div className="person-bio-section">
+                      {person.bio && (
+                        <p className="person-bio">{person.bio}</p>
+                      )}
+                    </div>
                   </div>
                   
-                  <div className="person-content">
-                    {person.bio && (
-                      <p className="person-bio">{person.bio}</p>
-                    )}
-                  </div>
-                  
+                  {/* Action Buttons */}
                   {user?.role === 'creator' && (
                     <div className="person-actions">
                       <button 

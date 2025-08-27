@@ -378,15 +378,15 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   background: var(--color-background);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 20px;
+  padding: 24px;
   margin-bottom: 20px;
   box-shadow: var(--shadow-light);
   transition: all 0.3s ease;
   display: flex;
-  align-items: flex-start; /* Align items to top */
+  flex-direction: column;
   gap: 20px;
-  min-height: 400px; /* Doubled height from 200px to 400px */
-  position: relative; /* For absolute positioning of buttons */
+  min-height: 400px;
+  position: relative;
 }
 
 .person-tile:hover {
@@ -394,24 +394,61 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   transform: translateY(-2px);
 }
 
-.person-image {
-  flex: 0 0 50%; /* Photo takes exactly half the tile width */
-  height: 360px; /* Keep original image height */
-  border-radius: 8px;
+/* Header Section - Name, Title, Department */
+.person-header-section {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.person-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.person-title {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  font-weight: 600;
+  margin: 0 0 6px 0;
+}
+
+.person-department {
+  font-size: 1rem;
+  color: var(--color-text-light);
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Content Section - Image and Bio side by side */
+.person-content-section {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  align-items: flex-start;
+}
+
+/* Image Section */
+.person-image-section {
+  flex: 0 0 300px;
+  height: 300px;
+  border-radius: 12px;
   overflow: hidden;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-secondary-light); /* Subtle background for empty space */
+  background: var(--color-secondary-light);
+  box-shadow: var(--shadow-medium);
 }
 
 .person-photo {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Maintains original aspect ratio without stretching */
-  border-radius: 8px;
-  object-position: center; /* Centers the image within the container */
+  object-fit: cover;
+  border-radius: 12px;
 }
 
 .person-photo-placeholder {
@@ -422,57 +459,52 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   align-items: center;
   justify-content: center;
   color: var(--color-text-light);
-  font-size: 2rem;
-  border-radius: 8px;
+  font-size: 3rem;
+  border-radius: 12px;
 }
 
-.person-info-left {
-  flex: 0 0 50%; /* Left side takes half width */
+/* Bio Section */
+.person-bio-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align content to left */
-  padding-right: 20px;
-  height: auto; /* Let it size naturally */
-  justify-content: flex-start; /* Align content to top */
 }
 
-.person-content {
-  flex: 1; /* Takes remaining 50% width for bio */
-  display: flex;
-  flex-direction: column;
-  height: auto; /* Let it size naturally */
-  justify-content: flex-start; /* Align content to top */
-  align-self: flex-start; /* Align to start of cross axis (same level as image) */
-  margin-top: 0; /* Remove any top margin to align with image */
-}
-
-.person-header {
-  margin-bottom: 15px;
-}
-
-.person-name {
-  font-size: 1.8rem;
-  font-weight: 700;
+.person-bio {
   color: var(--color-text);
-  margin: 0 0 8px 0;
-  line-height: 1.2;
-}
-
-.person-title {
-  font-size: 1.1rem;
-  color: var(--color-primary);
-  font-weight: 600;
-  margin: 0 0 6px 0;
-}
-
-.person-department {
+  line-height: 1.6;
+  margin: 0;
+  flex: 1;
+  padding: 20px;
   font-size: 1rem;
-  color: var(--color-text-light);
-  margin: 0 0 15px 0;
-  font-weight: 500;
+  background: var(--color-background-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow-y: auto;
+  min-height: 300px;
+  /* Custom scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
 }
 
-/* Old conflicting person-bio definition removed - using scrollable version above */
+/* Custom scrollbar for bio */
+.person-bio::-webkit-scrollbar {
+  width: 8px;
+}
+
+.person-bio::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 4px;
+}
+
+.person-bio::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.person-bio::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
 
 .person-actions {
   display: flex;
