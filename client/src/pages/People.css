@@ -490,8 +490,8 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   border-radius: 12px;
   border: 1px solid var(--color-border);
   overflow-y: auto; /* Change back to auto for natural sizing */
-  min-height: auto; /* Remove minimum height restriction */
-  max-height: none; /* Remove maximum height restriction */
+  min-height: 300px; /* Restore to match image height */
+  max-height: 300px; /* Restore fixed height to match image */
   /* Custom scrollbar styling */
   scrollbar-width: thin;
   scrollbar-color: #d1d5db #f3f4f6;
