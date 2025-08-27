@@ -1,14 +1,44 @@
 const express = require('express');
 const Person = require('../models/Person');
-const MinistrySection = require('../models/MinistrySection');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = 'uploads/';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'person-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
 
 // Get all people with filtering
 router.get('/', async (req, res) => {
   try {
     const { 
       status = 'active', 
-      ministrySection, 
       role, 
       department, 
       search, 
@@ -17,7 +47,6 @@ router.get('/', async (req, res) => {
     } = req.query;
     
     const filter = { status };
-    if (ministrySection) filter.ministrySection = ministrySection;
     if (role) filter.role = role;
     if (department) filter.department = { $regex: department, $options: 'i' };
     if (search) {
@@ -32,7 +61,6 @@ router.get('/', async (req, res) => {
     const skip = (page - 1) * limit;
     
     const people = await Person.find(filter)
-      .populate('ministrySection', 'name sectionType visualIdentity')
       .populate('creator', 'firstName lastName')
       .sort({ createdAt: -1 })
       .skip(skip)
@@ -55,57 +83,10 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Get people by ministry section
-router.get('/section/:sectionId', async (req, res) => {
-  try {
-    const { sectionId } = req.params;
-    const { role, search, page = 1, limit = 20 } = req.query;
-
-    const filter = { 
-      ministrySection: sectionId, 
-      status: 'active' 
-    };
-    
-    if (role) filter.role = role;
-    if (search) {
-      filter.$or = [
-        { firstName: { $regex: search, $options: 'i' } },
-        { lastName: { $regex: search, $options: 'i' } },
-        { jobTitle: { $regex: search, $options: 'i' } }
-      ];
-    }
-
-    const skip = (page - 1) * limit;
-    
-    const people = await Person.find(filter)
-      .populate('ministrySection', 'name sectionType visualIdentity')
-      .populate('creator', 'firstName lastName')
-      .sort({ role: 1, firstName: 1, lastName: 1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Person.countDocuments(filter);
-
-    res.json({
-      people,
-      pagination: {
-        current: parseInt(page),
-        total: Math.ceil(total / limit),
-        hasNext: skip + people.length < total,
-        hasPrev: page > 1
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching people by section:', error);
-    res.status(500).json({ error: 'Failed to fetch people by section.' });
-  }
-});
-
 // Get person by ID
 router.get('/:id', async (req, res) => {
   try {
     const person = await Person.findById(req.params.id)
-      .populate('ministrySection', 'name sectionType description visualIdentity')
       .populate('creator', 'firstName lastName');
 
     if (!person) {
@@ -123,21 +104,15 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new person
-router.post('/', async (req, res) => {
+router.post('/', upload.single('profilePhoto'), async (req, res) => {
   try {
     const {
       firstName,
       lastName,
       jobTitle,
-      ministrySection,
       role,
       department,
-      contactInfo,
-      bio,
-      socialLinks,
-      skills,
-      expertise,
-      sectionResponsibilities
+      bio
     } = req.body;
 
     // Check if user can create content
@@ -145,42 +120,25 @@ router.post('/', async (req, res) => {
       return res.status(403).json({ error: 'You do not have permission to create people profiles.' });
     }
 
-    // Verify ministry section exists
-    const section = await MinistrySection.findById(ministrySection);
-    if (!section) {
-      return res.status(400).json({ error: 'Ministry section not found.' });
-    }
-
-    // Check if user can manage this ministry section
-    if (!section.canManage(req.user._id)) {
-      return res.status(403).json({ error: 'You do not have permission to add people to this ministry section.' });
-    }
-
-    const person = new Person({
+    const personData = {
       firstName,
       lastName,
       jobTitle,
-      ministrySection,
       creator: req.user._id,
       role: role || 'Member',
       department,
-      contactInfo,
-      bio,
-      socialLinks,
-      skills,
-      expertise,
-      sectionResponsibilities
-    });
+      bio
+    };
 
+    // Add profile photo if uploaded
+    if (req.file) {
+      personData.profilePhoto = req.file.path;
+    }
+
+    const person = new Person(personData);
     await person.save();
 
-    // Update ministry section member count
-    await section.updateMemberCount();
-
-    const populatedPerson = await person.populate([
-      { path: 'ministrySection', select: 'name sectionType visualIdentity' },
-      { path: 'creator', select: 'firstName lastName' }
-    ]);
+    const populatedPerson = await person.populate('creator', 'firstName lastName');
 
     res.status(201).json({
       message: 'Person profile created successfully!',
@@ -193,21 +151,15 @@ router.post('/', async (req, res) => {
 });
 
 // Update person
-router.put('/:id', async (req, res) => {
+router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
   try {
     const {
       firstName,
       lastName,
       jobTitle,
-      ministrySection,
       role,
       department,
-      contactInfo,
-      bio,
-      socialLinks,
-      skills,
-      expertise,
-      sectionResponsibilities
+      bio
     } = req.body;
     
     const person = await Person.findById(req.params.id);
@@ -224,24 +176,30 @@ router.put('/:id', async (req, res) => {
     if (firstName !== undefined) updates.firstName = firstName;
     if (lastName !== undefined) updates.lastName = lastName;
     if (jobTitle !== undefined) updates.jobTitle = jobTitle;
-    if (ministrySection !== undefined) updates.ministrySection = ministrySection;
     if (role !== undefined) updates.role = role;
     if (department !== undefined) updates.department = department;
-    if (contactInfo !== undefined) updates.contactInfo = contactInfo;
     if (bio !== undefined) updates.bio = bio;
-    if (socialLinks !== undefined) updates.socialLinks = socialLinks;
-    if (skills !== undefined) updates.skills = skills;
-    if (expertise !== undefined) updates.expertise = expertise;
-    if (sectionResponsibilities !== undefined) updates.sectionResponsibilities = sectionResponsibilities;
+
+    // Handle profile photo update
+    if (req.file) {
+      // Delete old photo if it exists
+      if (person.profilePhoto && person.profilePhoto !== '') {
+        try {
+          if (fs.existsSync(person.profilePhoto)) {
+            fs.unlinkSync(person.profilePhoto);
+          }
+        } catch (err) {
+          console.error('Error deleting old photo:', err);
+        }
+      }
+      updates.profilePhoto = req.file.path;
+    }
 
     const updatedPerson = await Person.findByIdAndUpdate(
       req.params.id,
       { $set: updates },
       { new: true, runValidators: true }
-    ).populate([
-      { path: 'ministrySection', select: 'name sectionType visualIdentity' },
-      { path: 'creator', select: 'firstName lastName' }
-    ]);
+    ).populate('creator', 'firstName lastName');
 
     res.json({
       message: 'Person profile updated successfully!',
@@ -266,17 +224,18 @@ router.delete('/:id', async (req, res) => {
       return res.status(403).json({ error: 'You do not have permission to delete this person profile.' });
     }
 
-    const ministrySectionId = person.ministrySection;
-    
-    await Person.findByIdAndDelete(req.params.id);
-
-    // Update ministry section member count
-    if (ministrySectionId) {
-      const section = await MinistrySection.findById(ministrySectionId);
-      if (section) {
-        await section.updateMemberCount();
+    // Delete profile photo if it exists
+    if (person.profilePhoto && person.profilePhoto !== '') {
+      try {
+        if (fs.existsSync(person.profilePhoto)) {
+          fs.unlinkSync(person.profilePhoto);
+        }
+      } catch (err) {
+        console.error('Error deleting profile photo:', err);
       }
     }
+    
+    await Person.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Person profile deleted successfully!' });
   } catch (error) {
@@ -291,7 +250,6 @@ router.get('/statistics/overview', async (req, res) => {
     const [
       totalPeople,
       peopleByRole,
-      peopleBySection,
       recentAdditions
     ] = await Promise.all([
       Person.countDocuments({ status: 'active' }),
@@ -300,16 +258,8 @@ router.get('/statistics/overview', async (req, res) => {
         { $group: { _id: '$role', count: { $sum: 1 } } },
         { $sort: { count: -1 } }
       ]),
-      Person.aggregate([
-        { $match: { status: 'active' } },
-        { $lookup: { from: 'ministrysections', localField: 'ministrySection', foreignField: '_id', as: 'section' } },
-        { $unwind: '$section' },
-        { $group: { _id: '$section.name', count: { $sum: 1 } } },
-        { $sort: { count: -1 } }
-      ]),
       Person.find({ status: 'active' })
-        .select('firstName lastName jobTitle ministrySection createdAt')
-        .populate('ministrySection', 'name')
+        .select('firstName lastName jobTitle createdAt')
         .sort({ createdAt: -1 })
         .limit(5)
     ]);
@@ -317,7 +267,6 @@ router.get('/statistics/overview', async (req, res) => {
     res.json({
       totalPeople,
       peopleByRole,
-      peopleBySection,
       recentAdditions
     });
   } catch (error) {

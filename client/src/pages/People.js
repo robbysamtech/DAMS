@@ -8,13 +8,17 @@ const People = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [editingPerson, setEditingPerson] = useState(null);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     jobTitle: '',
     department: '',
-    bio: ''
+    bio: '',
+    profilePhoto: null
   });
+  const [photoPreview, setPhotoPreview] = useState('');
 
   const fetchPeople = useCallback(async () => {
     try {
@@ -38,8 +42,6 @@ const People = () => {
     }
   }, [token]);
 
-
-
   useEffect(() => {
     fetchPeople();
   }, [fetchPeople]);
@@ -52,32 +54,64 @@ const People = () => {
     }));
   };
 
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        profilePhoto: file
+      }));
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = () => {
+        setPhotoPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
+  const resetForm = () => {
+    setFormData({
+      firstName: '',
+      lastName: '',
+      jobTitle: '',
+      department: '',
+      bio: '',
+      profilePhoto: null
+    });
+    setPhotoPreview('');
+    setShowCreateForm(false);
+    setShowEditForm(false);
+    setEditingPerson(null);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('firstName', formData.firstName);
+      formDataToSend.append('lastName', formData.lastName);
+      formDataToSend.append('jobTitle', formData.jobTitle);
+      formDataToSend.append('department', formData.department);
+      formDataToSend.append('bio', formData.bio);
+      if (formData.profilePhoto) {
+        formDataToSend.append('profilePhoto', formData.profilePhoto);
+      }
+
       const response = await fetch('http://localhost:5001/api/people', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(formData)
+        body: formDataToSend
       });
 
       if (response.ok) {
         const newPerson = await response.json();
         setPeople(prev => [newPerson.person, ...prev]);
-        setFormData({
-          firstName: '',
-          lastName: '',
-          jobTitle: '',
-          department: '',
-          bio: ''
-        });
-        setShowCreateForm(false);
+        resetForm();
         setError('');
       } else {
         const errorData = await response.json();
@@ -88,7 +122,58 @@ const People = () => {
     }
   };
 
+  const handleEdit = (person) => {
+    setEditingPerson(person);
+    setFormData({
+      firstName: person.firstName || '',
+      lastName: person.lastName || '',
+      jobTitle: person.jobTitle || '',
+      department: person.department || '',
+      bio: person.bio || '',
+      profilePhoto: null
+    });
+    setPhotoPreview(person.profilePhoto || '');
+    setShowEditForm(true);
+    setShowCreateForm(false);
+  };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('firstName', formData.firstName);
+      formDataToSend.append('lastName', formData.lastName);
+      formDataToSend.append('jobTitle', formData.jobTitle);
+      formDataToSend.append('department', formData.department);
+      formDataToSend.append('bio', formData.bio);
+      if (formData.profilePhoto) {
+        formDataToSend.append('profilePhoto', formData.profilePhoto);
+      }
+
+      const response = await fetch(`http://localhost:5001/api/people/${editingPerson._id}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataToSend
+      });
+
+      if (response.ok) {
+        const updatedPerson = await response.json();
+        setPeople(prev => prev.map(p => 
+          p._id === editingPerson._id ? updatedPerson.person : p
+        ));
+        resetForm();
+        setError('');
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || 'Failed to update person');
+      }
+    } catch (err) {
+      setError('Error updating person');
+    }
+  };
 
   const deletePerson = async (personId) => {
     if (!window.confirm('Are you sure you want to delete this person?')) return;
@@ -104,6 +189,7 @@ const People = () => {
 
       if (response.ok) {
         setPeople(prev => prev.filter(person => person._id !== personId));
+        setError('');
       } else {
         setError('Failed to delete person');
       }
@@ -111,10 +197,6 @@ const People = () => {
       setError('Error deleting person');
     }
   };
-
-
-
-
 
   if (loading) {
     return (
@@ -202,20 +284,35 @@ const People = () => {
                     />
                   </div>
 
-
+                  <div className="form-group">
+                    <label htmlFor="department">Department</label>
+                    <input
+                      type="text"
+                      id="department"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="e.g., Worship, Children's Ministry"
+                    />
+                  </div>
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="department">Department</label>
+                  <label htmlFor="profilePhoto">Profile Photo</label>
                   <input
-                    type="text"
-                    id="department"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleInputChange}
+                    type="file"
+                    id="profilePhoto"
+                    name="profilePhoto"
+                    onChange={handlePhotoChange}
                     className="form-input"
-                    placeholder="e.g., Worship, Children's Ministry"
+                    accept="image/*"
                   />
+                  {photoPreview && (
+                    <div className="photo-preview">
+                      <img src={photoPreview} alt="Preview" />
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -237,7 +334,7 @@ const People = () => {
                   </button>
                   <button 
                     type="button" 
-                    onClick={() => setShowCreateForm(false)}
+                    onClick={resetForm}
                     className="btn btn-secondary"
                   >
                     Cancel
@@ -246,11 +343,116 @@ const People = () => {
               </form>
             )}
 
+            {/* Edit Person Form */}
+            {showEditForm && editingPerson && (
+              <form onSubmit={handleUpdate} className="create-form">
+                <h3>Edit Team Member</h3>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="editFirstName">First Name</label>
+                    <input
+                      type="text"
+                      id="editFirstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Enter first name"
+                      required
+                    />
+                  </div>
 
+                  <div className="form-group">
+                    <label htmlFor="editLastName">Last Name</label>
+                    <input
+                      type="text"
+                      id="editLastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="Enter last name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="editJobTitle">Job Title</label>
+                    <input
+                      type="text"
+                      id="editJobTitle"
+                      name="jobTitle"
+                      value={formData.jobTitle}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="e.g., Pastor, Ministry Leader"
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="editDepartment">Department</label>
+                    <input
+                      type="text"
+                      id="editDepartment"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="e.g., Worship, Children's Ministry"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="editProfilePhoto">Profile Photo</label>
+                  <input
+                    type="file"
+                    id="editProfilePhoto"
+                    name="profilePhoto"
+                    onChange={handlePhotoChange}
+                    className="form-input"
+                    accept="image/*"
+                  />
+                  {photoPreview && (
+                    <div className="photo-preview">
+                      <img src={photoPreview} alt="Preview" />
+                    </div>
+                  )}
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="editBio">Bio</label>
+                  <textarea
+                    id="editBio"
+                    name="bio"
+                    value={formData.bio}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Brief description of their role and background"
+                    rows="3"
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button type="submit" className="btn btn-success">
+                    Update Team Member
+                  </button>
+                  <button 
+                    type="button" 
+                    onClick={resetForm}
+                    className="btn btn-secondary"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         )}
-
-
 
         {/* Team Members */}
         <div className="team-section">
@@ -267,37 +469,63 @@ const People = () => {
             <div className="people-grid">
               {people.map(person => (
                 <div key={person._id} className="person-card">
-                  <div className="person-header">
-                    <h3>{person.firstName} {person.lastName}</h3>
-                    {user?.role === 'creator' && (
-                      <button 
-                        onClick={() => deletePerson(person._id)}
-                        className="btn-delete"
-                        title="Delete person"
-                      >
-                        🗑️
-                      </button>
+                  <div className="person-image">
+                    {person.profilePhoto ? (
+                      <img 
+                        src={`http://localhost:5001/${person.profilePhoto}`} 
+                        alt={`${person.firstName} ${person.lastName}`}
+                        className="person-photo"
+                      />
+                    ) : (
+                      <div className="person-photo-placeholder">
+                        <span>👤</span>
+                      </div>
                     )}
                   </div>
                   
-                  <div className="person-details">
-                    <div className="person-job">
-                      <span className="icon">💼</span>
-                      {person.jobTitle}
+                  <div className="person-content">
+                    <div className="person-header">
+                      <h3>{person.firstName} {person.lastName}</h3>
+                      {user?.role === 'creator' && (
+                        <div className="person-actions">
+                          <button 
+                            onClick={() => handleEdit(person)}
+                            className="btn-edit"
+                            title="Edit person"
+                          >
+                            ✏️
+                          </button>
+                          <button 
+                            onClick={() => deletePerson(person._id)}
+                            className="btn-delete"
+                            title="Delete person"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+                      )}
                     </div>
                     
-                    {person.department && (
-                      <div className="person-department">
-                        <span className="icon">🏢</span>
-                        {person.department}
+                    <div className="person-details">
+                      <div className="person-job-title">
+                        <span className="icon">💼</span>
+                        {person.jobTitle}
                       </div>
-                    )}
-                    
-
-                    
-                    {person.bio && (
-                      <p className="person-bio">{person.bio}</p>
-                    )}
+                      
+                      {person.department && (
+                        <div className="person-department">
+                          <span className="icon">🏢</span>
+                          {person.department}
+                        </div>
+                      )}
+                      
+                      {person.bio && (
+                        <div className="person-bio">
+                          <span className="icon">📝</span>
+                          {person.bio}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}

@@ -19,12 +19,7 @@ const personSchema = new mongoose.Schema({
   },
   profilePhoto: {
     type: String,
-    required: true
-  },
-  ministrySection: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'MinistrySection',
-    required: true
+    default: ''
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
@@ -79,11 +74,6 @@ const personSchema = new mongoose.Schema({
     trim: true,
     maxlength: 100
   }],
-  sectionResponsibilities: {
-    type: String,
-    maxlength: 500,
-    trim: true
-  },
   metadata: {
     viewCount: {
       type: Number,
@@ -99,7 +89,6 @@ const personSchema = new mongoose.Schema({
 });
 
 // Indexes for efficient queries
-personSchema.index({ ministrySection: 1 });
 personSchema.index({ creator: 1 });
 personSchema.index({ status: 1 });
 personSchema.index({ role: 1 });
@@ -135,41 +124,10 @@ personSchema.methods.canManage = function(userId) {
   return this.creator.toString() === userId.toString();
 };
 
-// Method to get ministry section details
-personSchema.methods.getMinistrySection = function() {
-  return this.populate('ministrySection');
-};
-
 // Pre-save middleware to update last updated timestamp
 personSchema.pre('save', function(next) {
   this.metadata.lastUpdated = new Date();
   next();
-});
-
-// Post-save middleware to update ministry section member count
-personSchema.post('save', async function() {
-  try {
-    const MinistrySection = mongoose.model('MinistrySection');
-    await MinistrySection.findByIdAndUpdate(
-      this.ministrySection,
-      { $inc: { 'metadata.memberCount': 1 } }
-    );
-  } catch (error) {
-    console.error('Error updating ministry section member count:', error);
-  }
-});
-
-// Post-remove middleware to update ministry section member count
-personSchema.post('remove', async function() {
-  try {
-    const MinistrySection = mongoose.model('MinistrySection');
-    await MinistrySection.findByIdAndUpdate(
-      this.ministrySection,
-      { $inc: { 'metadata.memberCount': -1 } }
-    );
-  } catch (error) {
-    console.error('Error updating ministry section member count:', error);
-  }
 });
 
 module.exports = mongoose.model('Person', personSchema);
