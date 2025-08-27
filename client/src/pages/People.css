@@ -433,6 +433,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   align-items: flex-start; /* Align content to left */
   padding-right: 20px;
   height: auto; /* Let it size naturally */
+  justify-content: flex-start; /* Align content to top */
 }
 
 .person-content {
@@ -441,6 +442,8 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
   flex-direction: column;
   height: auto; /* Let it size naturally */
   justify-content: flex-start; /* Align content to top */
+  align-self: flex-start; /* Align to start of cross axis (same level as image) */
+  margin-top: 0; /* Remove any top margin to align with image */
 }
 
 .person-header {
