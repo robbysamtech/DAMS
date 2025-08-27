@@ -483,7 +483,7 @@ const People = () => {
                 console.log('Person data:', person);
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
-                <div key={person._id} className="person-card">
+                <div key={person._id} className="person-tile">
                   <div className="person-image">
                     {person.profilePhoto ? (
                       <img 
@@ -498,53 +498,41 @@ const People = () => {
                       />
                     ) : null}
                     <div className="person-photo-placeholder" style={{ display: person.profilePhoto ? 'none' : 'flex' }}>
-                      <span>👤</span>
+                      👤
                     </div>
                   </div>
                   
                   <div className="person-content">
                     <div className="person-header">
-                      <h3>{person.firstName} {person.lastName}</h3>
-                      {user?.role === 'creator' && (
-                        <div className="person-actions">
-                          <button 
-                            onClick={() => handleEdit(person)}
-                            className="btn-edit"
-                            title="Edit person"
-                          >
-                            ✏️
-                          </button>
-                          <button 
-                            onClick={() => deletePerson(person._id)}
-                            className="btn-delete"
-                            title="Delete person"
-                          >
-                            🗑️
-                          </button>
-                        </div>
+                      <h3 className="person-name">{person.firstName} {person.lastName}</h3>
+                      <p className="person-title">{person.jobTitle}</p>
+                      {person.department && (
+                        <p className="person-department">{person.department}</p>
                       )}
                     </div>
                     
-                    <div className="person-details">
-                      <div className="person-job-title">
-                        <span className="icon">💼</span>
-                        {person.jobTitle}
+                    {person.bio && (
+                      <p className="person-bio">{person.bio}</p>
+                    )}
+                    
+                    {user?.role === 'creator' && (
+                      <div className="person-actions">
+                        <button 
+                          onClick={() => handleEdit(person)}
+                          className="edit-btn"
+                          title="Edit person"
+                        >
+                          ✏️ Edit
+                        </button>
+                        <button 
+                          onClick={() => deletePerson(person._id)}
+                          className="delete-btn"
+                          title="Delete person"
+                        >
+                          🗑️ Delete
+                        </button>
                       </div>
-                      
-                      {person.department && (
-                        <div className="person-department">
-                          <span className="icon">🏢</span>
-                          {person.department}
-                        </div>
-                      )}
-                      
-                      {person.bio && (
-                        <div className="person-bio">
-                          <span className="icon">📝</span>
-                          {person.bio}
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
               )})}
