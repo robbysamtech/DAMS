@@ -175,6 +175,12 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
 // Update person
 router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
   try {
+    console.log('PUT /api/people/:id - Update request received');
+    console.log('Request body:', req.body);
+    console.log('Request file:', req.file);
+    console.log('Request user:', req.user);
+    console.log('Person ID:', req.params.id);
+    
     const {
       firstName,
       lastName,
@@ -202,19 +208,27 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
     if (department !== undefined) updates.department = department;
     if (bio !== undefined) updates.bio = bio;
 
+    console.log('Updates to apply:', updates);
+    console.log('Person found:', person);
+
     // Handle profile photo update
     if (req.file) {
       // Delete old photo if it exists
       if (person.profilePhoto && person.profilePhoto !== '') {
         try {
-          if (fs.existsSync(person.profilePhoto)) {
-            fs.unlinkSync(person.profilePhoto);
+          const oldPhotoPath = path.join(__dirname, '..', person.profilePhoto);
+          if (fs.existsSync(oldPhotoPath)) {
+            fs.unlinkSync(oldPhotoPath);
           }
         } catch (err) {
           console.error('Error deleting old photo:', err);
         }
       }
-      updates.profilePhoto = req.file.path;
+      // Save only the relative path for the frontend to access
+      const relativePath = path.relative(path.join(__dirname, '..'), req.file.path);
+      updates.profilePhoto = relativePath;
+      console.log('Profile photo updated:', req.file.path);
+      console.log('Relative path saved:', relativePath);
     }
 
     const updatedPerson = await Person.findByIdAndUpdate(
