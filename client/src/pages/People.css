@@ -365,6 +365,8 @@
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  position: relative; /* For absolute positioning of actions */
+  padding-bottom: 50px; /* Space for absolutely positioned buttons */
 }
 
 .person-header {
@@ -406,6 +408,9 @@
   gap: 10px;
   justify-content: flex-end;
   margin-top: auto;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .person-actions button {
