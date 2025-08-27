@@ -319,7 +319,7 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  min-height: 200px; /* Increased height for better proportions */
+  min-height: 400px; /* Doubled height from 200px to 400px */
 }
 
 .person-tile:hover {
@@ -329,7 +329,7 @@
 
 .person-image {
   flex: 0 0 50%; /* Photo takes exactly half the tile width */
-  height: 180px; /* Increased height to fill more of the tile */
+  height: 360px; /* Increased height to fill more of the taller tile */
   border-radius: 8px;
   overflow: hidden;
   position: relative;
