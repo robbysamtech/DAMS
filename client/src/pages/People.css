@@ -333,13 +333,17 @@
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .person-photo {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Maintains aspect ratio and fills container */
   border-radius: 8px;
+  object-position: center; /* Centers the image within the container */
 }
 
 .person-photo-placeholder {
