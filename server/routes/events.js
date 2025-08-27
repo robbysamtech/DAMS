@@ -1,4 +1,6 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const Event = require('../models/Event');
 const MinistrySection = require('../models/MinistrySection');
 const router = express.Router();
@@ -295,6 +297,40 @@ router.delete('/:id', async (req, res) => {
       return res.status(403).json({ error: 'You do not have permission to delete this event.' });
     }
 
+    // Delete associated image files if they exist
+    if (event.eventImage) {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        
+        // Extract filename from the image URL
+        const imageUrl = event.eventImage;
+        const filename = path.basename(imageUrl);
+        
+        // Construct full path to the image file
+        const imagePath = path.join(__dirname, '..', 'uploads', filename);
+        
+        // Check if file exists and delete it
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+          console.log(`Deleted image file: ${filename}`);
+        }
+        
+        // Also try to delete thumbnail if it exists
+        const thumbFilename = filename.replace('_processed.jpeg', '_processed_thumb.jpeg');
+        const thumbPath = path.join(__dirname, '..', 'uploads', thumbFilename);
+        
+        if (fs.existsSync(thumbPath)) {
+          fs.unlinkSync(thumbPath);
+          console.log(`Deleted thumbnail file: ${thumbFilename}`);
+        }
+      } catch (imageError) {
+        console.error('Error deleting image files:', imageError);
+        // Don't fail the event deletion if image cleanup fails
+      }
+    }
+
+    // Delete the event from database
     await Event.findByIdAndDelete(req.params.id);
 
     res.json({ message: 'Event deleted successfully!' });
