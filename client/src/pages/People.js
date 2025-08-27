@@ -5,22 +5,15 @@ import './People.css';
 const People = () => {
   const { user, token } = useAuth();
   const [people, setPeople] = useState([]);
-  const [ministrySections, setMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showSectionForm, setShowSectionForm] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     jobTitle: '',
     department: '',
-    bio: '',
-    ministrySection: ''
-  });
-  const [sectionFormData, setSectionFormData] = useState({
-    name: '',
-    description: ''
+    bio: ''
   });
 
   const fetchPeople = useCallback(async () => {
@@ -45,28 +38,11 @@ const People = () => {
     }
   }, [token]);
 
-  const fetchMinistrySections = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:5001/api/ministry', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        setMinistrySections(data.ministrySections || []);
-      }
-    } catch (err) {
-      console.error('Error fetching ministry sections:', err);
-    }
-  }, [token]);
 
   useEffect(() => {
     fetchPeople();
-    fetchMinistrySections();
-  }, [fetchPeople, fetchMinistrySections]);
+  }, [fetchPeople]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -76,13 +52,7 @@ const People = () => {
     }));
   };
 
-  const handleSectionInputChange = (e) => {
-    const { name, value } = e.target;
-    setSectionFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,8 +75,7 @@ const People = () => {
           lastName: '',
           jobTitle: '',
           department: '',
-          bio: '',
-          ministrySection: ''
+          bio: ''
         });
         setShowCreateForm(false);
         setError('');
@@ -119,36 +88,7 @@ const People = () => {
     }
   };
 
-  const handleSectionSubmit = async (e) => {
-    e.preventDefault();
-    
-    try {
-      const response = await fetch('http://localhost:5001/api/ministry', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sectionFormData)
-      });
 
-      if (response.ok) {
-        const newSection = await response.json();
-        setMinistrySections(prev => [newSection.ministrySection, ...prev]);
-        setSectionFormData({
-          name: '',
-          description: ''
-        });
-        setShowSectionForm(false);
-        setError('');
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to create ministry section');
-      }
-    } catch (err) {
-      setError('Error creating ministry section');
-    }
-  };
 
   const deletePerson = async (personId) => {
     if (!window.confirm('Are you sure you want to delete this person?')) return;
@@ -172,34 +112,9 @@ const People = () => {
     }
   };
 
-  const deleteSection = async (sectionId) => {
-    if (!window.confirm('Are you sure you want to delete this ministry section? This will also remove all people in this section.')) return;
-    
-    try {
-      const response = await fetch(`http://localhost:5001/api/ministry/${sectionId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
 
-      if (response.ok) {
-        setMinistrySections(prev => prev.filter(section => section._id !== sectionId));
-        // Also remove people from this section
-        setPeople(prev => prev.filter(person => person.ministrySection !== sectionId));
-      } else {
-        setError('Failed to delete ministry section');
-      }
-    } catch (err) {
-      setError('Error deleting ministry section');
-    }
-  };
 
-  const getSectionName = (sectionId) => {
-    const section = ministrySections.find(s => s._id === sectionId);
-    return section ? section.name : 'Unknown Section';
-  };
+
 
   if (loading) {
     return (
@@ -216,7 +131,7 @@ const People = () => {
       <div className="container">
         <div className="people-header">
           <h1>Ministry Team</h1>
-          <p>Manage your ministry team members and sections</p>
+          <p>Manage your ministry team members</p>
         </div>
 
         {error && (
@@ -234,13 +149,6 @@ const People = () => {
                 className="btn btn-primary"
               >
                 {showCreateForm ? 'Cancel' : '👤 Add Team Member'}
-              </button>
-              
-              <button 
-                onClick={() => setShowSectionForm(!showSectionForm)}
-                className="btn btn-secondary"
-              >
-                {showSectionForm ? 'Cancel' : '🏗️ Create Section'}
               </button>
             </div>
 
@@ -294,24 +202,7 @@ const People = () => {
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="ministrySection">Ministry Section</label>
-                    <select
-                      id="ministrySection"
-                      name="ministrySection"
-                      value={formData.ministrySection}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      required
-                    >
-                      <option value="">Select a section</option>
-                      {ministrySections.map(section => (
-                        <option key={section._id} value={section._id}>
-                          {section.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+
                 </div>
 
                 <div className="form-group">
@@ -355,96 +246,11 @@ const People = () => {
               </form>
             )}
 
-            {/* Create Section Form */}
-            {showSectionForm && (
-              <form onSubmit={handleSectionSubmit} className="create-form">
-                <h3>Create New Ministry Section</h3>
-                
-                <div className="form-group">
-                  <label htmlFor="sectionName">Section Name</label>
-                  <input
-                    type="text"
-                    id="sectionName"
-                    name="name"
-                    value={sectionFormData.name}
-                    onChange={handleSectionInputChange}
-                    className="form-input"
-                    placeholder="e.g., Worship Ministry, Children's Ministry"
-                    required
-                  />
-                </div>
 
-                <div className="form-group">
-                  <label htmlFor="sectionDescription">Description</label>
-                  <textarea
-                    id="sectionDescription"
-                    name="description"
-                    value={sectionFormData.description}
-                    onChange={handleSectionInputChange}
-                    className="form-input"
-                    placeholder="Describe what this ministry section does"
-                    rows="3"
-                    required
-                  />
-                </div>
-
-                <div className="form-actions">
-                  <button type="submit" className="btn btn-success">
-                    Create Section
-                  </button>
-                  <button 
-                    type="button" 
-                    onClick={() => setShowSectionForm(false)}
-                    className="btn btn-secondary"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
           </div>
         )}
 
-        {/* Ministry Sections */}
-        <div className="sections-section">
-          <h2>Ministry Sections ({ministrySections.length})</h2>
-          
-          {ministrySections.length === 0 ? (
-            <div className="no-sections">
-              <p>No ministry sections created yet.</p>
-              {user?.role === 'creator' && (
-                <p>Create your first ministry section to organize your team!</p>
-              )}
-            </div>
-          ) : (
-            <div className="sections-grid">
-              {ministrySections.map(section => (
-                <div key={section._id} className="section-card">
-                  <div className="section-header">
-                    <h3>{section.name}</h3>
-                    {user?.role === 'creator' && (
-                      <button 
-                        onClick={() => deleteSection(section._id)}
-                        className="btn-delete"
-                        title="Delete section"
-                      >
-                        🗑️
-                      </button>
-                    )}
-                  </div>
-                  
-                  <p className="section-description">{section.description}</p>
-                  
-                  <div className="section-members">
-                    <span className="member-count">
-                      {people.filter(person => person.ministrySection === section._id).length} members
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+
 
         {/* Team Members */}
         <div className="team-section">
@@ -487,10 +293,7 @@ const People = () => {
                       </div>
                     )}
                     
-                    <div className="person-section">
-                      <span className="icon">🏛️</span>
-                      {getSectionName(person.ministrySection)}
-                    </div>
+
                     
                     {person.bio && (
                       <p className="person-bio">{person.bio}</p>
