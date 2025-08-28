@@ -1,3 +1,23 @@
+/* Reset and Base Styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+}
+
+/* Ensure no margins on body when home page is active */
+body:has(.home) {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 /* Header and Navigation */
 .header {
   background-color: var(--surface-color);
@@ -53,6 +73,26 @@
 .main {
   min-height: calc(100vh - 140px);
   padding: 40px 0;
+}
+
+/* Main Content - Home Page (No Padding) */
+.main-content {
+  min-height: calc(100vh - 140px);
+}
+
+/* Remove all spacing when main-content contains home page */
+.main-content:has(.home),
+.main-content .home {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.main-content .home {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  top: 0;
+  left: 0;
 }
 
 /* Hero Section */

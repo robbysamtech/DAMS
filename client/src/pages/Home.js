@@ -3,37 +3,62 @@ import './Home.css';
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [carouselItems, setCarouselItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Sample carousel data
-  const carouselItems = [
-    {
-      id: 1,
-      type: 'image',
-      title: 'Welcome to DAMS',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
-      description: 'Streamline your ministry operations with our comprehensive platform for managing events, people, and digital assets.'
-    },
-    {
-      id: 2,
-      type: 'event',
-      title: 'Sunday Service',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      description: 'Join us for our weekly Sunday service featuring inspiring worship and meaningful fellowship.',
-      date: 'Every Sunday',
-      time: '10:00 AM'
-    },
-    {
-      id: 3,
-      type: 'image',
-      title: 'Ministry Team',
-      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      description: 'Meet our dedicated team of ministry leaders and volunteers who make everything possible.'
-    }
-  ];
+  // Fetch carousel items from MongoDB
+  useEffect(() => {
+    const fetchCarouselItems = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:5001/api/carousel');
+        if (!response.ok) {
+          throw new Error('Failed to fetch carousel items');
+        }
+        const data = await response.json();
+        setCarouselItems(data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to load carousel content');
+        // Fallback to sample data if API fails
+        setCarouselItems([
+          {
+            id: 1,
+            type: 'image',
+            title: 'Welcome to DAMS',
+            image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
+            description: 'Streamline your ministry operations with our comprehensive platform for managing events, people, and digital assets.'
+          },
+          {
+            id: 2,
+            type: 'event',
+            title: 'Sunday Service',
+            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+            description: 'Join us for our weekly Sunday service featuring inspiring worship and meaningful fellowship.',
+            eventDate: 'Every Sunday',
+            eventTime: '10:00 AM'
+          },
+          {
+            id: 3,
+            type: 'image',
+            title: 'Ministry Team',
+            image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
+            description: 'Meet our dedicated team of ministry leaders and volunteers who make everything possible.'
+          }
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCarouselItems();
+  }, []);
 
   // Auto-advance carousel
   useEffect(() => {
-    console.log('Carousel useEffect triggered, currentSlide:', currentSlide);
+    if (carouselItems.length === 0) return;
+    
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
     }, 5000); // Change slide every 5 seconds
@@ -42,21 +67,37 @@ const Home = () => {
   }, [carouselItems.length]);
 
   const goToSlide = (index) => {
-    console.log('Going to slide:', index);
     setCurrentSlide(index);
   };
 
   const goToPrevious = () => {
-    console.log('Going to previous slide');
     setCurrentSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
   };
 
   const goToNext = () => {
-    console.log('Going to next slide');
     setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
   };
 
-  console.log('Rendering Home component, currentSlide:', currentSlide, 'total slides:', carouselItems.length);
+  if (loading) {
+    return (
+      <div className="home">
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading carousel content...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || carouselItems.length === 0) {
+    return (
+      <div className="home">
+        <div className="error-container">
+          <p>Unable to load carousel content. Please try again later.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="home">
@@ -65,11 +106,11 @@ const Home = () => {
         <div className="carousel-container" data-current={currentSlide}>
           {carouselItems.map((item, index) => (
             <div
-              key={item.id}
+              key={item._id || item.id}
               className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
             >
               <div className="carousel-image">
-                <img src={item.image} alt={item.title} />
+                <img src={item.image.startsWith('http') ? item.image : `/${item.image}`} alt={item.title} />
                 <div className="carousel-overlay">
                   
                 </div>
@@ -96,11 +137,11 @@ const Home = () => {
               <div className="carousel-event-details">
                 <div className="carousel-event-date">
                   <span className="carousel-event-icon">📅</span>
-                  <span>{carouselItems[currentSlide].date}</span>
+                  <span>{carouselItems[currentSlide].eventDate}</span>
                 </div>
                 <div className="carousel-event-time">
                   <span className="carousel-event-icon">🕒</span>
-                  <span>{carouselItems[currentSlide].time}</span>
+                  <span>{carouselItems[currentSlide].eventTime}</span>
                 </div>
               </div>
             )}
