@@ -324,10 +324,11 @@
 .carousel-text-section {
   position: absolute;
   bottom: 9rem; /* Moved down from 12rem to 9rem */
-  left: 0;
-  right: 0;
+  left: auto; /* Remove left positioning */
+  right: 2rem; /* Position on the right side */
   z-index: 1000;
   padding: 1.5rem;
+  transition: opacity 0.3s ease-in-out; /* Smooth opacity transition */
 }
 
 .carousel-text-content {
@@ -335,10 +336,11 @@
   backdrop-filter: blur(8px);
   border-radius: 12px;
   padding: 1.5rem;
-  max-width: 600px; /* Reduced max-width for better fit */
-  margin: 0 auto;
+  max-width: 500px; /* Reduced max-width for left positioning */
+  margin: 0; /* Remove auto margin for left alignment */
   border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out; /* Smooth transition for content changes */
 }
 
 .carousel-text-title {
@@ -346,7 +348,7 @@
   font-size: 1.8rem; /* Reduced from 2.5rem */
   font-weight: 600;
   margin: 0 0 0.8rem 0;
-  text-align: center;
+  text-align: left; /* Left justify the title */
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
@@ -355,13 +357,13 @@
   font-size: 1rem; /* Reduced from 1.2rem */
   line-height: 1.5;
   margin: 0 0 1.2rem 0;
-  text-align: center;
+  text-align: left; /* Left justify the description */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 .carousel-event-details {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* Left align event details */
   gap: 1.5rem;
   margin-top: 0.8rem;
 }
