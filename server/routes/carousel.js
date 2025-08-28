@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Carousel = require('../models/Carousel');
 const auth = require('../middleware/auth');
-const adminAuth = require('../middleware/adminAuth');
+const carouselAuth = require('../middleware/carouselAuth');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -40,8 +40,7 @@ const upload = multer({
 router.get('/', async (req, res) => {
   try {
     const carouselItems = await Carousel.find({ 
-      isActive: true, 
-      status: 'active' 
+      isActive: true
     })
     .sort({ order: 1 })
     .populate('creator', 'firstName lastName');
@@ -54,7 +53,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET /api/carousel/admin - Get all carousel items (admin only)
-router.get('/admin', auth, adminAuth, async (req, res) => {
+router.get('/admin', auth, carouselAuth, async (req, res) => {
   try {
     const carouselItems = await Carousel.find()
       .sort({ order: 1 })
@@ -68,9 +67,9 @@ router.get('/admin', auth, adminAuth, async (req, res) => {
 });
 
 // POST /api/carousel - Create new carousel item
-router.post('/', auth, adminAuth, upload.single('image'), async (req, res) => {
+router.post('/', auth, carouselAuth, upload.single('image'), async (req, res) => {
   try {
-    const { title, description, type, eventDate, eventTime, order } = req.body;
+    const { title, description, type, eventDate, eventTime, order, isActive } = req.body;
     
     if (!req.file) {
       return res.status(400).json({ error: 'Image is required' });
@@ -85,10 +84,11 @@ router.post('/', auth, adminAuth, upload.single('image'), async (req, res) => {
       title,
       description,
       type,
-      image: `uploads/carousel/${req.file.filename}`,
+      image: `/uploads/carousel/${req.file.filename}`,
       eventDate: type === 'event' ? eventDate : undefined,
       eventTime: type === 'event' ? eventTime : undefined,
       order: parseInt(order),
+      isActive: isActive === 'true' || isActive === true,
       creator: req.user._id
     });
 
@@ -103,9 +103,9 @@ router.post('/', auth, adminAuth, upload.single('image'), async (req, res) => {
 });
 
 // PUT /api/carousel/:id - Update carousel item
-router.put('/:id', auth, adminAuth, upload.single('image'), async (req, res) => {
+router.put('/:id', auth, carouselAuth, upload.single('image'), async (req, res) => {
   try {
-    const { title, description, type, eventDate, eventTime, order, isActive, status } = req.body;
+    const { title, description, type, eventDate, eventTime, order, isActive } = req.body;
     
     const carouselItem = await Carousel.findById(req.params.id);
     if (!carouselItem) {
@@ -119,19 +119,18 @@ router.put('/:id', auth, adminAuth, upload.single('image'), async (req, res) => 
     carouselItem.eventDate = type === 'event' ? eventDate : undefined;
     carouselItem.eventTime = type === 'event' ? eventTime : undefined;
     carouselItem.order = parseInt(order);
-    carouselItem.isActive = isActive;
-    carouselItem.status = status;
+    carouselItem.isActive = isActive === 'true' || isActive === true;
 
     // Update image if new one is uploaded
     if (req.file) {
       // Delete old image
-      if (carouselItem.image && carouselItem.image !== 'uploads/carousel/default.jpg') {
-        const oldImagePath = path.join(__dirname, '..', carouselItem.image);
+      if (carouselItem.image && carouselItem.image !== '/uploads/carousel/default.jpg') {
+        const oldImagePath = path.join(__dirname, '..', carouselItem.image.replace(/^\//, ''));
         if (fs.existsSync(oldImagePath)) {
           fs.unlinkSync(oldImagePath);
         }
       }
-      carouselItem.image = `uploads/carousel/${req.file.filename}`;
+      carouselItem.image = `/uploads/carousel/${req.file.filename}`;
     }
 
     await carouselItem.save();
@@ -145,7 +144,7 @@ router.put('/:id', auth, adminAuth, upload.single('image'), async (req, res) => 
 });
 
 // DELETE /api/carousel/:id - Delete carousel item
-router.delete('/:id', auth, adminAuth, async (req, res) => {
+router.delete('/:id', auth, carouselAuth, async (req, res) => {
   try {
     const carouselItem = await Carousel.findById(req.params.id);
     if (!carouselItem) {
@@ -153,8 +152,8 @@ router.delete('/:id', auth, adminAuth, async (req, res) => {
     }
 
     // Delete image file
-    if (carouselItem.image && carouselItem.image !== 'uploads/carousel/default.jpg') {
-      const imagePath = path.join(__dirname, '..', carouselItem.image);
+    if (carouselItem.image && carouselItem.image !== '/uploads/carousel/default.jpg') {
+      const imagePath = path.join(__dirname, '..', carouselItem.image.replace(/^\//, ''));
       if (fs.existsSync(imagePath)) {
         fs.unlinkSync(imagePath);
       }

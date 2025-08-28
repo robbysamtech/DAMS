@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
+  const { isCreator, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselItems, setCarouselItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,6 +70,18 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [carouselItems.length]);
 
+  // Debug: Log current slide changes
+  useEffect(() => {
+    console.log('Current slide changed to:', currentSlide, 'Total slides:', carouselItems.length);
+  }, [currentSlide, carouselItems.length]);
+
+  // Debug: Log carousel items when loaded
+  useEffect(() => {
+    if (carouselItems.length > 0) {
+      console.log('Carousel items loaded:', carouselItems);
+    }
+  }, [carouselItems]);
+
   const goToSlide = (index) => {
     setCurrentSlide(index);
   };
@@ -92,9 +108,21 @@ const Home = () => {
   if (error || carouselItems.length === 0) {
     return (
       <div className="home">
-        <div className="error-container">
-          <p>Unable to load carousel content. Please try again later.</p>
-        </div>
+        {/* Show Edit Carousel button for content creators even when no content */}
+        {!authLoading && isCreator && (
+          <section className="hero-carousel empty-carousel">
+            <button 
+              className="carousel-edit-btn" 
+              onClick={() => {
+                navigate('/edit-carousel');
+              }}
+              title="Edit Carousel Content"
+            >
+              <span className="edit-icon">✏️</span>
+              <span className="edit-text">Edit Carousel</span>
+            </button>
+          </section>
+        )}
       </div>
     );
   }
@@ -103,14 +131,32 @@ const Home = () => {
     <div className="home">
       {/* Hero Carousel Section */}
       <section className="hero-carousel">
-        <div className="carousel-container" data-current={currentSlide}>
+        {/* Edit Button - Top Right Corner (Content Creators Only) */}
+        {!authLoading && isCreator && (
+          <button 
+            className="carousel-edit-btn" 
+            onClick={() => {
+              navigate('/edit-carousel');
+            }}
+            title="Edit Carousel Content"
+          >
+            <span className="edit-icon">✏️</span>
+            <span className="edit-text">Edit Carousel</span>
+          </button>
+        )}
+
+        <div 
+          className="carousel-container" 
+          data-current={currentSlide}
+          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+        >
           {carouselItems.map((item, index) => (
             <div
               key={item._id || item.id}
               className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
             >
               <div className="carousel-image">
-                <img src={item.image.startsWith('http') ? item.image : `/${item.image}`} alt={item.title} />
+                <img src={item.image.startsWith('http') ? item.image : `http://localhost:5001${item.image}`} alt={item.title} />
                 <div className="carousel-overlay">
                   
                 </div>

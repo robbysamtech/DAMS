@@ -1,3 +1,47 @@
+/* Carousel Edit Button - Top Right Corner */
+.carousel-edit-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  min-width: 80px;
+  justify-content: center;
+}
+
+.carousel-edit-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+  border-color: var(--color-primary-dark);
+}
+
+.carousel-edit-btn:active {
+  transform: translateY(0);
+}
+
+.carousel-edit-btn .edit-icon {
+  font-size: 1.1rem;
+}
+
+.carousel-edit-btn .edit-text {
+  font-family: inherit;
+  font-weight: 700;
+}
+
 /* Home Page Styles */
 .home {
   margin: 0;
@@ -26,26 +70,23 @@
   bottom: 0;
 }
 
+/* Empty carousel state - when no content exists */
+.hero-carousel.empty-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+}
+
 .carousel-container {
   position: relative;
   width: 100%;
   height: 100%;
   display: flex;
   transition: transform 1.2s ease-in-out; /* Increased from 0.5s to 1.2s for slower movement */
-  transform: translateX(0%); /* Default to show first slide */
 }
 
-.carousel-container[data-current="0"] {
-  transform: translateX(0%);
-}
-
-.carousel-container[data-current="1"] {
-  transform: translateX(-100%);
-}
-
-.carousel-container[data-current="2"] {
-  transform: translateX(-200%);
-}
+/* Remove dynamic transform since we're using inline styles */
 
 .carousel-slide {
   position: relative;
