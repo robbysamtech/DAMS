@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import './Home.css';
 
 const Home = () => {
-  const { user: isAuthenticated } = useAuth();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Sample carousel data
@@ -74,35 +71,7 @@ const Home = () => {
               <div className="carousel-image">
                 <img src={item.image} alt={item.title} />
                 <div className="carousel-overlay">
-                  <div className="carousel-content">
-                    <h1 className="carousel-title">{item.title}</h1>
-                    <p className="carousel-description">{item.description}</p>
-                    
-                    {item.type === 'event' && (
-                      <div className="event-details">
-                        <div className="event-date">
-                          <span className="event-icon">📅</span>
-                          <span>{item.date}</span>
-                        </div>
-                        <div className="event-time">
-                          <span className="event-icon">🕒</span>
-                          <span>{item.time}</span>
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="carousel-actions">
-                      {isAuthenticated ? (
-                        <Link to="/events" className="btn btn-primary btn-large">
-                          View All Events
-                        </Link>
-                      ) : (
-                        <Link to="/register" className="btn btn-primary btn-large">
-                          Get Started
-                        </Link>
-                      )}
-                    </div>
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -116,6 +85,27 @@ const Home = () => {
         <button className="carousel-nav carousel-next" onClick={goToNext}>
           <span>›</span>
         </button>
+
+        {/* Carousel Text Section - Bottom */}
+        <div className="carousel-text-section">
+          <div className="carousel-text-content">
+            <h2 className="carousel-text-title">{carouselItems[currentSlide].title}</h2>
+            <p className="carousel-text-description">{carouselItems[currentSlide].description}</p>
+            
+            {carouselItems[currentSlide].type === 'event' && (
+              <div className="carousel-event-details">
+                <div className="carousel-event-date">
+                  <span className="carousel-event-icon">📅</span>
+                  <span>{carouselItems[currentSlide].date}</span>
+                </div>
+                <div className="carousel-event-time">
+                  <span className="carousel-event-icon">🕒</span>
+                  <span>{carouselItems[currentSlide].time}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Carousel Indicators */}
         <div className="carousel-indicators">

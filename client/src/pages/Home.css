@@ -18,8 +18,8 @@
   width: 100%;
   height: 100%;
   display: flex;
-  transition: transform 0.5s ease-in-out;
-  transform: translateX(-100%);
+  transition: transform 1.2s ease-in-out; /* Increased from 0.5s to 1.2s for slower movement */
+  transform: translateX(0%); /* Default to show first slide */
 }
 
 .carousel-container[data-current="0"] {
@@ -318,4 +318,84 @@
     font-size: 1rem;
     padding: 0.875rem 1.75rem;
   }
+}
+
+/* Carousel Text Section - Bottom */
+.carousel-text-section {
+  position: absolute;
+  bottom: 9rem; /* Moved down from 12rem to 9rem */
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 1.5rem;
+}
+
+.carousel-text-content {
+  background: rgba(0, 0, 0, 0.4); /* More transparent background */
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  max-width: 600px; /* Reduced max-width for better fit */
+  margin: 0 auto;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-text-title {
+  color: #ffffff;
+  font-size: 1.8rem; /* Reduced from 2.5rem */
+  font-weight: 600;
+  margin: 0 0 0.8rem 0;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-text-description {
+  color: #f8f8f8;
+  font-size: 1rem; /* Reduced from 1.2rem */
+  line-height: 1.5;
+  margin: 0 0 1.2rem 0;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.carousel-event-details {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.8rem;
+}
+
+.carousel-event-date,
+.carousel-event-time {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #ffffff;
+  font-size: 0.95rem; /* Slightly smaller */
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.carousel-event-icon {
+  font-size: 1rem;
+}
+
+/* Adjust carousel indicators position to be below the text section */
+.carousel-indicators {
+  position: absolute;
+  bottom: 6rem; /* Moved down to accommodate text section */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1rem;
+  z-index: 1000;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
