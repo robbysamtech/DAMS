@@ -73,15 +73,7 @@ const Header = () => {
 
               {user && (
                 <>
-                  <li className="nav-item">
-                    <Link 
-                      to="/dashboard" 
-                      className={`nav-link ${isActive('/dashboard') ? 'active' : ''}`}
-                      onClick={closeMobileMenu}
-                    >
-                      Dashboard
-                    </Link>
-                  </li>
+                  
                   
                   {isAdmin && (
                     <li className="nav-item">
@@ -123,9 +115,7 @@ const Header = () => {
                     <Link to="/profile" className="dropdown-item">
                       <span>👤 Profile</span>
                     </Link>
-                    <Link to="/dashboard" className="dropdown-item">
-                      <span>📊 Dashboard</span>
-                    </Link>
+
                     {isAdmin && (
                       <Link to="/admin" className="dropdown-item">
                         <span>⚙️ Admin Panel</span>

@@ -30,8 +30,8 @@ const Home = () => {
                   </Link>
                 </>
               ) : (
-                <Link to="/dashboard" className="btn btn-primary btn-large">
-                  Go to Dashboard
+                <Link to="/events" className="btn btn-primary btn-large">
+                  Go to Events
                 </Link>
               )}
             </div>
@@ -135,8 +135,8 @@ const Home = () => {
                   Start Free Trial
                 </Link>
               ) : (
-                <Link to="/dashboard" className="btn btn-primary btn-large">
-                  Access Dashboard
+                <Link to="/events" className="btn btn-primary btn-large">
+                  Access Events
                 </Link>
               )}
             </div>

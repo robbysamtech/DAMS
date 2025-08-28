@@ -33,7 +33,7 @@ const Login = () => {
       const result = await login(formData.email, formData.password);
       
       if (result.success) {
-        navigate('/dashboard');
+        navigate('/events');
       } else {
         setError(result.error);
       }

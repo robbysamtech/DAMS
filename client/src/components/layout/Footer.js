@@ -30,7 +30,7 @@ const Footer = () => {
           <div className="footer-section">
             <h4 className="footer-heading">Platform</h4>
             <ul className="footer-links">
-              <li><Link to="/dashboard">Dashboard</Link></li>
+
               <li><Link to="/profile">Profile</Link></li>
               <li><Link to="/login">Login</Link></li>
               <li><Link to="/register">Register</Link></li>

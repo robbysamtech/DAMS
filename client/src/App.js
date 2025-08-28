@@ -14,7 +14,7 @@ import Loading from './components/common/Loading';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+
 import Events from './pages/Events';
 import People from './pages/People';
 
@@ -34,7 +34,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   }
   
   if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/events" replace />;
   }
   
   return children;
@@ -55,9 +55,9 @@ const AppContent = () => {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={user ? <Navigate to="/dashboard" replace /> : <Login />} />
-            <Route path="/register" element={user ? <Navigate to="/dashboard" replace /> : <Register />} />
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/login" element={user ? <Navigate to="/events" replace /> : <Login />} />
+            <Route path="/register" element={user ? <Navigate to="/events" replace /> : <Register />} />
+
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
 
