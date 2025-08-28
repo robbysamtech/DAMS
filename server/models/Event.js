@@ -62,10 +62,7 @@ const eventSchema = new mongoose.Schema({
     trim: true,
     maxlength: 100
   }],
-  relatedMinistrySection: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'MinistrySection'
-  },
+
   metadata: {
     viewCount: {
       type: Number,
@@ -116,7 +113,7 @@ eventSchema.index({ date: 1 });
 eventSchema.index({ category: 1 });
 eventSchema.index({ eventType: 1 });
 eventSchema.index({ tags: 1 });
-eventSchema.index({ relatedMinistrySection: 1 });
+
 eventSchema.index({ visibility: 1 });
 
 // Virtual for formatted date and time

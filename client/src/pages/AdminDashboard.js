@@ -207,7 +207,7 @@ const AdminDashboard = () => {
           pendingUsers: data.userStats?.pending || 0,
           activeUsers: data.userStats?.active || 0,
           creators: 0, // We'll count this separately
-          ministrySections: data.contentStats?.ministrySections || 0,
+
           people: data.contentStats?.people || 0,
           events: data.contentStats?.events || 0
         };

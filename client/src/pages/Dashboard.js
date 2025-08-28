@@ -51,13 +51,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 
-                <div className="stat-card">
-                  <div className="stat-icon">🏛️</div>
-                  <div className="stat-content">
-                    <h3>Ministry Sections</h3>
-                    <p>Organize your ministry</p>
-                  </div>
-                </div>
+
               </div>
 
               {isCreator && (
@@ -76,11 +70,7 @@ const Dashboard = () => {
                       <p>Add someone to your ministry</p>
                     </button>
                     
-                    <button className="action-card">
-                      <span className="action-icon">🏗️</span>
-                      <h3>Create Section</h3>
-                      <p>Organize with ministry sections</p>
-                    </button>
+
                   </div>
                 </div>
               )}
@@ -101,11 +91,7 @@ const Dashboard = () => {
                       <p>Learn about ministry members</p>
                     </button>
                     
-                    <button className="action-card">
-                      <span className="action-icon">🏛️</span>
-                      <h3>Ministry Sections</h3>
-                      <p>Explore ministry organization</p>
-                    </button>
+
                   </div>
                 </div>
               )}

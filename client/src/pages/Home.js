@@ -88,14 +88,7 @@ const Home = () => {
               </p>
             </div>
             
-            <div className="feature-card">
-              <div className="feature-icon">🏗️</div>
-              <h3>Ministry Sections</h3>
-              <p>
-                Organize your ministry with hierarchical sections. Create, manage, 
-                and organize people within logical ministry groups.
-              </p>
-            </div>
+
             
             <div className="feature-card">
               <div className="feature-icon">📊</div>
@@ -111,7 +104,7 @@ const Home = () => {
               <h3>People Profiles</h3>
               <p>
                 Detailed team member profiles with photos, roles, and responsibilities. 
-                Easy to manage and organize within ministry sections.
+                Easy to manage and organize team members effectively.
               </p>
             </div>
             

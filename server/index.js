@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5001;
 
 // Import models
 const User = require('./models/User');
-const MinistrySection = require('./models/MinistrySection');
+
 const Person = require('./models/Person');
 const Event = require('./models/Event');
 
@@ -22,7 +22,7 @@ const adminAuth = require('./middleware/adminAuth');
 // Import routes
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
-const ministryRoutes = require('./routes/ministry');
+
 const peopleRoutes = require('./routes/people');
 const eventsRoutes = require('./routes/events');
 const uploadRoutes = require('./routes/upload');
@@ -67,7 +67,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams', {
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', auth, adminAuth, adminRoutes);
-app.use('/api/ministry', auth, ministryRoutes);
+
 app.use('/api/people', auth, peopleRoutes);
 app.use('/api/events', auth, eventsRoutes);
 app.use('/api/upload', auth, uploadRoutes);

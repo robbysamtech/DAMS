@@ -1,6 +1,6 @@
 const express = require('express');
 const User = require('../models/User');
-const MinistrySection = require('../models/MinistrySection');
+
 const Person = require('../models/Person');
 const Event = require('../models/Event');
 const router = express.Router();
@@ -217,14 +217,14 @@ router.get('/statistics', async (req, res) => {
       totalUsers,
       pendingUsers,
       activeUsers,
-      totalMinistrySections,
+
       totalPeople,
       totalEvents
     ] = await Promise.all([
       User.countDocuments(),
       User.countDocuments({ status: 'pending' }),
       User.countDocuments({ status: 'active' }),
-      MinistrySection.countDocuments({ status: 'active' }),
+
       Person.countDocuments({ status: 'active' }),
       Event.countDocuments({ status: 'published' })
     ]);
@@ -237,7 +237,7 @@ router.get('/statistics', async (req, res) => {
     };
 
     const contentStats = {
-      ministrySections: totalMinistrySections,
+
       people: totalPeople,
       events: totalEvents
     };
@@ -263,11 +263,7 @@ router.get('/recent-activity', async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit));
 
-    const recentSections = await MinistrySection.find()
-      .select('name sectionType creator createdAt')
-      .populate('creator', 'firstName lastName')
-      .sort({ createdAt: -1 })
-      .limit(parseInt(limit));
+
 
     const recentPeople = await Person.find()
       .select('jobTitle ministrySection creator createdAt')
@@ -284,7 +280,7 @@ router.get('/recent-activity', async (req, res) => {
 
     res.json({
       recentUsers,
-      recentSections,
+
       recentPeople,
       recentEvents
     });

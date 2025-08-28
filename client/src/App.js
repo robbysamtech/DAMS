@@ -17,7 +17,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Events from './pages/Events';
 import People from './pages/People';
-import MinistrySections from './pages/MinistrySections';
+
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
 
@@ -60,7 +60,7 @@ const AppContent = () => {
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
-            <Route path="/ministry-sections" element={<MinistrySections />} />
+
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Routes>
