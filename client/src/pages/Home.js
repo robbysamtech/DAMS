@@ -1,146 +1,132 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Home.css';
 
 const Home = () => {
-  const { isAuthenticated } = useAuth();
+  const { user: isAuthenticated } = useAuth();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Sample carousel data
+  const carouselItems = [
+    {
+      id: 1,
+      type: 'image',
+      title: 'Welcome to DAMS',
+      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
+      description: 'Streamline your ministry operations with our comprehensive platform for managing events, people, and digital assets.'
+    },
+    {
+      id: 2,
+      type: 'event',
+      title: 'Sunday Service',
+      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
+      description: 'Join us for our weekly Sunday service featuring inspiring worship and meaningful fellowship.',
+      date: 'Every Sunday',
+      time: '10:00 AM'
+    },
+    {
+      id: 3,
+      type: 'image',
+      title: 'Ministry Team',
+      image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
+      description: 'Meet our dedicated team of ministry leaders and volunteers who make everything possible.'
+    }
+  ];
+
+  // Auto-advance carousel
+  useEffect(() => {
+    console.log('Carousel useEffect triggered, currentSlide:', currentSlide);
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, [carouselItems.length]);
+
+  const goToSlide = (index) => {
+    console.log('Going to slide:', index);
+    setCurrentSlide(index);
+  };
+
+  const goToPrevious = () => {
+    console.log('Going to previous slide');
+    setCurrentSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
+  };
+
+  const goToNext = () => {
+    console.log('Going to next slide');
+    setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
+  };
+
+  console.log('Rendering Home component, currentSlide:', currentSlide, 'total slides:', carouselItems.length);
 
   return (
     <div className="home">
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="container">
-          <div className="hero-content">
-            <h1 className="hero-title">
-              Digital Asset Management System
-            </h1>
-            <p className="hero-subtitle">
-              Streamline your ministry operations with our comprehensive platform for managing events, 
-              people, and ministry sections. Built for modern ministry organizations.
-            </p>
-            <div className="hero-actions">
-              {!isAuthenticated ? (
-                <>
-                  <Link to="/register" className="btn btn-primary btn-large">
-                    Get Started
-                  </Link>
-                  <Link to="/login" className="btn btn-outline btn-large">
-                    Sign In
-                  </Link>
-                </>
-              ) : (
-                <Link to="/events" className="btn btn-primary btn-large">
-                  Go to Events
-                </Link>
-              )}
-            </div>
-          </div>
-          
-          <div className="hero-visual">
-            <div className="hero-cards">
-              <div className="hero-card hero-card-1">
-                <div className="card-icon">🗓️</div>
-                <h3>Events</h3>
-                <p>Manage ministry events</p>
-              </div>
-              <div className="hero-card hero-card-2">
-                <div className="card-icon">👥</div>
-                <h3>People</h3>
-                <p>Team member profiles</p>
-              </div>
-              <div className="hero-card hero-card-3">
-                <div className="card-icon">🏛️</div>
-                <h3>Sections</h3>
-                <p>Ministry organization</p>
+      {/* Hero Carousel Section */}
+      <section className="hero-carousel">
+        <div className="carousel-container" data-current={currentSlide}>
+          {carouselItems.map((item, index) => (
+            <div
+              key={item.id}
+              className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
+            >
+              <div className="carousel-image">
+                <img src={item.image} alt={item.title} />
+                <div className="carousel-overlay">
+                  <div className="carousel-content">
+                    <h1 className="carousel-title">{item.title}</h1>
+                    <p className="carousel-description">{item.description}</p>
+                    
+                    {item.type === 'event' && (
+                      <div className="event-details">
+                        <div className="event-date">
+                          <span className="event-icon">📅</span>
+                          <span>{item.date}</span>
+                        </div>
+                        <div className="event-time">
+                          <span className="event-icon">🕒</span>
+                          <span>{item.time}</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="carousel-actions">
+                      {isAuthenticated ? (
+                        <Link to="/events" className="btn btn-primary btn-large">
+                          View All Events
+                        </Link>
+                      ) : (
+                        <Link to="/register" className="btn btn-primary btn-large">
+                          Get Started
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
-      </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="container">
-          <div className="section-header">
-            <h2 className="section-title">Platform Features</h2>
-            <p className="section-subtitle">
-              Everything you need to manage your ministry effectively
-            </p>
-          </div>
-          
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🎯</div>
-              <h3>Role-Based Access</h3>
-              <p>
-                Secure role-based access control with admin approval workflow. 
-                Creators can manage content, consumers can view and interact.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">📱</div>
-              <h3>Responsive Design</h3>
-              <p>
-                Seamlessly adapts to all devices with fluid layouts that maintain 
-                consistency during window resizing. Mobile-first approach.
-              </p>
-            </div>
-            
+        {/* Carousel Navigation */}
+        <button className="carousel-nav carousel-prev" onClick={goToPrevious}>
+          <span>‹</span>
+        </button>
+        <button className="carousel-nav carousel-next" onClick={goToNext}>
+          <span>›</span>
+        </button>
 
-            
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3>Event Management</h3>
-              <p>
-                Comprehensive event creation and management. Schedule events, 
-                manage registrations, and track attendance.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">👤</div>
-              <h3>People Profiles</h3>
-              <p>
-                Detailed team member profiles with photos, roles, and responsibilities. 
-                Easy to manage and organize team members effectively.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">🔒</div>
-              <h3>Secure & Reliable</h3>
-              <p>
-                Enterprise-grade security with JWT authentication, rate limiting, 
-                and comprehensive data validation.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="cta-section">
-        <div className="container">
-          <div className="cta-content">
-            <h2>Ready to Transform Your Ministry?</h2>
-            <p>
-              Join thousands of ministry organizations already using DAMS to streamline 
-              their operations and improve team collaboration.
-            </p>
-            <div className="cta-actions">
-              {!isAuthenticated ? (
-                <Link to="/register" className="btn btn-primary btn-large">
-                  Start Free Trial
-                </Link>
-              ) : (
-                <Link to="/events" className="btn btn-primary btn-large">
-                  Access Events
-                </Link>
-              )}
-            </div>
-          </div>
+        {/* Carousel Indicators */}
+        <div className="carousel-indicators">
+          {carouselItems.map((_, index) => (
+            <button
+              key={index}
+              className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
         </div>
       </section>
     </div>

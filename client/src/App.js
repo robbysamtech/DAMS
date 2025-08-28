@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 
 // Context
@@ -40,6 +40,18 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   return children;
 };
 
+// Conditional Footer Component
+const ConditionalFooter = () => {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+  
+  if (isHomePage) {
+    return null; // Don't show footer on home page
+  }
+  
+  return <Footer />;
+};
+
 // Main App Component
 const AppContent = () => {
   const { user, loading } = useAuth();
@@ -65,7 +77,7 @@ const AppContent = () => {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Routes>
         </main>
-        <Footer />
+        <ConditionalFooter />
       </div>
     </Router>
   );
