@@ -45,9 +45,10 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 const ConditionalFooter = () => {
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const isEventsPage = location.pathname === '/events';
   
-  if (isHomePage) {
-    return null; // Don't show footer on home page
+  if (isHomePage || isEventsPage) {
+    return null; // Don't show footer on home page or events page
   }
   
   return <Footer />;

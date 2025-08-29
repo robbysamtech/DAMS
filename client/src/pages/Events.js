@@ -23,17 +23,13 @@ const Events = () => {
   const [showFullScreen, setShowFullScreen] = useState(false);
 
   const fetchEvents = useCallback(async () => {
-    console.log('Starting fetchEvents...');
-    
     // Add timeout to prevent freezing
     const timeoutId = setTimeout(() => {
-      console.log('Fetch timeout reached');
       setError('Request timeout - server may be slow');
       setLoading(false);
     }, 10000); // 10 second timeout
     
     try {
-      console.log('Making API call to events endpoint...');
       const response = await fetch('http://localhost:5001/api/events', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -42,15 +38,11 @@ const Events = () => {
       });
 
       clearTimeout(timeoutId); // Clear timeout if successful
-      console.log('Response received:', response.status, response.statusText);
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Events data:', data);
-        console.log('Events array:', data.events);
         setEvents(data.events || []);
         setFilteredEvents(data.events || []);
-        console.log('Events state updated successfully');
       } else {
         console.error('Response not ok:', response.status);
         setError('Failed to fetch events');
@@ -60,20 +52,14 @@ const Events = () => {
       console.error('Error in fetchEvents:', err);
       setError('Error fetching events');
     } finally {
-      console.log('Setting loading to false');
       setLoading(false);
     }
   }, [token]);
 
   useEffect(() => {
-    console.log('Events useEffect triggered, token:', !!token);
-    console.log('Token length:', token ? token.length : 0);
-    console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'No token');
-    
     if (token) {
       fetchEvents();
     } else {
-      console.log('No token available, cannot fetch events');
       setLoading(false); // Don't keep loading if no token
     }
   }, [token, fetchEvents]);
@@ -138,7 +124,6 @@ const Events = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Image upload response:', data);
         return data.imageUrl;
       }
     } catch (err) {
@@ -165,8 +150,6 @@ const Events = () => {
         eventImage: imageUrl
       };
 
-      console.log('Sending event data to server:', eventData);
-
       const response = await fetch('http://localhost:5001/api/events', {
         method: 'POST',
         headers: {
@@ -178,7 +161,6 @@ const Events = () => {
 
       if (response.ok) {
         const newEvent = await response.json();
-        console.log('New event created:', newEvent.event);
         setEvents(prev => [newEvent.event, ...prev]);
         resetForm();
         setShowCreateForm(false);
@@ -305,6 +287,19 @@ const Events = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const minute = parseInt(minutes);
+    
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    
+    return `${displayHour}:${minutes} ${ampm}`;
   };
 
   const truncateDescription = (description, maxLength = 120) => {
@@ -435,15 +430,28 @@ const Events = () => {
 
                   <div className="form-group">
                     <label htmlFor="time">Time</label>
-                    <input
-                      type="time"
+                    <select
                       id="time"
                       name="time"
                       value={formData.time}
                       onChange={handleInputChange}
                       className="form-input"
                       required
-                    />
+                    >
+                      <option value="">Select a time</option>
+                      {Array.from({ length: 96 }, (_, i) => {
+                        const hour = Math.floor(i / 4);
+                        const minute = (i % 4) * 15;
+                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        return (
+                          <option key={timeString} value={timeString}>
+                            {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
                 </div>
 
@@ -546,9 +554,7 @@ const Events = () => {
             </div>
           ) : (
             <div className="events-grid">
-              {filteredEvents.map(event => {
-                console.log('Rendering event:', event);
-                return (
+              {filteredEvents.map(event => (
                 <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
                   {event.eventImage && (
                     <div className="event-image">
@@ -575,7 +581,7 @@ const Events = () => {
                       
                       <div className="event-time">
                         <span className="icon">🕒</span>
-                        {event.time}
+                        {formatTime(event.time)}
                       </div>
                       
                       <div className="event-location">
@@ -606,14 +612,13 @@ const Events = () => {
                           className="btn-delete"
                           title="Delete event"
                         >
-                          🗑️
+                          ❌
                         </button>
                       </>
                     )}
                   </div>
                 </div>
-                );
-              })}
+              ))}
             </div>
           )}
         </div>
@@ -678,7 +683,7 @@ const Events = () => {
                     <div className="info-card-icon">🕒</div>
                     <div className="info-card-content">
                       <h4>Time</h4>
-                      <p>{selectedEvent.time}</p>
+                      <p>{formatTime(selectedEvent.time)}</p>
                     </div>
                   </div>
                   
