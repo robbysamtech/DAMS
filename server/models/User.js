@@ -129,7 +129,7 @@ userSchema.methods.resetLoginAttempts = function() {
 
 // Method to check if user can create content
 userSchema.methods.canCreateContent = function() {
-  return this.status === 'active' && (this.role === 'creator' || this.role === 'admin');
+  return this.status === 'active' && (this.role === 'editor' || this.role === 'admin');
 };
 
 // Method to check if user is admin

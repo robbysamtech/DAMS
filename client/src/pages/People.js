@@ -232,8 +232,8 @@ const People = () => {
           </div>
         )}
 
-        {user?.role === 'creator' && (
-          <div className="creator-actions">
+        {user?.role === 'editor' && (
+          <div className="editor-actions">
             <div className="action-buttons">
               <button 
                 onClick={() => setShowCreateForm(!showCreateForm)}
@@ -478,7 +478,7 @@ const People = () => {
           {people.length === 0 ? (
             <div className="no-people">
               <p>No team members added yet.</p>
-              {user?.role === 'creator' && (
+              {user?.role === 'editor' && (
                 <p>Add your first team member to get started!</p>
               )}
             </div>
@@ -499,7 +499,7 @@ const People = () => {
                   </div>
                   
                   {/* Action Buttons - Top Right */}
-                  {user?.role === 'creator' && (
+                  {user?.role === 'editor' && (
                     <div className="person-actions">
                       <button 
                         onClick={() => handleEdit(person)}

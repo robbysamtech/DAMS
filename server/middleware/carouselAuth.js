@@ -4,14 +4,14 @@ const carouselAuth = (req, res, next) => {
     return res.status(401).json({ error: 'Authentication required' });
   }
 
-  // Allow admins and content creators
-  if (req.user.role === 'admin' || req.user.role === 'creator') {
+  // Allow admins and editors
+  if (req.user.role === 'admin' || req.user.role === 'editor') {
     return next();
   }
 
   // Deny access to consumers and other roles
   return res.status(403).json({ 
-    error: 'Access denied. Only admins and content creators can manage carousel content.' 
+    error: 'Access denied. Only admins and editors can manage carousel content.' 
   });
 };
 

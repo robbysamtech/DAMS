@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
-  const { isCreator, loading: authLoading } = useAuth();
+  const { isEditor, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselItems, setCarouselItems] = useState([]);
@@ -118,8 +118,8 @@ const Home = () => {
     <div className="home">
       {/* Hero Carousel Section */}
       <section className="hero-carousel">
-        {/* Edit Button - Top Right Corner (Content Creators Only) */}
-        {!authLoading && isCreator && (
+        {/* Edit Button - Top Right Corner (Editors Only) */}
+        {!authLoading && isEditor && (
           <button 
             className="carousel-edit-btn" 
             onClick={() => {

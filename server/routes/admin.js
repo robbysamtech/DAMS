@@ -25,8 +25,8 @@ router.put('/users/:userId/approve', async (req, res) => {
     const { userId } = req.params;
     const { role } = req.body;
 
-    if (!['consumer', 'creator'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role. Must be "consumer" or "creator".' });
+    if (!['consumer', 'editor'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role. Must be "consumer" or "editor".' });
     }
 
     const user = await User.findById(userId);

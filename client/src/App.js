@@ -74,7 +74,7 @@ const AppContent = () => {
 
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
-            <Route path="/edit-carousel" element={<ProtectedRoute allowedRoles={['creator', 'admin']}><EditCarousel /></ProtectedRoute>} />
+            <Route path="/edit-carousel" element={<ProtectedRoute allowedRoles={['editor', 'admin']}><EditCarousel /></ProtectedRoute>} />
 
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />

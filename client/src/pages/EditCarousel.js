@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditCarousel.css';
 
 const EditCarousel = () => {
-  const { isCreator, loading: authLoading } = useAuth();
+  const { isEditor, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [carouselItems, setCarouselItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -291,8 +291,8 @@ const EditCarousel = () => {
     }
   };
 
-  // Redirect if not a content creator
-  if (!authLoading && !isCreator) {
+  // Redirect if not an editor
+  if (!authLoading && !isEditor) {
     return (
       <div className="edit-carousel">
         <div className="access-denied">

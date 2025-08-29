@@ -54,7 +54,7 @@ The DAMS application serves as a specialized content platform where specific use
 - User engagement and analytics tracking
 
 ### Target Users
-- **Content Creators/Uploaders:** Users who create and upload content to the platform
+- **Editors:** Users who create and upload content to the platform
 - **Content Consumers/Viewers:** Users who view, consume, and interact with content
 - **Content Moderators:** Users who review, approve, and manage content quality
 - **Platform Administrators:** Users who manage the overall system and user roles
@@ -79,7 +79,7 @@ The DAMS application serves as a specialized content platform where specific use
   - User registration without role selection
   - Admin approval workflow for account activation
   - Role assignment by administrators only
-  - Role-based access control (Creator, Consumer, Admin)
+  - Role-based access control (Editor, Consumer, Admin)
   - Session management and security
   - User profile management and role permissions
 
@@ -168,7 +168,7 @@ The DAMS application serves as a specialized content platform where specific use
 ## User Roles & Permissions
 
 ### User Role Definitions
-- **Content Creators:** Users who can upload, edit, and manage their own content (admin-approved)
+- **Editors:** Users who can upload, edit, and manage their own content (admin-approved)
 - **Content Consumers:** Users who can view, interact with, and consume content (default role)
 - **Platform Administrators:** Users who manage user accounts, approve registrations, and assign roles
 
@@ -189,7 +189,7 @@ The DAMS application serves as a specialized content platform where specific use
 
 - **Admin Permissions:**
   - Approve or reject user account registrations
-  - Assign user roles (Creator, Consumer)
+  - Assign user roles (Editor, Consumer)
   - Manage all user accounts and permissions
   - Access system-wide analytics and reports
   - Configure platform settings and policies
@@ -208,7 +208,7 @@ The DAMS application serves as a specialized content platform where specific use
 
 - **Account Approval Workflow:**
   - Review new user registration requests
-  - Evaluate user eligibility for Creator role
+  - Evaluate user eligibility for Editor role
   - Approve or reject registrations with comments
   - Assign appropriate roles based on criteria
   - Send approval/rejection notifications
@@ -232,17 +232,17 @@ The DAMS application serves as a specialized content platform where specific use
 2. **Admin Review Process:**
    - Admin receives notification of new registration
    - Admin reviews user information and registration details
-   - Admin evaluates eligibility for Creator role based on criteria
-   - Admin makes decision: Approve as Creator, Approve as Consumer, or Reject
+   - Admin evaluates eligibility for Editor role based on criteria
+   - Admin makes decision: Approve as Editor, Approve as Consumer, or Reject
 
 3. **Role Assignment & Activation:**
-   - Admin assigns appropriate role (Creator or Consumer)
+   - Admin assigns appropriate role (Editor or Consumer)
    - Account is activated with assigned permissions
    - User receives notification of approval and role assignment
    - User can now access platform based on assigned role
 
 #### Admin Approval Criteria
-- **Creator Role Eligibility:**
+- **Editor Role Eligibility:**
   - Professional credentials and experience
   - Content creation history or portfolio
   - Business/organizational affiliation
@@ -260,7 +260,7 @@ The DAMS application serves as a specialized content platform where specific use
   - Inappropriate content creation intent
   - Spam or fraudulent account creation
 
-## Content Creator Use Cases
+## Editor Use Cases
 
 ### Creator Onboarding & Setup
 - **Account Creation:**
@@ -433,7 +433,7 @@ The DAMS application serves as a specialized content platform where specific use
   - **Pagination:** Handle large numbers of events efficiently
 
 - **Creator Features:**
-  - **Add Event Button:** Prominent button for content creators
+  - **Add Event Button:** Prominent button for editors
   - **Event Creation Form:** Comprehensive form for event details
   - **Event Management:** Edit, update, and delete existing events
   - **Event Templates:** Pre-built templates for common event types
@@ -807,7 +807,7 @@ The DAMS application serves as a specialized content platform where specific use
   - **Admin Interface:** Dedicated admin dashboard and user management tools
 
 ### Version 1.5 - August 24, 2024
-- **Content Creator Use Cases Added**
+- **Editor Use Cases Added**
   - **Creator Onboarding:** Account creation, profile setup, and initial configuration
   - **Content Creation Workflows:** Step-by-step processes for Events and People creation
   - **Creator Dashboard:** Content management, analytics, and organization tools
@@ -833,17 +833,17 @@ The DAMS application serves as a specialized content platform where specific use
 
 ### Version 1.2 - August 24, 2024
 - **Simplified User Roles**
-  - Reduced to two core user types: Creators and Consumers
+  - Reduced to two core user types: Editors and Consumers
   - Removed moderation and admin roles for simplicity
   - Streamlined permission system
 - **Simplified Content Workflow**
   - Direct content publishing (no moderation required)
   - Simplified content lifecycle management
-  - Focus on core creator-consumer interaction
+  - Focus on core editor-consumer interaction
 
 ### Version 1.1 - August 24, 2024
 - **User Role Requirements Added**
-  - Defined four user roles: Creators, Consumers, Moderators, Admins
+  - Defined four user roles: Editors, Consumers, Moderators, Admins
   - Specified role-based permissions and access control
   - Added content creation and consumption workflows
 - **Content Management Requirements Added**

@@ -138,7 +138,7 @@ export const AuthProvider = ({ children }) => {
     changePassword,
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
-    isCreator: user?.role === 'creator',
+    isEditor: user?.role === 'editor',
     isConsumer: user?.role === 'consumer',
     isPending: user?.status === 'pending'
   };

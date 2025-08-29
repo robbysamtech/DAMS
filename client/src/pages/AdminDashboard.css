@@ -290,7 +290,7 @@
   letter-spacing: 0.5px;
 }
 
-.role-creator {
+.role-editor {
   background: var(--success-color);
   color: white;
 }

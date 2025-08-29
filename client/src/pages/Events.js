@@ -355,7 +355,7 @@ const Events = () => {
           </div>
         </div>
 
-        {user?.role === 'creator' && (
+        {user?.role === 'editor' && (
           <div className="create-event-section">
             <button 
               onClick={() => {
@@ -548,7 +548,7 @@ const Events = () => {
               ) : (
                 <p>No events scheduled yet.</p>
               )}
-              {user?.role === 'creator' && !searchQuery && (
+              {user?.role === 'editor' && !searchQuery && (
                 <p>Create your first event to get started!</p>
               )}
             </div>
@@ -592,7 +592,7 @@ const Events = () => {
                   </div>
                   
                   <div className="event-actions">
-                    {user?.role === 'creator' && (
+                    {user?.role === 'editor' && (
                       <>
                         <button 
                           onClick={(e) => {

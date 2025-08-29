@@ -96,7 +96,7 @@ const Header = () => {
                   <span className="user-name">{user.firstName} {user.lastName}</span>
                   <span className={`user-role user-role-${user.role}`}>
                     {user.role === 'admin' && '👑 Admin'}
-                    {user.role === 'creator' && '✍️ Creator'}
+                    {user.role === 'editor' && '✍️ Editor'}
                     {user.role === 'consumer' && '👁️ Consumer'}
                     {user.role === 'pending' && '⏳ Pending'}
                   </span>

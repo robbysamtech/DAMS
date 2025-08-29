@@ -61,7 +61,7 @@
   margin-left: 1rem;
 }
 
-.creator-actions {
+.editor-actions {
   margin-bottom: 3rem;
   padding: 2rem;
   background: var(--color-background-secondary);
@@ -566,7 +566,7 @@ textarea.form-input::-webkit-scrollbar-thumb:hover {
     padding: 1.5rem;
   }
   
-  .creator-actions {
+  .editor-actions {
     padding: 1.5rem;
   }
   

@@ -13,7 +13,7 @@ A comprehensive ministry management platform built with modern web technologies,
 - **Responsive Design** - Mobile-first approach with fluid layouts that adapt to all screen sizes
 
 ### User Roles
-- **Content Creators** - Can create and manage ministry content (admin-approved)
+- **Editors** - Can create and manage ministry content (admin-approved)
 - **Content Consumers** - Can view and interact with ministry content
 - **Platform Administrators** - Full system access with user management capabilities
 
@@ -149,7 +149,7 @@ npm start
 ### User Registration Flow
 1. User registers with basic information
 2. Account status: "Pending Admin Approval"
-3. Admin reviews and assigns role (Creator/Consumer)
+3. Admin reviews and assigns role (Editor/Consumer)
 4. Account activated with appropriate permissions
 
 ### Security Features

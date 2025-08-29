@@ -118,7 +118,7 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
                 className="role-select"
               >
                 <option value="consumer">Content Consumer</option>
-                <option value="creator">Content Creator</option>
+                <option value="editor">Editor</option>
               </select>
             </div>
             <button 
@@ -167,9 +167,9 @@ const AdminDashboard = () => {
     }
   }, [token]);
 
-  const fetchCreatorCount = useCallback(async () => {
+  const fetchEditorCount = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:5001/api/admin/users?role=creator&status=active', {
+      const response = await fetch('http://localhost:5001/api/admin/users?role=editor&status=active', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -180,11 +180,11 @@ const AdminDashboard = () => {
         const data = await response.json();
         setStats(prev => ({
           ...prev,
-          creators: data.users?.length || 0
+          editors: data.users?.length || 0
         }));
       }
     } catch (err) {
-      console.error('Error fetching creator count:', err);
+      console.error('Error fetching editor count:', err);
     } finally {
       setLoading(false);
     }
@@ -206,7 +206,7 @@ const AdminDashboard = () => {
           totalUsers: data.userStats?.total || 0,
           pendingUsers: data.userStats?.pending || 0,
           activeUsers: data.userStats?.active || 0,
-          creators: 0, // We'll count this separately
+          editors: 0, // We'll count this separately
 
           people: data.contentStats?.people || 0,
           events: data.contentStats?.events || 0
@@ -214,7 +214,7 @@ const AdminDashboard = () => {
         setStats(transformedStats);
         
         // Fetch creator count separately
-        fetchCreatorCount();
+        fetchEditorCount();
       } else {
         const errorText = await response.text();
         console.error('Failed to fetch statistics:', errorText);
@@ -356,8 +356,8 @@ const AdminDashboard = () => {
             <div className="stat-label">Active Users</div>
           </div>
           <div className="stat-card">
-            <div className="stat-number">{stats.creators || 0}</div>
-            <div className="stat-label">Content Creators</div>
+            <div className="stat-number">{stats.editors || 0}</div>
+            <div className="stat-label">Editors</div>
           </div>
         </div>
 
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
                         className="role-select"
                       >
                         <option value="consumer">Content Consumer</option>
-                        <option value="creator">Content Creator</option>
+                        <option value="editor">Editor</option>
                       </select>
                     </div>
                     <div className="action-buttons">
