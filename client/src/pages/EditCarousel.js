@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditCarousel.css';
 
 const EditCarousel = () => {
-  const { isEditor, loading: authLoading } = useAuth();
+  const { isEditor, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [carouselItems, setCarouselItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const EditCarousel = () => {
         setLoading(true);
         const response = await fetch('http://localhost:5001/api/carousel/admin', {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           }
         });
         
@@ -182,7 +182,7 @@ const EditCarousel = () => {
           response = await fetch(`http://localhost:5001/api/carousel/${tile.id}`, {
             method: 'PUT',
             headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
+              'Authorization': `Bearer ${token}`
             },
             body: formData
           });
@@ -191,7 +191,7 @@ const EditCarousel = () => {
           response = await fetch('http://localhost:5001/api/carousel', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`
+              'Authorization': `Bearer ${token}`
             },
             body: formData
           });
@@ -256,7 +256,7 @@ const EditCarousel = () => {
         const response = await fetch(`http://localhost:5001/api/carousel/${tile.id}`, {
           method: 'DELETE',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            'Authorization': `Bearer ${token}`
           }
         });
 
