@@ -3,7 +3,7 @@
   position: absolute;
   top: 2rem;
   right: 2rem;
-  z-index: 1000;
+  z-index: 999; /* Lower than header (1000) so it goes under when scrolling */
   background: rgba(255, 255, 255, 0.95);
   border: 2px solid var(--color-primary);
   border-radius: 8px;
@@ -68,14 +68,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-}
-
-/* Empty carousel state - when no content exists */
-.hero-carousel.empty-carousel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-background);
 }
 
 .carousel-container {

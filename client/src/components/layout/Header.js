@@ -73,18 +73,6 @@ const Header = () => {
 
               {user && (
                 <>
-                  {(isAdmin || user.role === 'creator') && (
-                    <li className="nav-item">
-                      <Link 
-                        to="/edit-carousel" 
-                        className={`nav-link ${isActive('/edit-carousel') ? 'active' : ''}`}
-                        onClick={closeMobileMenu}
-                      >
-                        Edit Carousel
-                      </Link>
-                    </li>
-                  )}
-                  
                   {isAdmin && (
                     <li className="nav-item">
                       <Link 

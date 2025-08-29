@@ -96,21 +96,7 @@ const Home = () => {
   if (error || carouselItems.length === 0) {
     return (
       <div className="home">
-        {/* Show Edit Carousel button for content creators even when no content */}
-        {!authLoading && isCreator && (
-          <section className="hero-carousel empty-carousel">
-            <button 
-              className="carousel-edit-btn" 
-              onClick={() => {
-                navigate('/edit-carousel');
-              }}
-              title="Edit Carousel Content"
-            >
-              <span className="edit-icon">✏️</span>
-              <span className="edit-text">Edit Carousel</span>
-            </button>
-          </section>
-        )}
+        {/* Empty home page when no carousel content */}
       </div>
     );
   }
