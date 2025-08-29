@@ -503,17 +503,17 @@ const People = () => {
                     <div className="person-actions">
                       <button 
                         onClick={() => handleEdit(person)}
-                        className="edit-btn"
+                        className="btn-edit"
                         title="Edit person"
                       >
-                        ✏️
+                        Edit
                       </button>
                       <button 
                         onClick={() => deletePerson(person._id)}
-                        className="delete-btn"
+                        className="btn-delete"
                         title="Delete person"
                       >
-                        🗑️ Delete
+                        Delete
                       </button>
                     </div>
                   )}

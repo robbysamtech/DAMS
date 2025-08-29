@@ -602,7 +602,7 @@ const Events = () => {
                           className="btn-edit"
                           title="Edit event"
                         >
-                          ✏️
+                          Edit
                         </button>
                         <button 
                           onClick={(e) => {
@@ -612,7 +612,7 @@ const Events = () => {
                           className="btn-delete"
                           title="Delete event"
                         >
-                          ❌
+                          Delete
                         </button>
                       </>
                     )}

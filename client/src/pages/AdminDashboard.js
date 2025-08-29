@@ -226,7 +226,7 @@ const AdminDashboard = () => {
       setError('Error fetching statistics');
       setLoading(false);
     }
-  }, [token, fetchCreatorCount]);
+  }, [token, fetchEditorCount]);
 
   // Fetch pending users and statistics
   useEffect(() => {

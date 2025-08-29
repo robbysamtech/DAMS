@@ -127,8 +127,7 @@ const Home = () => {
             }}
             title="Edit Carousel Content"
           >
-            <span className="edit-icon">✏️</span>
-            <span className="edit-text">Edit Carousel</span>
+            Edit
           </button>
         )}
 
