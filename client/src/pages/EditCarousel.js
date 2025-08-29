@@ -415,29 +415,40 @@ const EditCarousel = () => {
               </div>
 
               {tile.type === 'event' && (
-                <>
-                  <div className="form-group">
-                    <label>Event Date:</label>
+                <div className="event-fields-row">
+                  <div className="event-field-with-icon">
+                    <span className="event-icon">🗓️</span>
                     <input
-                      type="text"
+                      type="date"
                       value={tile.eventDate}
                       onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
-                      placeholder="e.g., Every Sunday"
-                      maxLength="50"
+                      required
                     />
                   </div>
 
-                  <div className="form-group">
-                    <label>Event Time:</label>
-                    <input
-                      type="text"
+                  <div className="event-field-with-icon">
+                    <span className="event-icon">🕒</span>
+                    <select
                       value={tile.eventTime}
                       onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
-                      placeholder="e.g., 10:00 AM"
-                      maxLength="20"
-                    />
+                      required
+                    >
+                      <option value="">Select a time</option>
+                      {Array.from({ length: 96 }, (_, i) => {
+                        const hour = Math.floor(i / 4);
+                        const minute = (i % 4) * 15;
+                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        return (
+                          <option key={timeString} value={timeString}>
+                            {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </div>
-                </>
+                </div>
               )}
 
               <div className="form-group">

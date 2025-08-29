@@ -82,6 +82,19 @@ const Home = () => {
     setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
   };
 
+  const formatTime = (timeString) => {
+    if (!timeString) return '';
+    
+    const [hours, minutes] = timeString.split(':');
+    const hour = parseInt(hours);
+    const minute = parseInt(minutes);
+    
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    
+    return `${displayHour}:${minutes} ${ampm}`;
+  };
+
   if (loading) {
     return (
       <div className="home">
@@ -164,7 +177,7 @@ const Home = () => {
                 </div>
                 <div className="carousel-event-time">
                   <span className="carousel-event-icon">🕒</span>
-                  <span>{carouselItems[currentSlide].eventTime}</span>
+                  <span>{formatTime(carouselItems[currentSlide].eventTime)}</span>
                 </div>
               </div>
             )}

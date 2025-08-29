@@ -176,6 +176,48 @@
   min-height: 80px;
 }
 
+/* Event fields row styling */
+.event-fields-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Event field with icon styling */
+.event-field-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.event-icon {
+  font-size: 1rem;
+  width: 16px;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.event-field-with-icon input,
+.event-field-with-icon select {
+  flex: 1;
+  height: 3.5rem; /* Double the height (was ~1.75rem) */
+  padding: 0.75rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+  font-family: inherit;
+}
+
+.event-field-with-icon input:focus,
+.event-field-with-icon select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
 /* Image Upload Section */
 .image-upload-section {
   display: flex;
