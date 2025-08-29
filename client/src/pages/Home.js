@@ -70,18 +70,6 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [carouselItems.length]);
 
-  // Debug: Log current slide changes
-  useEffect(() => {
-    console.log('Current slide changed to:', currentSlide, 'Total slides:', carouselItems.length);
-  }, [currentSlide, carouselItems.length]);
-
-  // Debug: Log carousel items when loaded
-  useEffect(() => {
-    if (carouselItems.length > 0) {
-      console.log('Carousel items loaded:', carouselItems);
-    }
-  }, [carouselItems]);
-
   const goToSlide = (index) => {
     setCurrentSlide(index);
   };
@@ -148,7 +136,10 @@ const Home = () => {
         <div 
           className="carousel-container" 
           data-current={currentSlide}
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          style={{ 
+            transform: `translateX(-${currentSlide * 100}vw)`,
+            width: `${carouselItems.length * 100}vw` // Ensure container is wide enough
+          }}
         >
           {carouselItems.map((item, index) => (
             <div
