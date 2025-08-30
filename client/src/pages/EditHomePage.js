@@ -339,7 +339,7 @@ const EditHomePage = () => {
         <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Home
         </button>
-        <h1>Edit Home Page Content</h1>
+        <h1>Edit Home Page</h1>
       </div>
 
       {error && (
