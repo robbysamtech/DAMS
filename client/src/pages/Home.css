@@ -483,3 +483,25 @@
   border-radius: 8px;
   backdrop-filter: blur(10px);
 }
+
+/* Empty Carousel Message */
+.empty-carousel-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  color: #ffffff;
+  background: var(--color-background);
+}
+
+.empty-carousel-message p {
+  font-size: 1.5rem;
+  color: #f8f8f8;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}

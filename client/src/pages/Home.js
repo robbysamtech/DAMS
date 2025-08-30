@@ -106,95 +106,93 @@ const Home = () => {
     );
   }
 
-  if (error || carouselItems.length === 0) {
-    return (
-      <div className="home">
-        {/* Empty home page when no carousel content */}
-      </div>
-    );
-  }
-
   return (
     <div className="home">
-      {/* Hero Carousel Section */}
-      <section className="hero-carousel">
-        {/* Edit Button - Top Right Corner (Editors Only) */}
-        {!authLoading && isEditor && (
-          <button 
-            className="carousel-edit-btn" 
-            onClick={() => {
-              navigate('/edit-carousel');
-            }}
-            title="Edit Carousel Content"
-          >
-            Edit
-          </button>
-        )}
-
-        <div 
-          className="carousel-container" 
-          data-current={currentSlide}
-          style={{ 
-            transform: `translateX(-${currentSlide * 100}vw)`,
-            width: `${carouselItems.length * 100}vw` // Ensure container is wide enough
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && isEditor && (
+        <button 
+          className="carousel-edit-btn" 
+          onClick={() => {
+            navigate('/edit-carousel');
           }}
+          title="Edit Carousel Content"
         >
-          {carouselItems.map((item, index) => (
-            <div
-              key={item._id || item.id}
-              className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
-            >
-              <div className="carousel-image">
-                <img src={item.image.startsWith('http') ? item.image : `http://localhost:5001${item.image}`} alt={item.title} />
-                <div className="carousel-overlay">
-                  
+          Edit
+        </button>
+      )}
+
+      {/* Hero Carousel Section */}
+      {carouselItems.length > 0 ? (
+        <section className="hero-carousel">
+          <div 
+            className="carousel-container" 
+            data-current={currentSlide}
+            style={{ 
+              transform: `translateX(-${currentSlide * 100}vw)`,
+              width: `${carouselItems.length * 100}vw` // Ensure container is wide enough
+            }}
+          >
+            {carouselItems.map((item, index) => (
+              <div
+                key={item._id || item.id}
+                className={`carousel-slide ${index === currentSlide ? 'active' : ''}`}
+              >
+                <div className="carousel-image">
+                  <img src={item.image.startsWith('http') ? item.image : `http://localhost:5001${item.image}`} alt={item.title} />
+                  <div className="carousel-overlay">
+                    
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Carousel Navigation */}
-        <button className="carousel-nav carousel-prev" onClick={goToPrevious}>
-          <span>‹</span>
-        </button>
-        <button className="carousel-nav carousel-next" onClick={goToNext}>
-          <span>›</span>
-        </button>
-
-        {/* Carousel Text Section - Bottom */}
-        <div className="carousel-text-section">
-          <div className="carousel-text-content">
-            <h2 className="carousel-text-title">{carouselItems[currentSlide].title}</h2>
-            <p className="carousel-text-description">{carouselItems[currentSlide].description}</p>
-            
-            {carouselItems[currentSlide].type === 'event' && (
-              <div className="carousel-event-details">
-                <div className="carousel-event-date">
-                  <span className="carousel-event-icon">📅</span>
-                  <span>{carouselItems[currentSlide].eventDate}</span>
-                </div>
-                <div className="carousel-event-time">
-                  <span className="carousel-event-icon">🕒</span>
-                  <span>{formatTime(carouselItems[currentSlide].eventTime)}</span>
-                </div>
-              </div>
-            )}
+            ))}
           </div>
-        </div>
 
-        {/* Carousel Indicators */}
-        <div className="carousel-indicators">
-          {carouselItems.map((_, index) => (
-            <button
-              key={index}
-              className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => goToSlide(index)}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+          {/* Carousel Navigation */}
+          <button className="carousel-nav carousel-prev" onClick={goToPrevious}>
+            <span>‹</span>
+          </button>
+          <button className="carousel-nav carousel-next" onClick={goToNext}>
+            <span>›</span>
+          </button>
+
+          {/* Carousel Text Section - Bottom */}
+          <div className="carousel-text-section">
+            <div className="carousel-text-content">
+              <h2 className="carousel-text-title">{carouselItems[currentSlide].title}</h2>
+              <p className="carousel-text-description">{carouselItems[currentSlide].description}</p>
+              
+              {carouselItems[currentSlide].type === 'event' && (
+                <div className="carousel-event-details">
+                  <div className="carousel-event-date">
+                    <span className="carousel-event-icon">📅</span>
+                    <span>{carouselItems[currentSlide].eventDate}</span>
+                  </div>
+                  <div className="carousel-event-time">
+                    <span className="carousel-event-icon">🕒</span>
+                    <span>{formatTime(carouselItems[currentSlide].eventTime)}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Carousel Indicators */}
+          <div className="carousel-indicators">
+            {carouselItems.map((_, index) => (
+              <button
+                key={index}
+                className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
+                onClick={() => goToSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <div className="empty-carousel-message">
+          <p>No carousel content available. Click "Edit" to add some!</p>
         </div>
-      </section>
+      )}
     </div>
   );
 };
