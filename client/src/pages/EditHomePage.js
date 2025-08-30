@@ -373,93 +373,97 @@ const EditHomePage = () => {
             </div>
 
             <div className="tile-content">
-              <div className="form-group">
-                <label>Title:</label>
-                <input
-                  type="text"
-                  value={tile.title}
-                  onChange={(e) => handleInputChange(index, 'title', e.target.value)}
-                  placeholder="Enter title"
-                  maxLength="100"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Description:</label>
-                <textarea
-                  value={tile.description}
-                  onChange={(e) => handleInputChange(index, 'description', e.target.value)}
-                  placeholder="Enter description"
-                  maxLength="500"
-                  rows="3"
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Image:</label>
-                <div className="image-upload-section">
+              <div className="tile-left-section">
+                <div className="form-group">
+                  <label>Title:</label>
                   <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => handleImageUpload(index, e.target.files[0])}
-                    id={`image-upload-${index}`}
+                    type="text"
+                    value={tile.title}
+                    onChange={(e) => handleInputChange(index, 'title', e.target.value)}
+                    placeholder="Enter title"
+                    maxLength="100"
                   />
-                  <label htmlFor={`image-upload-${index}`} className="upload-button">
-                    {tile.image ? 'Change Image' : 'Upload Image'}
+                </div>
+
+                <div className="form-group">
+                  <label>Description:</label>
+                  <textarea
+                    value={tile.description}
+                    onChange={(e) => handleInputChange(index, 'description', e.target.value)}
+                    placeholder="Enter description"
+                    maxLength="500"
+                    rows="3"
+                  />
+                </div>
+
+                {tile.type === 'event' && (
+                  <div className="event-fields-row">
+                    <div className="event-field-with-icon">
+                      <span className="event-icon">🗓️</span>
+                      <input
+                        type="date"
+                        value={tile.eventDate || ''}
+                        onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="event-field-with-icon">
+                      <span className="event-icon">🕒</span>
+                      <input
+                        type="time"
+                        value={tile.eventTime || ''}
+                        onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <div className="form-group">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={tile.isActive}
+                      onChange={(e) => handleInputChange(index, 'isActive', e.target.checked)}
+                    />
+                    Active
                   </label>
-                  {tile.image && !tile.imagePreview && (
-                    <div className="image-preview">
-                      <img 
-                        src={tile.image.startsWith('http') ? tile.image : `http://localhost:5001${tile.image}`} 
-                        alt="Preview" 
-                      />
-                    </div>
-                  )}
-                  {tile.imagePreview && (
-                    <div className="image-preview">
-                      <img 
-                        src={tile.imagePreview} 
-                        alt="New Preview" 
-                      />
-                      <div className="preview-label">New Image Selected</div>
-                    </div>
-                  )}
                 </div>
               </div>
 
-              {tile.type === 'event' && (
-                <div className="event-fields-row">
-                  <div className="event-field-with-icon">
-                    <span className="event-icon">🗓️</span>
+              <div className="tile-right-section">
+                <div className="form-group">
+                  <label>Image:</label>
+                  <div className="image-upload-section">
                     <input
-                      type="date"
-                      value={tile.eventDate || ''}
-                      onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
-                      required
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(index, e.target.files[0])}
+                      id={`image-upload-${index}`}
                     />
-                  </div>
-
-                  <div className="event-field-with-icon">
-                    <span className="event-icon">🕒</span>
-                    <input
-                      type="time"
-                      value={tile.eventTime || ''}
-                      onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
-                      required
-                    />
+                    <label htmlFor={`image-upload-${index}`} className="upload-button">
+                      {tile.image ? 'Change Image' : 'Upload Image'}
+                    </label>
+                    {tile.image && !tile.imagePreview && (
+                      <div className="image-preview">
+                        <img 
+                          src={tile.image.startsWith('http') ? tile.image : `http://localhost:5001${tile.image}`} 
+                          alt="Preview" 
+                        />
+                      </div>
+                    )}
+                    {tile.imagePreview && (
+                      <div className="image-preview">
+                        <img 
+                          src={tile.imagePreview} 
+                          alt="New Preview" 
+                        />
+                        <div className="preview-label">New Image Selected</div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              )}
-
-              <div className="form-group">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={tile.isActive}
-                    onChange={(e) => handleInputChange(index, 'isActive', e.target.checked)}
-                  />
-                  Active
-                </label>
               </div>
             </div>
 
