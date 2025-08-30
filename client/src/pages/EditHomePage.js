@@ -7,9 +7,11 @@ const EditHomePage = () => {
   const { isEditor, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [carouselItems, setCarouselItems] = useState([]);
+  const [homeSections, setHomeSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [alert, setAlert] = useState({ show: false, message: '', type: 'success' });
 
   // Fetch existing carousel items
   useEffect(() => {
@@ -44,8 +46,30 @@ const EditHomePage = () => {
       }
     };
 
+    // Fetch home sections
+    const fetchHomeSections = async () => {
+      try {
+        const response = await fetch('http://localhost:5001/api/home-sections/admin', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Home sections data received:', data);
+          setHomeSections(data);
+        } else {
+          console.error('Failed to fetch home sections');
+        }
+      } catch (err) {
+        console.error('Error fetching home sections:', err);
+      }
+    };
+
     if (token) {
       fetchCarouselItems();
+      fetchHomeSections();
     } else {
       console.log('No token available, skipping fetch');
       setLoading(false);
@@ -102,6 +126,51 @@ const EditHomePage = () => {
     setTiles(updatedTiles);
   };
 
+  const handleSectionInputChange = (sectionIndex, field, value) => {
+    const updatedSections = [...homeSections];
+    updatedSections[sectionIndex][field] = value;
+    setHomeSections(updatedSections);
+  };
+
+  const showAlert = (message, type = 'success') => {
+    setAlert({ show: true, message, type });
+    setTimeout(() => setAlert({ show: false, message: '', type: 'success' }), 3000);
+  };
+
+  const hideAlert = () => {
+    setAlert({ show: false, message: '', type: 'success' });
+  };
+
+  const handleSectionUpdate = async (sectionId, updatedData) => {
+    try {
+      const response = await fetch(`http://localhost:5001/api/home-sections/${sectionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updatedData)
+      });
+
+      if (response.ok) {
+        const updatedSection = await response.json();
+        setHomeSections(prev => 
+          prev.map(section => 
+            section._id === sectionId ? updatedSection : section
+          )
+        );
+        showAlert('Section updated successfully!', 'success');
+        console.log('Section updated successfully');
+      } else {
+        showAlert('Failed to update section', 'error');
+        console.error('Failed to update section');
+      }
+    } catch (err) {
+      showAlert(`Error updating section: ${err.message}`, 'error');
+      console.error('Error updating section:', err);
+    }
+  };
+
   const handleTabClick = (tabIndex) => {
     setActiveTab(tabIndex);
   };
@@ -134,13 +203,13 @@ const EditHomePage = () => {
     const tile = tiles[tileIndex];
     
     if (!tile.title || !tile.description) {
-      alert('Please fill in title and description');
+      showAlert('Please fill in title and description', 'error');
       return;
     }
 
     // Check if we have an image (either existing or new file)
     if (!tile.image && !tile.tempFile) {
-      alert('Please select an image for this tile');
+      showAlert('Please select an image for this tile', 'error');
       return;
     }
 
@@ -159,7 +228,7 @@ const EditHomePage = () => {
 
         if (tile.type === 'event') {
           if (!tile.eventDate || !tile.eventTime) {
-            alert('Please fill in event date and time for event type cards');
+            showAlert('Please fill in event date and time for event type cards', 'error');
             return;
           }
           tileData.eventDate = tile.eventDate;
@@ -189,7 +258,7 @@ const EditHomePage = () => {
 
         if (tile.type === 'event') {
           if (!tile.eventDate || !tile.eventTime) {
-            alert('Please fill in event date and time for event type cards');
+            showAlert('Please fill in event date and time for event type cards', 'error');
             return;
           }
           formData.append('eventDate', tile.eventDate);
@@ -237,14 +306,14 @@ const EditHomePage = () => {
         }
         setCarouselItems(updatedCarouselItems);
         
-        alert('Tile saved successfully!');
+        showAlert('Tile saved successfully!', 'success');
       } else {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        alert(`Failed to save tile: ${errorData.error || 'Unknown error'}`);
+        showAlert(`Failed to save tile: ${errorData.error || 'Unknown error'}`, 'error');
       }
     } catch (err) {
       console.error('Error saving tile:', err);
-      alert('Error saving tile: ' + err.message);
+      showAlert('Error saving tile: ' + err.message, 'error');
     }
   };
 
@@ -299,13 +368,13 @@ const EditHomePage = () => {
           const updatedCarouselItems = carouselItems.filter(item => item._id !== tile.id);
           setCarouselItems(updatedCarouselItems);
           
-          alert('Tile deleted successfully!');
+          showAlert('Tile deleted successfully!', 'success');
         } else {
-          alert('Failed to delete tile');
+          showAlert('Failed to delete tile', 'error');
         }
       } catch (err) {
         console.error('Error deleting tile:', err);
-        alert('Error deleting tile');
+        showAlert('Error deleting tile', 'error');
       }
     }
   };
@@ -345,6 +414,13 @@ const EditHomePage = () => {
       {error && (
         <div className="error-message">
           <p>{error}</p>
+        </div>
+      )}
+
+      {alert.show && (
+        <div className={`alert alert-${alert.type}`}>
+          <span className="alert-message">{alert.message}</span>
+          <button className="alert-close" onClick={hideAlert}>×</button>
         </div>
       )}
 
@@ -512,6 +588,86 @@ const EditHomePage = () => {
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* Edit Sections Section */}
+      <div className="sections-section">
+        <div className="section-header">
+          <h2>Edit Sections</h2>
+        </div>
+        
+        <div className="sections-grid">
+          {homeSections.map((section, index) => (
+            <div key={section._id} className="section-tile">
+              <div className="section-tile-header">
+                <h3>Section {section.order}</h3>
+                <div className="section-status">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={section.isActive}
+                      onChange={(e) => handleSectionInputChange(index, 'isActive', e.target.checked)}
+                    />
+                    Active
+                  </label>
+                </div>
+              </div>
+
+              <div className="section-tile-content">
+                <div className="form-group">
+                  <label>Title:</label>
+                  <input
+                    type="text"
+                    value={section.title}
+                    onChange={(e) => handleSectionInputChange(index, 'title', e.target.value)}
+                    placeholder="Enter section title"
+                    maxLength="100"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Description:</label>
+                  <textarea
+                    value={section.description}
+                    onChange={(e) => handleSectionInputChange(index, 'description', e.target.value)}
+                    placeholder="Enter section description"
+                    maxLength="500"
+                    rows="4"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Background Image URL:</label>
+                  <input
+                    type="text"
+                    value={section.backgroundImage}
+                    onChange={(e) => handleSectionInputChange(index, 'backgroundImage', e.target.value)}
+                    placeholder="Enter background image URL"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Tile Image URL:</label>
+                  <input
+                    type="text"
+                    value={section.tileImage}
+                    onChange={(e) => handleSectionInputChange(index, 'tileImage', e.target.value)}
+                    placeholder="Enter tile image URL"
+                  />
+                </div>
+              </div>
+
+              <div className="section-tile-actions">
+                <button 
+                  className="save-btn"
+                  onClick={() => handleSectionUpdate(section._id, section)}
+                >
+                  Update Section
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
