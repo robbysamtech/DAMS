@@ -9,6 +9,7 @@ const EditHomePage = () => {
   const [carouselItems, setCarouselItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   // Fetch existing carousel items
   useEffect(() => {
@@ -99,6 +100,10 @@ const EditHomePage = () => {
     const updatedTiles = [...tiles];
     updatedTiles[tileIndex][field] = value;
     setTiles(updatedTiles);
+  };
+
+  const handleTabClick = (tabIndex) => {
+    setActiveTab(tabIndex);
   };
 
   const handleImageUpload = async (tileIndex, file) => {
@@ -334,7 +339,7 @@ const EditHomePage = () => {
         <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Home
         </button>
-                  <h1>Edit Home Page Content</h1>
+        <h1>Edit Home Page Content</h1>
       </div>
 
       {error && (
@@ -343,148 +348,171 @@ const EditHomePage = () => {
         </div>
       )}
 
-      <div className="carousel-grid">
-        {tiles.map((tile, index) => (
-          <div key={tile.id} className={`carousel-tile ${tile.exists ? 'has-content' : 'empty'}`}>
-            <div className="tile-header">
-              <h3>Slide {tile.order}</h3>
-              <div className="tile-type-selector">
-                <label>
-                  <input
-                    type="radio"
-                    name={`type-${index}`}
-                    value="image"
-                    checked={tile.type === 'image'}
-                    onChange={() => handleTypeChange(index, 'image')}
-                  />
-                  Image
-                </label>
-                <label>
-                  <input
-                    type="radio"
-                    name={`type-${index}`}
-                    value="event"
-                    checked={tile.type === 'event'}
-                    onChange={() => handleTypeChange(index, 'event')}
-                  />
-                  Event
-                </label>
-              </div>
-            </div>
+      <div className="carousel-section">
+        <div className="section-header">
+          <h2>Carousel</h2>
+        </div>
+        
+        <div className="tabbed-interface">
+          <div className="tab-navigation">
+            {tiles.map((tile, index) => (
+              <button
+                key={tile.id}
+                className={`tab-button ${activeTab === index ? 'active' : ''}`}
+                onClick={() => handleTabClick(index)}
+              >
+                Slide {tile.order}
+              </button>
+            ))}
+          </div>
 
-            <div className="tile-content">
-              <div className="tile-left-section">
-                <div className="form-group">
-                  <label>Title:</label>
-                  <input
-                    type="text"
-                    value={tile.title}
-                    onChange={(e) => handleInputChange(index, 'title', e.target.value)}
-                    placeholder="Enter title"
-                    maxLength="100"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Description:</label>
-                  <textarea
-                    value={tile.description}
-                    onChange={(e) => handleInputChange(index, 'description', e.target.value)}
-                    placeholder="Enter description"
-                    maxLength="500"
-                    rows="3"
-                  />
-                </div>
-
-                {tile.type === 'event' && (
-                  <div className="event-fields-row">
-                    <div className="event-field-with-icon">
-                      <span className="event-icon">🗓️</span>
+          <div className="tab-content">
+            {tiles.map((tile, index) => (
+              <div 
+                key={tile.id} 
+                className={`tab-pane ${activeTab === index ? 'active' : ''}`}
+              >
+                <div className="tile-header">
+                  <h3>Slide {tile.order}</h3>
+                  <div className="tile-type-selector">
+                    <label>
                       <input
-                        type="date"
-                        value={tile.eventDate || ''}
-                        onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
-                        required
+                        type="radio"
+                        name={`type-${index}`}
+                        value="image"
+                        checked={tile.type === 'image'}
+                        onChange={() => handleTypeChange(index, 'image')}
                       />
-                    </div>
-
-                    <div className="event-field-with-icon">
-                      <span className="event-icon">🕒</span>
+                      Image
+                    </label>
+                    <label>
                       <input
-                        type="time"
-                        value={tile.eventTime || ''}
-                        onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
-                        required
+                        type="radio"
+                        name={`type-${index}`}
+                        value="event"
+                        checked={tile.type === 'event'}
+                        onChange={() => handleTypeChange(index, 'event')}
                       />
-                    </div>
-                  </div>
-                )}
-
-                <div className="form-group">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={tile.isActive}
-                      onChange={(e) => handleInputChange(index, 'isActive', e.target.checked)}
-                    />
-                    Active
-                  </label>
-                </div>
-              </div>
-
-              <div className="tile-right-section">
-                <div className="form-group">
-                  <label>Image:</label>
-                  <div className="image-upload-section">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => handleImageUpload(index, e.target.files[0])}
-                      id={`image-upload-${index}`}
-                    />
-                    
-                    {tile.image && !tile.imagePreview && (
-                      <div className="image-preview">
-                        <img 
-                          src={tile.image.startsWith('http') ? tile.image : `http://localhost:5001${tile.image}`} 
-                          alt="Preview" 
-                        />
-                      </div>
-                    )}
-                    {tile.imagePreview && (
-                      <div className="image-preview">
-                        <img 
-                          src={tile.imagePreview} 
-                          alt="New Preview" 
-                        />
-                        <div className="preview-label">New Image Selected</div>
-                      </div>
-                    )}
-                    
-                    <label htmlFor={`image-upload-${index}`} className="upload-button">
-                      {tile.image ? 'Change' : 'Upload Image'}
+                      Event
                     </label>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            <div className="tile-actions">
-              <button 
-                className="save-btn"
-                onClick={() => handleSaveTile(index)}
-              >
-                {tile.exists ? 'Update' : 'Save'}
-              </button>
-              <button 
-                className="delete-btn"
-                onClick={() => handleDeleteTile(index)}
-              >
-                {tile.exists ? 'Delete' : 'Clear'}
-              </button>
-            </div>
+                <div className="tile-content">
+                  <div className="tile-left-section">
+                    <div className="form-group">
+                      <label>Title:</label>
+                      <input
+                        type="text"
+                        value={tile.title}
+                        onChange={(e) => handleInputChange(index, 'title', e.target.value)}
+                        placeholder="Enter title"
+                        maxLength="100"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Description:</label>
+                      <textarea
+                        value={tile.description}
+                        onChange={(e) => handleInputChange(index, 'description', e.target.value)}
+                        placeholder="Enter description"
+                        maxLength="500"
+                        rows="3"
+                      />
+                    </div>
+
+                    {tile.type === 'event' && (
+                      <div className="event-fields-row">
+                        <div className="event-field-with-icon">
+                          <span className="event-icon">🗓️</span>
+                          <input
+                            type="date"
+                            value={tile.eventDate || ''}
+                            onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
+                            required
+                          />
+                        </div>
+
+                        <div className="event-field-with-icon">
+                          <span className="event-icon">🕒</span>
+                          <input
+                            type="time"
+                            value={tile.eventTime || ''}
+                            onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
+                            required
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="form-group">
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={tile.isActive}
+                          onChange={(e) => handleInputChange(index, 'isActive', e.target.checked)}
+                        />
+                        Active
+                      </label>
+                    </div>
+                  </div>
+
+                  <div className="tile-right-section">
+                    <div className="form-group">
+                      <label>Image:</label>
+                      <div className="image-upload-section">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(index, e.target.files[0])}
+                          id={`image-upload-${index}`}
+                        />
+                        
+                        {tile.image && !tile.imagePreview && (
+                          <div className="image-preview">
+                            <img 
+                              src={tile.image.startsWith('http') ? tile.image : `http://localhost:5001${tile.image}`} 
+                              alt="Preview" 
+                            />
+                          </div>
+                        )}
+                        {tile.imagePreview && (
+                          <div className="image-preview">
+                            <img 
+                              src={tile.imagePreview} 
+                              alt="New Preview" 
+                            />
+                            <div className="preview-label">New Image Selected</div>
+                          </div>
+                        )}
+                        
+                        <label htmlFor={`image-upload-${index}`} className="upload-button">
+                          {tile.image ? 'Change' : 'Upload Image'}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="tile-actions">
+                  <button 
+                    className="save-btn"
+                    onClick={() => handleSaveTile(index)}
+                  >
+                    {tile.exists ? 'Update' : 'Save'}
+                  </button>
+                  <button 
+                    className="delete-btn"
+                    onClick={() => handleDeleteTile(index)}
+                  >
+                    {tile.exists ? 'Delete' : 'Clear'}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
