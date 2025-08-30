@@ -434,7 +434,7 @@ const EditCarousel = () => {
                     <span className="event-icon">🗓️</span>
                     <input
                       type="date"
-                      value={tile.eventDate}
+                      value={tile.eventDate || ''}
                       onChange={(e) => handleInputChange(index, 'eventDate', e.target.value)}
                       required
                     />
@@ -442,25 +442,12 @@ const EditCarousel = () => {
 
                   <div className="event-field-with-icon">
                     <span className="event-icon">🕒</span>
-                    <select
-                      value={tile.eventTime}
+                    <input
+                      type="time"
+                      value={tile.eventTime || ''}
                       onChange={(e) => handleInputChange(index, 'eventTime', e.target.value)}
                       required
-                    >
-                      <option value="">Select a time</option>
-                      {Array.from({ length: 96 }, (_, i) => {
-                        const hour = Math.floor(i / 4);
-                        const minute = (i % 4) * 15;
-                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        return (
-                          <option key={timeString} value={timeString}>
-                            {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
-                          </option>
-                        );
-                      })}
-                    </select>
+                    />
                   </div>
                 </div>
               )}

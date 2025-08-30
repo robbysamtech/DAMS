@@ -25,32 +25,8 @@ const Home = () => {
         setError(null);
       } catch (err) {
         setError('Failed to load carousel content');
-        // Fallback to sample data if API fails
-        setCarouselItems([
-          {
-            id: 1,
-            type: 'image',
-            title: 'Welcome to DAMS',
-            image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
-            description: 'Streamline your ministry operations with our comprehensive platform for managing events, people, and digital assets.'
-          },
-          {
-            id: 2,
-            type: 'event',
-            title: 'Sunday Service',
-            image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-            description: 'Join us for our weekly Sunday service featuring inspiring worship and meaningful fellowship.',
-            eventDate: 'Every Sunday',
-            eventTime: '10:00 AM'
-          },
-          {
-            id: 3,
-            type: 'image',
-            title: 'Ministry Team',
-            image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-            description: 'Meet our dedicated team of ministry leaders and volunteers who make everything possible.'
-          }
-        ]);
+        console.error('Error fetching carousel:', err);
+        // No fallback data - only load from database
       } finally {
         setLoading(false);
       }
@@ -93,6 +69,22 @@ const Home = () => {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     
     return `${displayHour}:${minutes} ${ampm}`;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+    
+    const options = { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    };
+    
+    return date.toLocaleDateString('en-US', options);
   };
 
   if (loading) {
@@ -165,7 +157,7 @@ const Home = () => {
                 <div className="carousel-event-details">
                   <div className="carousel-event-date">
                     <span className="carousel-event-icon">📅</span>
-                    <span>{carouselItems[currentSlide].eventDate}</span>
+                    <span>{formatDate(carouselItems[currentSlide].eventDate)}</span>
                   </div>
                   <div className="carousel-event-time">
                     <span className="carousel-event-icon">🕒</span>
