@@ -94,7 +94,25 @@ const Home = () => {
       <div className="home">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>{t('home.carousel.loading_error')}</p>
+          <h2>{t('home.loading.title')}</h2>
+          <p>{t('home.loading.subtitle')}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="home">
+        <div className="error-container">
+          <h2>{t('home.error.title')}</h2>
+          <p>{t('home.error.subtitle')}</p>
+          <button 
+            className="retry-button"
+            onClick={() => window.location.reload()}
+          >
+            {t('home.error.retry_button')}
+          </button>
         </div>
       </div>
     );
@@ -142,10 +160,20 @@ const Home = () => {
           </div>
 
           {/* Carousel Navigation */}
-          <button className="carousel-nav carousel-prev" onClick={goToPrevious}>
+          <button 
+            className="carousel-nav carousel-prev" 
+            onClick={goToPrevious}
+            aria-label={t('home.carousel.navigation.previous')}
+            title={t('home.carousel.navigation.previous')}
+          >
             <span>‹</span>
           </button>
-          <button className="carousel-nav carousel-next" onClick={goToNext}>
+          <button 
+            className="carousel-nav carousel-next" 
+            onClick={goToNext}
+            aria-label={t('home.carousel.navigation.next')}
+            title={t('home.carousel.navigation.next')}
+          >
             <span>›</span>
           </button>
 
@@ -171,16 +199,20 @@ const Home = () => {
           </div>
 
           {/* Carousel Indicators */}
-          <div className="carousel-indicators">
+          <div className="carousel-indicators" role="tablist" aria-label="Carousel slides">
             {carouselItems.map((_, index) => (
               <button
                 key={index}
                 className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
                 onClick={() => goToSlide(index)}
-                aria-label={`Go to slide ${index + 1}`}
+                aria-label={t('home.carousel.navigation.go_to_slide', { slide: index + 1 })}
+                aria-selected={index === currentSlide}
+                role="tab"
               />
             ))}
           </div>
+
+
         </section>
       ) : (
         <div className="empty-carousel-message">

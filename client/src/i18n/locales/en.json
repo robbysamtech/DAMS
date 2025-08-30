@@ -70,15 +70,35 @@
   },
   "home": {
     "page_title": "Welcome to DAMS",
+    "page_description": "Digital Asset Management System for your church",
     "carousel": {
       "edit_button": "Edit Carousel",
-      "empty_message": "No carousel content available",
-      "loading_error": "Failed to load carousel content"
+      "empty_message": "No carousel content available. Click 'Edit' to add some!",
+      "loading_error": "Failed to load carousel content",
+      "loading_message": "Loading carousel content...",
+      "navigation": {
+        "previous": "Previous slide",
+        "next": "Next slide",
+        "go_to_slide": "Go to slide {{slide}}"
+      },
+      "event_details": {
+        "date_label": "Event Date",
+        "time_label": "Event Time"
+      }
     },
     "hero": {
       "title": "Welcome to DAMS",
       "subtitle": "Digital Asset Management System",
       "description": "Manage your church's digital assets efficiently and securely"
+    },
+    "loading": {
+      "title": "Loading...",
+      "subtitle": "Please wait while we prepare your content"
+    },
+    "error": {
+      "title": "Something went wrong",
+      "subtitle": "We couldn't load the carousel content",
+      "retry_button": "Try Again"
     }
   },
   "events": {
