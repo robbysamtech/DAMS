@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['pending', 'consumer', 'creator', 'admin'],
+    enum: ['pending', 'consumer', 'editor', 'admin'],
     default: 'pending'
   },
   status: {

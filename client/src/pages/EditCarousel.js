@@ -15,28 +15,42 @@ const EditCarousel = () => {
     const fetchCarouselItems = async () => {
       try {
         setLoading(true);
+        console.log('Fetching carousel items with token:', token ? 'Token exists' : 'No token');
+        
         const response = await fetch('http://localhost:5001/api/carousel/admin', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
         
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
         if (!response.ok) {
-          throw new Error('Failed to fetch carousel items');
+          const errorText = await response.text();
+          console.error('Response error:', errorText);
+          throw new Error(`Failed to fetch carousel items: ${response.status} ${errorText}`);
         }
         const data = await response.json();
+        console.log('Carousel data received:', data);
         setCarouselItems(data);
         setError(null);
       } catch (err) {
-        setError('Failed to load carousel content');
         console.error('Error fetching carousel items:', err);
+        setError(`Failed to load carousel content: ${err.message}`);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCarouselItems();
-  }, []);
+    if (token) {
+      fetchCarouselItems();
+    } else {
+      console.log('No token available, skipping fetch');
+      setLoading(false);
+      setError('No authentication token available');
+    }
+  }, [token]);
 
   // Initialize 9 tiles (3x3 grid)
   const initializeTiles = useCallback(() => {
