@@ -24,7 +24,6 @@ router.get('/', async (req, res) => {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
-        { location: { $regex: search, $options: 'i' } },
         { tags: { $in: [new RegExp(search, 'i')] } }
       ];
     }
@@ -67,6 +66,7 @@ router.get('/upcoming', async (req, res) => {
 
     const events = await Event.find(filter)
       .populate('creator', 'firstName lastName')
+      .populate('location', 'name')
       .sort({ date: 1, time: 1 })
       .limit(parseInt(limit));
 
@@ -118,6 +118,7 @@ router.get('/:id', async (req, res) => {
   try {
     const event = await Event.findById(req.params.id)
       .populate('creator', 'firstName lastName profile')
+      .populate('location', 'name')
 
 
     if (!event) {
@@ -178,7 +179,8 @@ router.post('/', async (req, res) => {
     await event.save();
 
     const populatedEvent = await event.populate([
-      { path: 'creator', select: 'firstName lastName' }
+      { path: 'creator', select: 'firstName lastName' },
+      { path: 'location', select: 'name' }
     ]);
 
     res.status(201).json({
@@ -243,7 +245,8 @@ router.put('/:id', async (req, res) => {
       { $set: updates },
       { new: true, runValidators: true }
     ).populate([
-      { path: 'creator', select: 'firstName lastName' }
+      { path: 'creator', select: 'firstName lastName' },
+      { path: 'location', select: 'name' }
     ]);
 
     res.json({
@@ -381,7 +384,6 @@ router.get('/search/advanced', async (req, res) => {
       filter.$or = [
         { title: { $regex: query, $options: 'i' } },
         { description: { $regex: query, $options: 'i' } },
-        { location: { $regex: query, $options: 'i' } },
         { tags: { $in: [new RegExp(query, 'i')] } }
       ];
     }
@@ -400,7 +402,7 @@ router.get('/search/advanced', async (req, res) => {
     
     const events = await Event.find(filter)
       .populate('creator', 'firstName lastName')
-
+      .populate('location', 'name')
       .sort({ date: 1, time: 1 })
       .skip(skip)
       .limit(parseInt(limit));

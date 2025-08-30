@@ -19,8 +19,29 @@ const Events = () => {
     location: '',
     eventImage: null
   });
+  const [locations, setLocations] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showFullScreen, setShowFullScreen] = useState(false);
+
+  const fetchLocations = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/locations', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setLocations(data);
+      } else {
+        console.error('Failed to fetch locations:', response.status);
+      }
+    } catch (err) {
+      console.error('Error fetching locations:', err);
+    }
+  }, [token]);
 
   const fetchEvents = useCallback(async () => {
     // Add timeout to prevent freezing
@@ -58,11 +79,12 @@ const Events = () => {
 
   useEffect(() => {
     if (token) {
+      fetchLocations();
       fetchEvents();
     } else {
       setLoading(false); // Don't keep loading if no token
     }
-  }, [token, fetchEvents]);
+  }, [token, fetchLocations, fetchEvents]);
 
   // Real-time search filtering
   useEffect(() => {
@@ -76,7 +98,7 @@ const Events = () => {
       return (
         event.title?.toLowerCase().includes(query) ||
         event.description?.toLowerCase().includes(query) ||
-        event.location?.toLowerCase().includes(query) ||
+        event.location?.name?.toLowerCase().includes(query) ||
         event.category?.toLowerCase().includes(query) ||
         event.tags?.some(tag => tag.toLowerCase().includes(query))
       );
@@ -181,7 +203,7 @@ const Events = () => {
       description: event.description,
       date: event.date.split('T')[0], // Convert ISO date to YYYY-MM-DD
       time: event.time,
-      location: event.location,
+      location: event.location?._id || event.location,
       eventImage: null
     });
     setShowCreateForm(true);
@@ -457,16 +479,21 @@ const Events = () => {
 
                 <div className="form-group">
                   <label htmlFor="location">Location</label>
-                  <input
-                    type="text"
+                  <select
                     id="location"
                     name="location"
                     value={formData.location}
                     onChange={handleInputChange}
                     className="form-input"
-                    placeholder="Enter event location"
                     required
-                  />
+                  >
+                    <option value="">Select a location</option>
+                    {locations.map(location => (
+                      <option key={location._id} value={location._id}>
+                        {location.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="form-group">
@@ -586,7 +613,7 @@ const Events = () => {
                       
                       <div className="event-location">
                         <span className="icon">📍</span>
-                        {event.location}
+                        {event.location?.name || 'Location not set'}
                       </div>
                     </div>
                   </div>
@@ -691,7 +718,7 @@ const Events = () => {
                     <div className="info-card-icon">📍</div>
                     <div className="info-card-content">
                       <h4>Location</h4>
-                      <p>{selectedEvent.location}</p>
+                      <p>{selectedEvent.location?.name || 'Location not set'}</p>
                     </div>
                   </div>
                 </div>

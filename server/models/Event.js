@@ -21,10 +21,9 @@ const eventSchema = new mongoose.Schema({
     required: true
   },
   location: {
-    type: String,
-    required: true,
-    trim: true,
-    maxlength: 500
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Location',
+    required: true
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
