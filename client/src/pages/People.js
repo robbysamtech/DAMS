@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import './People.css';
 
 const People = () => {
   const { user, token } = useAuth();
+  const { t } = useTranslation();
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -33,10 +35,10 @@ const People = () => {
         const data = await response.json();
         setPeople(data.people || []);
       } else {
-        setError('Failed to fetch people');
+        setError(t('errors.general'));
       }
     } catch (err) {
-      setError('Error fetching people');
+      setError(t('errors.network'));
     } finally {
       setLoading(false);
     }
@@ -212,7 +214,7 @@ const People = () => {
   };
 
   const deletePerson = async (personId) => {
-    if (!window.confirm('Are you sure you want to delete this person?')) return;
+    if (!window.confirm(t('people.delete_member'))) return;
     
     try {
       const response = await fetch(`http://localhost:5001/api/people/${personId}`, {
@@ -227,10 +229,10 @@ const People = () => {
         setPeople(prev => prev.filter(person => person._id !== personId));
         setError('');
       } else {
-        setError('Failed to delete person');
+        setError(t('errors.general'));
       }
     } catch (err) {
-      setError('Error deleting person');
+      setError(t('errors.network'));
     }
   };
 
@@ -238,7 +240,7 @@ const People = () => {
     return (
       <div className="people-page">
         <div className="container">
-          <div className="loading">Loading ministry team...</div>
+          <div className="loading">{t('loading.spinner_text')}</div>
         </div>
       </div>
     );
@@ -263,18 +265,18 @@ const People = () => {
                 onClick={() => setShowCreateForm(!showCreateForm)}
                 className="btn btn-primary"
               >
-                {showCreateForm ? 'Cancel' : '👤 Add Team Member'}
+                {showCreateForm ? t('common.cancel') : `👤 ${t('people.add_member')}`}
               </button>
             </div>
 
             {/* Create Person Form */}
             {showCreateForm && (
               <form onSubmit={handleSubmit} className="create-form">
-                <h3>Add New Team Member</h3>
+                <h3>{t('people.add_member')}</h3>
                 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="firstName">First Name</label>
+                    <label htmlFor="firstName">{t('people.form.first_name')}</label>
                     <input
                       type="text"
                       id="firstName"
@@ -282,13 +284,13 @@ const People = () => {
                       value={formData.firstName}
                       onChange={handleInputChange}
                       className="form-input"
-                      placeholder="Enter first name"
+                      placeholder={t('people.form.first_name_placeholder')}
                       required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="lastName">Last Name</label>
+                    <label htmlFor="lastName">{t('people.form.last_name')}</label>
                     <input
                       type="text"
                       id="lastName"
@@ -296,7 +298,7 @@ const People = () => {
                       value={formData.lastName}
                       onChange={handleInputChange}
                       className="form-input"
-                      placeholder="Enter last name"
+                      placeholder={t('people.form.last_name_placeholder')}
                       required
                     />
                   </div>
@@ -304,7 +306,7 @@ const People = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="churchRole">Role</label>
+                    <label htmlFor="churchRole">{t('people.form.role')}</label>
                     <select
                       id="churchRole"
                       name="churchRole"
@@ -313,10 +315,10 @@ const People = () => {
                       className="form-input"
                       required
                     >
-                      <option value="">Select a role</option>
-                      <option value="Pastor">Pastor</option>
-                      <option value="Leader">Leader</option>
-                      <option value="Member">Member</option>
+                      <option value="">{t('people.form.role_placeholder')}</option>
+                      <option value="Pastor">{t('people.roles.pastor')}</option>
+                      <option value="Leader">{t('people.roles.leader')}</option>
+                      <option value="Member">{t('people.roles.member')}</option>
                     </select>
                   </div>
 
@@ -383,7 +385,7 @@ const People = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="profilePhoto">Profile Photo</label>
+                  <label htmlFor="profilePhoto">{t('people.form.profile_photo')}</label>
                   <input
                     type="file"
                     id="profilePhoto"
@@ -400,28 +402,28 @@ const People = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="bio">Bio</label>
-                  <textarea
-                    id="bio"
-                    name="bio"
-                    value={formData.bio}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    placeholder="Brief description of their role and background"
-                    rows="3"
-                  />
+                  <label htmlFor="bio">{t('people.form.bio')}</label>
+                                      <textarea
+                      id="bio"
+                      name="bio"
+                      value={formData.bio}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder={t('people.form.bio_placeholder')}
+                      rows="3"
+                    />
                 </div>
 
                 <div className="form-actions">
                   <button type="submit" className="btn btn-success">
-                    Add Team Member
+                    {t('people.form.submit')}
                   </button>
                   <button 
                     type="button" 
                     onClick={resetForm}
                     className="btn btn-secondary"
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </button>
                 </div>
               </form>
@@ -430,7 +432,7 @@ const People = () => {
             {/* Edit Person Form */}
             {showEditForm && editingPerson && (
               <form onSubmit={handleUpdate} className="create-form">
-                <h3>Edit Team Member</h3>
+                <h3>{t('people.edit_member')}</h3>
                 
                 <div className="form-row">
                   <div className="form-group">
@@ -582,7 +584,7 @@ const People = () => {
 
                 <div className="form-actions">
                   <button type="submit" className="btn btn-success">
-                    Update Team Member
+                    {t('people.form.update')}
                   </button>
                   <button 
                     type="button" 
@@ -599,13 +601,13 @@ const People = () => {
 
         {/* Team Members */}
         <div className="team-section">
-          <h2>Team Members ({people.length})</h2>
+          <h2>{t('people.page_title')} ({people.length})</h2>
           
           {people.length === 0 ? (
             <div className="no-people">
-              <p>No team members added yet.</p>
+              <p>{t('people.display.no_members')}</p>
               {user?.role === 'editor' && (
-                <p>Add your first team member to get started!</p>
+                <p>{t('people.add_member')}</p>
               )}
             </div>
           ) : (
@@ -635,16 +637,16 @@ const People = () => {
                       <button 
                         onClick={() => handleEdit(person)}
                         className="btn-edit"
-                        title="Edit person"
+                        title={t('people.edit_member')}
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button 
                         onClick={() => deletePerson(person._id)}
                         className="btn-delete"
-                        title="Delete person"
+                        title={t('people.delete_member')}
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                   )}

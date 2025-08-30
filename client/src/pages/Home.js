@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
   const { isEditor, loading: authLoading } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselItems, setCarouselItems] = useState([]);
@@ -92,7 +94,7 @@ const Home = () => {
       <div className="home">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Loading carousel content...</p>
+          <p>{t('home.carousel.loading_error')}</p>
         </div>
       </div>
     );
@@ -107,9 +109,9 @@ const Home = () => {
           onClick={() => {
             navigate('/edit-carousel');
           }}
-          title="Edit Carousel Content"
+          title={t('home.carousel.edit_button')}
         >
-          Edit
+          {t('common.edit')}
         </button>
       )}
 
@@ -182,7 +184,7 @@ const Home = () => {
         </section>
       ) : (
         <div className="empty-carousel-message">
-          <p>No carousel content available. Click "Edit" to add some!</p>
+          <p>{t('home.carousel.empty_message')}</p>
         </div>
       )}
     </div>

@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import './Header.css';
 
 const Header = () => {
   const { user, logout, isAdmin } = useAuth();
+  const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -32,7 +34,7 @@ const Header = () => {
         <div className="header-content">
           <div className="header-brand">
             <Link to="/" className="brand-link">
-              <h1 className="brand-title">DAMS</h1>
+              <h1 className="brand-title">{t('navigation.header.logo')}</h1>
               <span className="brand-subtitle">Digital Asset Management System</span>
             </Link>
           </div>
@@ -45,7 +47,7 @@ const Header = () => {
                   className={`nav-link ${isActive('/') ? 'active' : ''}`}
                   onClick={closeMobileMenu}
                 >
-                  Home
+                  {t('navigation.header.nav_home')}
                 </Link>
               </li>
               
@@ -55,7 +57,7 @@ const Header = () => {
                   className={`nav-link ${isActive('/events') ? 'active' : ''}`}
                   onClick={closeMobileMenu}
                 >
-                  Events
+                  {t('navigation.header.nav_events')}
                 </Link>
               </li>
               
@@ -65,7 +67,7 @@ const Header = () => {
                   className={`nav-link ${isActive('/people') ? 'active' : ''}`}
                   onClick={closeMobileMenu}
                 >
-                  People
+                  {t('navigation.header.nav_people')}
                 </Link>
               </li>
               
@@ -80,7 +82,7 @@ const Header = () => {
                         className={`nav-link ${isActive('/admin') ? 'active' : ''}`}
                         onClick={closeMobileMenu}
                       >
-                        Admin
+                        {t('navigation.header.nav_admin')}
                       </Link>
                     </li>
                   )}
@@ -95,9 +97,9 @@ const Header = () => {
                 <div className="user-info">
                   <span className="user-name">{user.firstName} {user.lastName}</span>
                   <span className={`user-role user-role-${user.role}`}>
-                    {user.role === 'admin' && '👑 Admin'}
-                    {user.role === 'editor' && '✍️ Editor'}
-                    {user.role === 'consumer' && '👁️ Consumer'}
+                    {user.role === 'admin' && t('navigation.header.user_role_admin')}
+                    {user.role === 'editor' && t('navigation.header.user_role_editor')}
+                    {user.role === 'consumer' && t('navigation.header.user_role_consumer')}
                     {user.role === 'pending' && '⏳ Pending'}
                   </span>
                 </div>
@@ -111,16 +113,16 @@ const Header = () => {
                   
                   <div className="user-dropdown-menu">
                     <Link to="/profile" className="dropdown-item">
-                      <span>👤 Profile</span>
+                      <span>👤 {t('common.profile')}</span>
                     </Link>
 
                     {isAdmin && (
                       <Link to="/admin" className="dropdown-item">
-                        <span>⚙️ Admin Panel</span>
+                        <span>⚙️ {t('common.admin')}</span>
                       </Link>
                     )}
                     <button onClick={handleLogout} className="dropdown-item">
-                      <span>🚪 Logout</span>
+                      <span>🚪 {t('common.logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -128,10 +130,10 @@ const Header = () => {
             ) : (
               <div className="auth-buttons">
                 <Link to="/login" className="btn btn-outline">
-                  Login
+                  {t('common.login')}
                 </Link>
                 <Link to="/register" className="btn btn-primary">
-                  Register
+                  {t('common.register')}
                 </Link>
               </div>
             )}

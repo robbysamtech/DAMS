@@ -1,0 +1,360 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "update": "Update",
+    "submit": "Submit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "clear": "Clear",
+    "select": "Select",
+    "upload": "Upload",
+    "remove": "Remove",
+    "view": "View",
+    "details": "Details",
+    "actions": "Actions",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "required": "Required",
+    "optional": "Optional",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "warning": "Warning",
+    "info": "Information",
+    "help": "Help",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "welcome": "Welcome",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "events": "Events",
+    "people": "People",
+    "ministry": "Ministry",
+    "admin": "Admin"
+  },
+  "navigation": {
+    "header": {
+      "logo": "DAMS",
+      "nav_home": "Home",
+      "nav_events": "Events",
+      "nav_people": "People",
+      "nav_admin": "Admin",
+      "user_role_editor": "✍️ Editor",
+      "user_role_admin": "👑 Admin",
+      "user_role_consumer": "👤 Consumer"
+    },
+    "footer": {
+      "copyright": "© 2024 DAMS. All rights reserved.",
+      "privacy_policy": "Privacy Policy",
+      "terms_of_service": "Terms of Service",
+      "contact_us": "Contact Us"
+    }
+  },
+  "home": {
+    "page_title": "Welcome to DAMS",
+    "carousel": {
+      "edit_button": "Edit Carousel",
+      "empty_message": "No carousel content available",
+      "loading_error": "Failed to load carousel content"
+    },
+    "hero": {
+      "title": "Welcome to DAMS",
+      "subtitle": "Digital Asset Management System",
+      "description": "Manage your church's digital assets efficiently and securely"
+    }
+  },
+  "events": {
+    "page_title": "Events",
+    "page_description": "Manage and view church events",
+    "create_event": "Create Event",
+    "edit_event": "Edit Event",
+    "delete_event": "Delete Event",
+    "event_details": "Event Details",
+    "form": {
+      "title": "Event Title",
+      "title_placeholder": "Enter event title",
+      "description": "Description",
+      "description_placeholder": "Enter event description",
+      "date": "Date",
+      "time": "Time",
+      "location": "Location",
+      "location_placeholder": "Select a location",
+      "event_image": "Event Image",
+      "event_image_help": "Upload an image for this event",
+      "submit": "Create Event",
+      "update": "Update Event"
+    },
+    "validation": {
+      "title_required": "Event title is required",
+      "description_required": "Event description is required",
+      "date_required": "Event date is required",
+      "time_required": "Event time is required",
+      "location_required": "Event location is required"
+    },
+    "messages": {
+      "event_created": "Event created successfully",
+      "event_updated": "Event updated successfully",
+      "event_deleted": "Event deleted successfully",
+      "event_creation_failed": "Failed to create event",
+      "event_update_failed": "Failed to update event",
+      "event_deletion_failed": "Failed to delete event"
+    },
+    "filters": {
+      "search_placeholder": "Search events...",
+      "date_filter": "Filter by date",
+      "location_filter": "Filter by location"
+    },
+    "display": {
+      "no_events": "No events found",
+      "event_date": "Event Date",
+      "event_time": "Event Time",
+      "event_location": "Event Location",
+      "event_description": "Event Description"
+    }
+  },
+  "people": {
+    "page_title": "People",
+    "page_description": "Manage church members and staff",
+    "add_member": "Add Team Member",
+    "edit_member": "Edit Member",
+    "delete_member": "Delete Member",
+    "member_details": "Member Details",
+    "form": {
+      "first_name": "First Name",
+      "first_name_placeholder": "Enter first name",
+      "last_name": "Last Name",
+      "last_name_placeholder": "Enter last name",
+      "role": "Role",
+      "role_placeholder": "Select a role",
+      "ministry": "Ministry",
+      "ministry_placeholder": "Select ministries",
+      "bio": "Bio",
+      "bio_placeholder": "Enter member bio",
+      "profile_photo": "Profile Photo",
+      "profile_photo_help": "Upload a profile photo",
+      "submit": "Add Member",
+      "update": "Update Member"
+    },
+    "roles": {
+      "pastor": "Pastor",
+      "leader": "Leader",
+      "member": "Member"
+    },
+    "ministries": {
+      "gospel": "Gospel",
+      "children_ministry": "Children's Ministry",
+      "bible_study": "Bible Study",
+      "easter_committee": "Easter Committee",
+      "harvest_committee": "Harvest Committee"
+    },
+    "validation": {
+      "first_name_required": "First name is required",
+      "last_name_required": "Last name is required",
+      "role_required": "Role is required",
+      "ministry_required": "At least one ministry must be selected",
+      "bio_required": "Bio is required"
+    },
+    "messages": {
+      "member_added": "Member added successfully",
+      "member_updated": "Member updated successfully",
+      "member_deleted": "Member deleted successfully",
+      "member_creation_failed": "Failed to add member",
+      "member_update_failed": "Failed to update member",
+      "member_deletion_failed": "Failed to delete member"
+    },
+    "display": {
+      "no_members": "No members found",
+      "member_role": "Role",
+      "member_ministry": "Ministry",
+      "member_bio": "Bio",
+      "member_photo": "Profile Photo"
+    }
+  },
+  "edit_carousel": {
+    "page_title": "Edit Carousel",
+    "page_description": "Manage carousel content for the home page",
+    "add_card": "Add New Card",
+    "edit_card": "Edit Card",
+    "delete_card": "Delete Card",
+    "card_details": "Card Details",
+    "form": {
+      "title": "Card Title",
+      "title_placeholder": "Enter card title",
+      "description": "Description",
+      "description_placeholder": "Enter card description",
+      "card_type": "Card Type",
+      "card_type_placeholder": "Select card type",
+      "event_date": "Event Date",
+      "event_time": "Event Time",
+      "image": "Image",
+      "image_help": "Upload an image for this card",
+      "is_active": "Active",
+      "submit": "Create Card",
+      "update": "Update Card"
+    },
+    "card_types": {
+      "event": "Event",
+      "image": "Image"
+    },
+    "validation": {
+      "title_required": "Card title is required",
+      "description_required": "Card description is required",
+      "card_type_required": "Card type is required",
+      "image_required": "Image is required"
+    },
+    "messages": {
+      "card_created": "Card created successfully",
+      "card_updated": "Card updated successfully",
+      "card_deleted": "Card deleted successfully",
+      "card_creation_failed": "Failed to create card",
+      "card_update_failed": "Failed to update card",
+      "card_deletion_failed": "Failed to delete card"
+    },
+    "display": {
+      "no_cards": "No carousel cards found",
+      "max_cards_reached": "Maximum number of cards (8) reached",
+      "card_type": "Type",
+      "card_status": "Status"
+    }
+  },
+  "admin": {
+    "page_title": "Admin Dashboard",
+    "page_description": "Manage users and system settings",
+    "users": {
+      "title": "User Management",
+      "add_user": "Add User",
+      "edit_user": "Edit User",
+      "delete_user": "Delete User",
+      "user_details": "User Details"
+    },
+    "statistics": {
+      "title": "System Statistics",
+      "total_users": "Total Users",
+      "total_editors": "Total Editors",
+      "total_consumers": "Total Consumers",
+      "total_events": "Total Events",
+      "total_people": "Total People"
+    },
+    "form": {
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "role": "Role",
+      "role_placeholder": "Select user role",
+      "status": "Status",
+      "status_placeholder": "Select user status",
+      "submit": "Create User",
+      "update": "Update User"
+    },
+    "roles": {
+      "admin": "Admin",
+      "editor": "Editor",
+      "consumer": "Consumer"
+    },
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    },
+    "validation": {
+      "first_name_required": "First name is required",
+      "last_name_required": "Last name is required",
+      "email_required": "Email is required",
+      "email_invalid": "Please enter a valid email",
+      "password_required": "Password is required",
+      "password_min_length": "Password must be at least 6 characters",
+      "role_required": "Role is required",
+      "status_required": "Status is required"
+    },
+    "messages": {
+      "user_created": "User created successfully",
+      "user_updated": "User updated successfully",
+      "user_deleted": "User deleted successfully",
+      "user_creation_failed": "Failed to create user",
+      "user_update_failed": "Failed to update user",
+      "user_deletion_failed": "Failed to delete user"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Sign in to your account",
+      "email": "Email",
+      "email_placeholder": "Enter your email",
+      "password": "Password",
+      "password_placeholder": "Enter your password",
+      "remember_me": "Remember me",
+      "forgot_password": "Forgot password?",
+      "submit": "Sign In",
+      "no_account": "Don't have an account?",
+      "sign_up": "Sign up"
+    },
+    "register": {
+      "title": "Register",
+      "subtitle": "Create a new account",
+      "first_name": "First Name",
+      "first_name_placeholder": "Enter your first name",
+      "last_name": "Last Name",
+      "last_name_placeholder": "Enter your last name",
+      "email": "Email",
+      "email_placeholder": "Enter your email",
+      "password": "Password",
+      "password_placeholder": "Enter your password",
+      "confirm_password": "Confirm Password",
+      "confirm_password_placeholder": "Confirm your password",
+      "submit": "Create Account",
+      "have_account": "Already have an account?",
+      "sign_in": "Sign in"
+    },
+    "validation": {
+      "email_required": "Email is required",
+      "email_invalid": "Please enter a valid email",
+      "password_required": "Password is required",
+      "password_min_length": "Password must be at least 6 characters",
+      "confirm_password_required": "Please confirm your password",
+      "passwords_not_match": "Passwords do not match",
+      "first_name_required": "First name is required",
+      "last_name_required": "Last name is required"
+    },
+    "messages": {
+      "login_success": "Login successful",
+      "login_failed": "Invalid email or password",
+      "register_success": "Registration successful",
+      "register_failed": "Registration failed",
+      "logout_success": "Logout successful"
+    }
+  },
+  "errors": {
+    "general": "Something went wrong",
+    "network": "Network error. Please check your connection.",
+    "unauthorized": "You are not authorized to perform this action",
+    "forbidden": "Access denied",
+    "not_found": "Resource not found",
+    "validation": "Please check your input and try again",
+    "server": "Server error. Please try again later.",
+    "timeout": "Request timed out. Please try again."
+  },
+  "loading": {
+    "spinner_text": "Loading...",
+    "please_wait": "Please wait..."
+  }
+}
