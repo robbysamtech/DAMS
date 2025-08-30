@@ -2,38 +2,38 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const HomeSection = require('./models/HomeSection');
 
-// Sample home sections data with random images and varied content
+// Sample home sections data with contemporary content and modern images
 const homeSectionsData = [
-           {
-           order: 1,
-           title: "Building Stronger Communities Together ABC",
-           description: "Experience the power of unity as we work hand in hand to create lasting bonds and meaningful relationships. Our community thrives on diversity, compassion, and shared values that bring people from all walks of life together in harmony.",
-           backgroundImage: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-           tileImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
-           isActive: true
-         },
+  {
+    order: 1,
+    title: "Building Stronger Communities Together",
+    description: "Experience the power of unity as we work hand in hand to create lasting bonds and meaningful relationships. Our community thrives on diversity, compassion, and shared values that bring people from all walks of life together in harmony. Join us in building bridges across cultures, generations, and backgrounds.",
+    backgroundImage: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    isActive: true
+  },
   {
     order: 2,
     title: "Nurturing Faith Through Knowledge",
-    description: "Discover deeper spiritual insights through our comprehensive learning programs, interactive workshops, and guided study sessions. We believe that knowledge strengthens faith and understanding leads to growth in every aspect of life.",
-    backgroundImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    tileImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    description: "Discover deeper spiritual insights through our comprehensive learning programs, interactive workshops, and guided study sessions. We believe that knowledge strengthens faith and understanding leads to growth in every aspect of life. Explore ancient wisdom with modern perspectives.",
+    backgroundImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     isActive: true
   },
   {
     order: 3,
     title: "Serving Others with Compassion",
-    description: "Join our mission to make a positive difference in the world through acts of kindness, volunteer service, and community outreach programs. Every helping hand contributes to building a better tomorrow for everyone.",
-    backgroundImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    tileImage: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    description: "Make a difference in our community through various service initiatives, volunteer opportunities, and outreach programs. Together, we can create positive change and support those in need. Every act of kindness, no matter how small, has the power to transform lives.",
+    backgroundImage: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     isActive: true
   },
   {
     order: 4,
     title: "Celebrating Life's Special Moments",
-    description: "Experience the joy of community celebrations, seasonal festivals, and special gatherings that bring people together. From traditional ceremonies to modern events, we create memories that last a lifetime.",
-    backgroundImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
-    tileImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    description: "Experience the joy of community celebrations, seasonal festivals, and special gatherings that bring people together. From traditional ceremonies to modern events, we create memories that last a lifetime. Join us in celebrating the beautiful tapestry of human connection.",
+    backgroundImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     isActive: true
   }
 ];
