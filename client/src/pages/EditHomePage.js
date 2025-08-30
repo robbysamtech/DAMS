@@ -141,33 +141,118 @@ const EditHomePage = () => {
     setAlert({ show: false, message: '', type: 'success' });
   };
 
-  const handleSectionUpdate = async (sectionId, updatedData) => {
+  const handleSectionUpdate = async (sectionId, sectionData) => {
     try {
+      console.log('Starting section update for:', sectionId);
+      console.log('Section data:', sectionData);
+      
+      // Find the section in state to check for temporary files
+      const sectionIndex = homeSections.findIndex(s => s._id === sectionId);
+      const section = homeSections[sectionIndex];
+      
+      console.log('Found section at index:', sectionIndex);
+      console.log('Section from state:', section);
+      console.log('Temporary files:', {
+        background: section?.tempBackgroundFile,
+        tile: section?.tempTileFile
+      });
+      
+      // Upload background image if a new one was selected
+      if (section?.tempBackgroundFile) {
+        console.log('Uploading background image...');
+        const formData = new FormData();
+        formData.append('backgroundImage', section.tempBackgroundFile);
+        
+        const backgroundResponse = await fetch(`http://localhost:5001/api/home-sections/${sectionId}/background-image`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        if (backgroundResponse.ok) {
+          const backgroundResult = await backgroundResponse.json();
+          sectionData.backgroundImage = backgroundResult.backgroundImage;
+          console.log('Background image uploaded successfully:', backgroundResult.backgroundImage);
+        } else {
+          const errorText = await backgroundResponse.text();
+          console.error('Background upload failed:', errorText);
+          showAlert('Failed to upload background image', 'error');
+          return;
+        }
+      }
+      
+      // Upload tile image if a new one was selected
+      if (section?.tempTileFile) {
+        console.log('Uploading tile image...');
+        const formData = new FormData();
+        formData.append('tileImage', section.tempTileFile);
+        
+        const tileResponse = await fetch(`http://localhost:5001/api/home-sections/${sectionId}/tile-image`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        if (tileResponse.ok) {
+          const tileResult = await tileResponse.json();
+          sectionData.tileImage = tileResult.tileImage;
+          console.log('Tile image uploaded successfully:', tileResult.tileImage);
+        } else {
+          const errorText = await tileResponse.text();
+          console.error('Tile upload failed:', errorText);
+          showAlert('Failed to upload tile image', 'error');
+          return;
+        }
+      }
+      
+      console.log('Final section data to update:', sectionData);
+      
+      // Now update the section with all data including new image URLs
       const response = await fetch(`http://localhost:5001/api/home-sections/${sectionId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(updatedData)
+        body: JSON.stringify(sectionData)
       });
 
       if (response.ok) {
         const updatedSection = await response.json();
+        console.log('Section updated successfully:', updatedSection);
+        
         setHomeSections(prev => 
           prev.map(section => 
-            section._id === sectionId ? updatedSection : section
+            section._id === updatedSection._id ? updatedSection : section
           )
         );
+        
+        // Clear temporary files and previews
+        const updatedSections = [...homeSections];
+        if (updatedSections[sectionIndex]) {
+          updatedSections[sectionIndex].tempBackgroundFile = null;
+          updatedSections[sectionIndex].tempTileFile = null;
+          updatedSections[sectionIndex].backgroundImagePreview = null;
+          updatedSections[sectionIndex].tileImagePreview = null;
+          setHomeSections(updatedSections);
+        }
+        
         showAlert('Section updated successfully!', 'success');
-        console.log('Section updated successfully');
+        
+        // Refresh the home sections data to ensure UI shows latest images
+        await refreshHomeSections();
       } else {
+        const errorText = await response.text();
+        console.error('Section update failed:', errorText);
         showAlert('Failed to update section', 'error');
-        console.error('Failed to update section');
       }
     } catch (err) {
-      showAlert(`Error updating section: ${err.message}`, 'error');
       console.error('Error updating section:', err);
+      showAlert(`Error updating section: ${err.message}`, 'error');
     }
   };
 
@@ -196,7 +281,7 @@ const EditHomePage = () => {
     };
     reader.readAsDataURL(file);
 
-    alert('Image selected! Click Save to upload and save the tile.');
+    showAlert('Image selected! Click Save to upload and save the tile.');
   };
 
   const handleSaveTile = async (tileIndex) => {
@@ -376,6 +461,44 @@ const EditHomePage = () => {
         console.error('Error deleting tile:', err);
         showAlert('Error deleting tile', 'error');
       }
+    }
+  };
+
+  const handleBackgroundImageUpload = async (sectionIndex, file) => {
+    if (!file) return;
+    
+    // Store the file temporarily for later upload
+    const updatedSections = [...homeSections];
+    updatedSections[sectionIndex].tempBackgroundFile = file;
+    updatedSections[sectionIndex].backgroundImagePreview = URL.createObjectURL(file);
+    setHomeSections(updatedSections);
+    
+    showAlert('Background image selected! Click "Update Section" to upload and save.', 'info');
+  };
+
+  const handleTileImageUpload = async (sectionIndex, file) => {
+    if (!file) return;
+    
+    // Store the file temporarily for later upload
+    const updatedSections = [...homeSections];
+    updatedSections[sectionIndex].tempTileFile = file;
+    updatedSections[sectionIndex].tileImagePreview = URL.createObjectURL(file);
+    setHomeSections(updatedSections);
+    
+    showAlert('Tile image selected! Click "Update Section" to upload and save.', 'info');
+  };
+
+  // Function to refresh home sections data
+  const refreshHomeSections = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/home-sections');
+      if (response.ok) {
+        const sections = await response.json();
+        setHomeSections(sections);
+        console.log('Home sections refreshed:', sections);
+      }
+    } catch (err) {
+      console.error('Error refreshing home sections:', err);
     }
   };
 
@@ -594,7 +717,7 @@ const EditHomePage = () => {
       {/* Edit Sections Section */}
       <div className="sections-section">
         <div className="section-header">
-          <h2>Edit Sections</h2>
+          <h2>Sections</h2>
         </div>
         
         <div className="sections-grid">
@@ -615,56 +738,93 @@ const EditHomePage = () => {
               </div>
 
               <div className="section-tile-content">
-                <div className="form-group">
-                  <label>Title:</label>
-                  <input
-                    type="text"
-                    value={section.title}
-                    onChange={(e) => handleSectionInputChange(index, 'title', e.target.value)}
-                    placeholder="Enter section title"
-                    maxLength="100"
-                  />
+                {/* Left Section - Title, Description, Update Button */}
+                <div className="section-left">
+                  <div className="form-group">
+                    <label>Title:</label>
+                    <input
+                      type="text"
+                      value={section.title}
+                      onChange={(e) => handleSectionInputChange(index, 'title', e.target.value)}
+                      placeholder="Enter section title"
+                      maxLength="100"
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Description:</label>
+                    <textarea
+                      value={section.description}
+                      onChange={(e) => handleSectionInputChange(index, 'description', e.target.value)}
+                      placeholder="Enter section description"
+                      maxLength="500"
+                      rows="4"
+                    />
+                  </div>
+
+                  <div className="section-tile-actions">
+                    <button 
+                      className="save-btn"
+                      onClick={() => handleSectionUpdate(section._id, section)}
+                    >
+                      Update Section
+                    </button>
+                    {(section.tempBackgroundFile || section.tempTileFile) && (
+                      <small className="upload-note">
+                        📁 Files selected - will be uploaded when you click Update Section
+                      </small>
+                    )}
+                  </div>
                 </div>
 
-                <div className="form-group">
-                  <label>Description:</label>
-                  <textarea
-                    value={section.description}
-                    onChange={(e) => handleSectionInputChange(index, 'description', e.target.value)}
-                    placeholder="Enter section description"
-                    maxLength="500"
-                    rows="4"
-                  />
-                </div>
+                {/* Right Section - Image Uploads */}
+                <div className="section-right">
+                  <div className="form-group">
+                    <label>Background Image:</label>
+                    <div className="image-upload-section">
+                      {(section.backgroundImagePreview || section.backgroundImage) && (
+                        <div className="image-preview">
+                          <img 
+                            src={section.backgroundImagePreview || section.backgroundImage} 
+                            alt="Background Preview" 
+                          />
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleBackgroundImageUpload(index, e.target.files[0])}
+                        id={`background-upload-${index}`}
+                      />
+                      <label htmlFor={`background-upload-${index}`} className="upload-button">
+                        {section.tempBackgroundFile ? 'Background Selected ✓' : (section.backgroundImage ? 'Change Background' : 'Upload Background')}
+                      </label>
+                    </div>
+                  </div>
 
-                <div className="form-group">
-                  <label>Background Image URL:</label>
-                  <input
-                    type="text"
-                    value={section.backgroundImage}
-                    onChange={(e) => handleSectionInputChange(index, 'backgroundImage', e.target.value)}
-                    placeholder="Enter background image URL"
-                  />
+                  <div className="form-group">
+                    <label>Tile Image:</label>
+                    <div className="image-upload-section">
+                      {(section.tileImagePreview || section.tileImage) && (
+                        <div className="image-preview">
+                          <img 
+                            src={section.tileImagePreview || section.tileImage} 
+                            alt="Tile Preview" 
+                          />
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleTileImageUpload(index, e.target.files[0])}
+                        id={`tile-upload-${index}`}
+                      />
+                      <label htmlFor={`tile-upload-${index}`} className="upload-button">
+                        {section.tempTileFile ? 'Tile Selected ✓' : (section.tileImage ? 'Change Tile' : 'Upload Tile')}
+                      </label>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="form-group">
-                  <label>Tile Image URL:</label>
-                  <input
-                    type="text"
-                    value={section.tileImage}
-                    onChange={(e) => handleSectionInputChange(index, 'tileImage', e.target.value)}
-                    placeholder="Enter tile image URL"
-                  />
-                </div>
-              </div>
-
-              <div className="section-tile-actions">
-                <button 
-                  className="save-btn"
-                  onClick={() => handleSectionUpdate(section._id, section)}
-                >
-                  Update Section
-                </button>
               </div>
             </div>
           ))}

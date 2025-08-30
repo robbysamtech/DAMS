@@ -177,15 +177,16 @@ const Home = () => {
   return (
     <div className="home">
       {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {console.log('Auth loading:', authLoading, 'Is editor:', isEditor)}
       {!authLoading && isEditor && (
         <button 
           className="home-page-edit-btn" 
           onClick={() => {
             navigate('/edit-home-page');
           }}
-          title={t('home.home_page.edit_button')}
+          title="Edit Home Page"
         >
-          {t('common.edit')}
+          Edit
         </button>
       )}
 

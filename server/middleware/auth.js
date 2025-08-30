@@ -10,6 +10,7 @@ const auth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    
     const user = await User.findById(decoded.userId);
 
     if (!user) {
@@ -20,9 +21,13 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: 'Account is not active. Please contact administrator.' });
     }
 
-
-
+    // Assign user to req.user first
     req.user = user;
+    
+    // Add convenience properties for role checking
+    req.user.isAdmin = user.role === 'admin';
+    req.user.isEditor = user.role === 'editor';
+
     next();
   } catch (error) {
     if (error.name === 'JsonWebTokenError') {

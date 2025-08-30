@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const HomeSection = require('./models/HomeSection');
 
-// Sample home sections data with contemporary content and modern images - 6 total sections
+// Sample home sections data with contemporary content - images will be uploaded separately
 const homeSectionsData = [
   {
     order: 1,

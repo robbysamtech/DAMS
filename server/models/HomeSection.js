@@ -20,11 +20,19 @@ const homeSectionSchema = new mongoose.Schema({
   },
   backgroundImage: {
     type: String,
-    required: true
+    required: false
   },
   tileImage: {
     type: String,
-    required: true
+    required: false
+  },
+  backgroundImageFile: {
+    type: String,
+    default: null
+  },
+  tileImageFile: {
+    type: String,
+    default: null
   },
   isActive: {
     type: Boolean,
