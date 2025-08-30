@@ -65,22 +65,20 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
 
-    // Check if account is locked
-    if (user.isLocked) {
-      return res.status(423).json({ 
-        error: 'Account is temporarily locked due to too many login attempts. Please try again later.' 
+
+
+    // Check if user account is active
+    if (user.status !== 'active') {
+      return res.status(401).json({ 
+        error: 'Account is not active. Please contact an administrator for approval.' 
       });
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      await user.incLoginAttempts();
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
-
-    // Reset login attempts on successful login
-    await user.resetLoginAttempts();
 
     // Update last login
     user.lastLogin = new Date();

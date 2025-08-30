@@ -34,7 +34,7 @@ The translation keys are organized hierarchically:
 
 #### Header Component
 - Navigation labels (Home, Events, People, Admin)
-- User role labels (Editor, Admin, Consumer)
+- User role labels (Editor, Admin)
 - Action buttons (Profile, Admin Panel, Logout)
 - Authentication buttons (Login, Register)
 

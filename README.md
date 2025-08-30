@@ -14,14 +14,14 @@ A comprehensive ministry management platform built with modern web technologies,
 
 ### User Roles
 - **Editors** - Can create and manage ministry content (admin-approved)
-- **Content Consumers** - Can view and interact with ministry content
+- **Guest Users** - Can view and interact with ministry content
 - **Platform Administrators** - Full system access with user management capabilities
 
 ### Technical Features
 - **Real-time Responsiveness** - UI maintains consistency during window resizing
 - **Modern Architecture** - React frontend with Node.js/Express backend
 - **Database Integration** - MongoDB with Mongoose ODM
-- **Security** - JWT authentication, rate limiting, input validation
+- **Security** - JWT authentication, input validation
 - **File Management** - Image upload and processing capabilities
 
 ## 🛠️ Technology Stack
@@ -149,13 +149,13 @@ npm start
 ### User Registration Flow
 1. User registers with basic information
 2. Account status: "Pending Admin Approval"
-3. Admin reviews and assigns role (Editor/Consumer)
+3. Admin reviews and assigns role (Editor)
 4. Account activated with appropriate permissions
 
 ### Security Features
 - JWT token-based authentication
 - Password hashing with bcrypt
-- Rate limiting for API endpoints
+
 - Input validation and sanitization
 - Role-based access control
 

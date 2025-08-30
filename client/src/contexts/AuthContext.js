@@ -139,7 +139,6 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     isAdmin: user?.role === 'admin',
     isEditor: user?.role === 'editor',
-    isConsumer: user?.role === 'consumer',
     isPending: user?.status === 'pending'
   };
 

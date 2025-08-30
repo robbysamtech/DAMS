@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 
 // i18n
@@ -10,7 +10,6 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Components
 import Header from './components/layout/Header';
-import Footer from './components/layout/Footer';
 import Loading from './components/common/Loading';
 
 // Pages
@@ -44,19 +43,6 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   return children;
 };
 
-// Conditional Footer Component
-const ConditionalFooter = () => {
-  const location = useLocation();
-  const isHomePage = location.pathname === '/';
-  const isEventsPage = location.pathname === '/events';
-  
-  if (isHomePage || isEventsPage) {
-    return null; // Don't show footer on home page or events page
-  }
-  
-  return <Footer />;
-};
-
 // Main App Component
 const AppContent = () => {
   const { user, loading } = useAuth();
@@ -83,7 +69,6 @@ const AppContent = () => {
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           </Routes>
         </main>
-        <ConditionalFooter />
       </div>
     </Router>
   );

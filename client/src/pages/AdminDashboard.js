@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import './AdminDashboard.css';
 
-// Active Users List Component
-const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
+// Approved Users List Component
+const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,10 +21,10 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
         const data = await response.json();
         setActiveUsers(data.users || []);
       } else {
-        setError('Failed to fetch active users');
+        setError('Failed to fetch approved users');
       }
     } catch (err) {
-      setError('Error fetching active users');
+              setError('Error fetching approved users');
     } finally {
       setLoading(false);
     }
@@ -56,29 +56,36 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
     }
   };
 
-  const suspendUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to suspend this user?')) return;
+  const deleteUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/api/admin/users/${userId}/status`, {
-        method: 'PUT',
+      console.log('Attempting to delete user:', userId);
+      const response = await fetch(`http://localhost:5001/api/admin/users/${userId}`, {
+        method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: 'suspended' })
+        }
       });
 
+      console.log('Delete response status:', response.status);
+      
       if (response.ok) {
+        const result = await response.json();
+        console.log('Delete successful:', result);
         setActiveUsers(prev => prev.filter(user => user._id !== userId));
         onUserUpdate(); // Refresh statistics
-        setSuccessMessage('User suspended successfully!');
+        setSuccessMessage('User deleted successfully!');
         setTimeout(() => setSuccessMessage(''), 5000);
       } else {
-        setError('Failed to suspend user');
+        const errorText = await response.text();
+        console.error('Delete failed:', response.status, errorText);
+        setError(`Failed to delete user: ${response.status} - ${errorText}`);
       }
     } catch (err) {
-      setError('Error suspending user');
+      console.error('Error deleting user:', err);
+      setError(`Error deleting user: ${err.message}`);
     }
   };
 
@@ -87,7 +94,7 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
   }, [fetchActiveUsers]);
 
   if (loading) {
-    return <div className="loading">Loading active users...</div>;
+    return <div className="loading">Loading approved users...</div>;
   }
 
   if (error) {
@@ -95,7 +102,7 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
   }
 
   if (activeUsers.length === 0) {
-    return <div className="no-active-users"><p>No active users found.</p></div>;
+    return <div className="no-active-users"><p>No approved users found.</p></div>;
   }
 
   return (
@@ -103,10 +110,11 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
       {activeUsers.map(user => (
         <div key={user._id} className="active-user-card">
           <div className="user-info">
-            <h3>{user.firstName} {user.lastName}</h3>
+            <div className="user-name-container">
+              <span className="user-name">{user.firstName} {user.lastName}</span>
+              <span className={`role-badge role-${user.role}`}>{user.role}</span>
+            </div>
             <p className="user-email">{user.email}</p>
-            <p className="user-role">Role: <span className={`role-badge role-${user.role}`}>{user.role}</span></p>
-            <p className="user-date">Joined: {new Date(user.createdAt).toLocaleDateString()}</p>
           </div>
           <div className="user-actions">
             <div className="role-selection">
@@ -117,16 +125,16 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
                 onChange={(e) => updateUserRole(user._id, e.target.value)}
                 className="role-select"
               >
-                <option value="consumer">Content Consumer</option>
                 <option value="editor">Editor</option>
+                <option value="admin">Admin</option>
               </select>
             </div>
             <button 
-              onClick={() => suspendUser(user._id)}
-              className="btn btn-warning"
-              title="Suspend this user"
+              onClick={() => deleteUser(user._id)}
+              className="btn-delete"
+              title="Delete this user"
             >
-              ⚠️ Suspend
+              Delete
             </button>
           </div>
         </div>
@@ -138,7 +146,16 @@ const ActiveUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
 const AdminDashboard = () => {
   const { user, token } = useAuth();
   const [pendingUsers, setPendingUsers] = useState([]);
-  const [stats, setStats] = useState({});
+  const [stats, setStats] = useState({
+    totalUsers: 0,
+    pendingUsers: 0,
+    activeUsers: 0,
+    editors: 0,
+    admins: 0,
+    people: 0,
+    events: 0
+  });
+  const [refreshKey, setRefreshKey] = useState(0); // Add refresh key for ApprovedUsersList
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -185,6 +202,27 @@ const AdminDashboard = () => {
       }
     } catch (err) {
       console.error('Error fetching editor count:', err);
+    }
+  }, [token]);
+
+  const fetchAdminCount = useCallback(async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/admin/users?role=admin&status=active', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setStats(prev => ({
+          ...prev,
+          admins: data.users?.length || 0
+        }));
+      }
+    } catch (err) {
+      console.error('Error fetching admin count:', err);
     } finally {
       setLoading(false);
     }
@@ -207,14 +245,16 @@ const AdminDashboard = () => {
           pendingUsers: data.userStats?.pending || 0,
           activeUsers: data.userStats?.active || 0,
           editors: 0, // We'll count this separately
+          admins: 0, // We'll count this separately
 
           people: data.contentStats?.people || 0,
           events: data.contentStats?.events || 0
         };
         setStats(transformedStats);
         
-        // Fetch creator count separately
+        // Fetch editor and admin counts separately
         fetchEditorCount();
+        fetchAdminCount();
       } else {
         const errorText = await response.text();
         console.error('Failed to fetch statistics:', errorText);
@@ -255,6 +295,7 @@ const AdminDashboard = () => {
         fetchStatistics(); // Refresh stats
         setSuccessMessage(`User approved successfully as ${role}!`);
         setTimeout(() => setSuccessMessage(''), 5000); // Auto-hide after 5 seconds
+        setRefreshKey(prev => prev + 1); // Force ApprovedUsersList to refresh
       } else {
         setError('Failed to approve user');
       }
@@ -344,26 +385,26 @@ const AdminDashboard = () => {
         {/* Statistics Overview */}
         <div className="stats-overview">
           <div className="stat-card">
-            <div className="stat-number">{stats.totalUsers || 0}</div>
-            <div className="stat-label">Total Users</div>
-          </div>
-          <div className="stat-card">
             <div className="stat-number">{stats.pendingUsers || 0}</div>
-            <div className="stat-label">Pending Approval</div>
+            <div className="stat-label">Pending Users</div>
           </div>
           <div className="stat-card">
             <div className="stat-number">{stats.activeUsers || 0}</div>
-            <div className="stat-label">Active Users</div>
+            <div className="stat-label">Approved Users</div>
           </div>
           <div className="stat-card">
             <div className="stat-number">{stats.editors || 0}</div>
             <div className="stat-label">Editors</div>
           </div>
+          <div className="stat-card">
+            <div className="stat-number">{stats.admins || 0}</div>
+            <div className="stat-label">Admins</div>
+          </div>
         </div>
 
-        {/* Pending User Approvals */}
-        <div className="admin-section">
-          <h2>Pending User Approvals ({pendingUsers.length})</h2>
+        {/* Pending Users */}
+        <div className="admin-section pending-users-section">
+          <h2>Pending Users ({pendingUsers.length})</h2>
           <p className="section-description">
             Review and approve new user registrations. Assign appropriate roles based on their intended use of the platform.
           </p>
@@ -376,36 +417,35 @@ const AdminDashboard = () => {
               {pendingUsers.map(user => (
                 <div key={user._id} className="pending-user-card">
                   <div className="user-info">
-                    <h3>{user.firstName} {user.lastName}</h3>
+                    <p className="user-name">{user.firstName} {user.lastName}</p>
                     <p className="user-email">{user.email}</p>
-                    <p className="user-date">Applied: {new Date(user.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="user-actions">
                     <div className="role-selection">
                       <label htmlFor={`role-${user._id}`}>Assign Role:</label>
                       <select 
                         id={`role-${user._id}`} 
-                        defaultValue="consumer"
+                        defaultValue="editor"
                         className="role-select"
                       >
-                        <option value="consumer">Content Consumer</option>
                         <option value="editor">Editor</option>
+                        <option value="admin">Admin</option>
                       </select>
                     </div>
                     <div className="action-buttons">
                       <button 
                         onClick={() => approveUser(user._id, document.getElementById(`role-${user._id}`).value)}
-                        className="btn btn-success"
+                        className="btn-edit"
                         title="Approve this user with the selected role"
                       >
-                        ✅ Approve
+                        Approve
                       </button>
                       <button 
                         onClick={() => showRejectDialog(user._id)}
-                        className="btn btn-danger"
+                        className="btn-delete"
                         title="Reject this user registration"
                       >
-                        ❌ Reject
+                        Deny
                       </button>
                     </div>
                   </div>
@@ -415,21 +455,18 @@ const AdminDashboard = () => {
           )}
         </div>
 
-        {/* Active Users Management */}
-        <div className="admin-section">
-          <h2>Active Users ({stats.activeUsers || 0})</h2>
+        {/* Approved Users Management */}
+        <div className="admin-section active-users-section">
+          <h2>Approved Users ({stats.activeUsers || 0})</h2>
           <p className="section-description">
-            View and manage all approved users in the system. You can change roles or suspend users if needed.
+            View and manage all approved users in the system. You can change roles or delete users if needed.
           </p>
-          <ActiveUsersList token={token} onUserUpdate={fetchStatistics} setSuccessMessage={setSuccessMessage} />
-        </div>
-
-        {/* Recent Activity */}
-        <div className="admin-section">
-          <h2>Recent Activity</h2>
-          <div className="recent-activity">
-            <p>Activity monitoring coming soon...</p>
-          </div>
+          <ApprovedUsersList 
+            key={refreshKey}
+            token={token} 
+            onUserUpdate={fetchStatistics} 
+            setSuccessMessage={setSuccessMessage} 
+          />
         </div>
 
         {/* Rejection Dialog */}

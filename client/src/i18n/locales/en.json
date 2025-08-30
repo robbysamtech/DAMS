@@ -57,9 +57,9 @@
       "nav_events": "Events",
       "nav_people": "People",
       "nav_admin": "Admin",
-      "user_role_editor": "✍️ Editor",
-      "user_role_admin": "👑 Admin",
-      "user_role_consumer": "👤 Consumer"
+      "user_role_editor": "Editor",
+      "user_role_admin": "Admin",
+      "user_role_pending": "⏳ Pending"
     },
     "footer": {
       "copyright": "© 2024 DAMS. All rights reserved.",
@@ -287,7 +287,7 @@
       "title": "System Statistics",
       "total_users": "Total Users",
       "total_editors": "Total Editors",
-      "total_consumers": "Total Consumers",
+  
       "total_events": "Total Events",
       "total_people": "Total People"
     },
@@ -304,10 +304,9 @@
       "update": "Update User"
     },
     "roles": {
-      "admin": "Admin",
-      "editor": "Editor",
-      "consumer": "Consumer"
-    },
+          "admin": "Admin",
+    "editor": "Editor"
+  },
     "statuses": {
       "active": "Active",
       "inactive": "Inactive",

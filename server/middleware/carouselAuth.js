@@ -9,7 +9,7 @@ const carouselAuth = (req, res, next) => {
     return next();
   }
 
-  // Deny access to consumers and other roles
+  // Deny access to non-editor and non-admin roles
   return res.status(403).json({ 
     error: 'Access denied. Only admins and editors can manage carousel content.' 
   });

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import './Auth.css';
 
@@ -130,9 +129,12 @@ const Register = () => {
                       </ul>
                     </div>
                     <div className="success-actions">
-                      <Link to="/login" className="btn btn-secondary">
+                      <button 
+                        onClick={() => window.location.href = '/login'} 
+                        className="btn btn-secondary"
+                      >
                         Go to Login
-                      </Link>
+                      </button>
                       <button 
                         onClick={() => setSuccess('')} 
                         className="btn btn-outline"
@@ -259,15 +261,6 @@ const Register = () => {
               )}
             </button>
           </form>
-
-          <div className="auth-footer">
-            <p>
-              Already have an account?{' '}
-              <Link to="/login" className="auth-link">
-                Sign in here
-              </Link>
-            </p>
-          </div>
         </div>
       </div>
     </div>

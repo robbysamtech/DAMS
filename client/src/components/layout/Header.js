@@ -97,10 +97,9 @@ const Header = () => {
                 <div className="user-info">
                   <span className="user-name">{user.firstName} {user.lastName}</span>
                   <span className={`user-role user-role-${user.role}`}>
-                    {user.role === 'admin' && t('navigation.header.user_role_admin')}
-                    {user.role === 'editor' && t('navigation.header.user_role_editor')}
-                    {user.role === 'consumer' && t('navigation.header.user_role_consumer')}
-                    {user.role === 'pending' && '⏳ Pending'}
+                    {user.role === 'admin' && 'Admin'}
+                    {user.role === 'editor' && 'Editor'}
+                    {user.role === 'pending' && t('navigation.header.user_role_pending')}
                   </span>
                 </div>
                 
@@ -113,16 +112,16 @@ const Header = () => {
                   
                   <div className="user-dropdown-menu">
                     <Link to="/profile" className="dropdown-item">
-                      <span>👤 {t('common.profile')}</span>
+                      <span>{t('common.profile')}</span>
                     </Link>
 
                     {isAdmin && (
                       <Link to="/admin" className="dropdown-item">
-                        <span>⚙️ {t('common.admin')}</span>
+                        <span>{t('common.admin')}</span>
                       </Link>
                     )}
                     <button onClick={handleLogout} className="dropdown-item">
-                      <span>🚪 {t('common.logout')}</span>
+                      <span>{t('common.logout')}</span>
                     </button>
                   </div>
                 </div>

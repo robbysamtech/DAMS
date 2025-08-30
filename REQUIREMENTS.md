@@ -55,7 +55,7 @@ The DAMS application serves as a specialized content platform where specific use
 
 ### Target Users
 - **Editors:** Users who create and upload content to the platform
-- **Content Consumers/Viewers:** Users who view, consume, and interact with content
+- **Guest Users:** Users who view, consume, and interact with content
 - **Content Moderators:** Users who review, approve, and manage content quality
 - **Platform Administrators:** Users who manage the overall system and user roles
 
@@ -169,7 +169,7 @@ The DAMS application serves as a specialized content platform where specific use
 
 ### User Role Definitions
 - **Editors:** Users who can upload, edit, and manage their own content (admin-approved)
-- **Content Consumers:** Users who can view, interact with, and consume content (default role)
+- **Guest Users:** Users who can view, interact with, and consume content (no specific role needed)
 - **Platform Administrators:** Users who manage user accounts, approve registrations, and assign roles
 
 ### Role-Based Permissions
@@ -180,7 +180,7 @@ The DAMS application serves as a specialized content platform where specific use
   - Manage content metadata and tags
   - Delete own content
 
-- **Consumer Permissions:**
+- **Guest User Permissions:**
   - Browse and search content
   - Rate, comment, and share content
   - Create content collections/favorites
@@ -189,7 +189,7 @@ The DAMS application serves as a specialized content platform where specific use
 
 - **Admin Permissions:**
   - Approve or reject user account registrations
-  - Assign user roles (Editor, Consumer)
+  - Assign user roles (Editor)
   - Manage all user accounts and permissions
   - Access system-wide analytics and reports
   - Configure platform settings and policies
@@ -233,10 +233,10 @@ The DAMS application serves as a specialized content platform where specific use
    - Admin receives notification of new registration
    - Admin reviews user information and registration details
    - Admin evaluates eligibility for Editor role based on criteria
-   - Admin makes decision: Approve as Editor, Approve as Consumer, or Reject
+   - Admin makes decision: Approve as Editor or Reject
 
 3. **Role Assignment & Activation:**
-   - Admin assigns appropriate role (Editor or Consumer)
+   - Admin assigns Editor role if approved
    - Account is activated with assigned permissions
    - User receives notification of approval and role assignment
    - User can now access platform based on assigned role
@@ -249,7 +249,7 @@ The DAMS application serves as a specialized content platform where specific use
   - Content quality standards compliance
   - Platform usage intent and goals
 
-- **Consumer Role Assignment:**
+- **Guest User Access:**
   - General users seeking content consumption
   - No special content creation requirements
   - Standard platform access and features
@@ -344,7 +344,7 @@ The DAMS application serves as a specialized content platform where specific use
   - View counts and engagement metrics
   - Performance trends over time
   - Popular content identification
-  - Consumer interaction insights
+  - Guest user interaction insights
 
 #### Content Operations
 - **Quick Actions:**
@@ -438,7 +438,7 @@ The DAMS application serves as a specialized content platform where specific use
   - **Event Management:** Edit, update, and delete existing events
   - **Event Templates:** Pre-built templates for common event types
 
-- **Consumer Features:**
+- **Guest User Features:**
   - **Event Browsing:** View all published events
   - **Event Details:** Click to view full event information
   - **Event Interaction:** Save events, share, or add to calendar
@@ -457,7 +457,7 @@ The DAMS application serves as a specialized content platform where specific use
   - **People Management:** Edit profiles, reassign sections, update information
   - **Section Organization:** Visual tools for organizing and structuring sections
 
-- **Consumer Features:**
+- **Guest User Features:**
   - **Section Browsing:** Navigate through different ministry sections
   - **People Discovery:** Find people by section, role, or name
   - **Profile Viewing:** View detailed people profiles
@@ -717,7 +717,7 @@ The DAMS application serves as a specialized content platform where specific use
 ### APIs
 - **RESTful Design:** Standard REST API patterns
 - **API Versioning:** Backward-compatible API versions
-- **Rate Limiting:** API usage throttling
+
 - **Documentation:** Comprehensive API documentation
 
 ---
@@ -833,17 +833,17 @@ The DAMS application serves as a specialized content platform where specific use
 
 ### Version 1.2 - August 24, 2024
 - **Simplified User Roles**
-  - Reduced to two core user types: Editors and Consumers
+  - Reduced to two core user types: Editors and Guest Users
   - Removed moderation and admin roles for simplicity
   - Streamlined permission system
 - **Simplified Content Workflow**
   - Direct content publishing (no moderation required)
   - Simplified content lifecycle management
-  - Focus on core editor-consumer interaction
+  - Focus on core editor-guest user interaction
 
 ### Version 1.1 - August 24, 2024
 - **User Role Requirements Added**
-  - Defined four user roles: Editors, Consumers, Moderators, Admins
+  - Defined three user roles: Editors, Guest Users, Admins
   - Specified role-based permissions and access control
   - Added content creation and consumption workflows
 - **Content Management Requirements Added**
@@ -853,7 +853,7 @@ The DAMS application serves as a specialized content platform where specific use
 - **Platform-Specific Features Defined**
   - Content upload system for creators
   - Moderation and approval workflows
-  - Consumer engagement and discovery features
+  - Guest user engagement and discovery features
   - Analytics and performance tracking
 
 ### Version 1.0 - August 24, 2024

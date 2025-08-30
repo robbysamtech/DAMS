@@ -20,9 +20,7 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: 'Account is not active. Please contact administrator.' });
     }
 
-    if (user.isLocked) {
-      return res.status(423).json({ error: 'Account is temporarily locked due to too many login attempts.' });
-    }
+
 
     req.user = user;
     next();

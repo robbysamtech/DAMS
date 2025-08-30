@@ -408,7 +408,6 @@ a {
 /* Print Styles */
 @media print {
   .header,
-  .footer,
   .btn,
   .no-print {
     display: none !important;
