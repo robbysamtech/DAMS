@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
     const { 
       status = 'active', 
       role, 
-      department, 
+      churchMinistry, 
       search, 
       page = 1, 
       limit = 20 
@@ -48,13 +48,13 @@ router.get('/', async (req, res) => {
     
     const filter = { status };
     if (role) filter.role = role;
-    if (department) filter.department = { $regex: department, $options: 'i' };
+    if (churchMinistry) filter.churchMinistry = { $regex: churchMinistry, $options: 'i' };
     if (search) {
       filter.$or = [
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
-        { jobTitle: { $regex: search, $options: 'i' } },
-        { department: { $regex: search, $options: 'i' } }
+        { churchRole: { $regex: search, $options: 'i' } },
+        { churchMinistry: { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -114,13 +114,13 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
     const {
       firstName,
       lastName,
-      jobTitle,
+      churchRole,
       role,
-      department,
+      churchMinistry,
       bio
     } = req.body;
 
-    console.log('Extracted data:', { firstName, lastName, jobTitle, role, department, bio });
+    console.log('Extracted data:', { firstName, lastName, churchRole, role, churchMinistry, bio });
 
     // Check if user can create content
     if (!req.user.canCreateContent()) {
@@ -133,10 +133,10 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
     const personData = {
       firstName,
       lastName,
-      jobTitle,
+      churchRole,
       creator: req.user._id,
       role: role || 'Member',
-      department,
+      churchMinistry,
       bio
     };
 
@@ -202,9 +202,9 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
     const {
       firstName,
       lastName,
-      jobTitle,
+      churchRole,
       role,
-      department,
+      churchMinistry,
       bio
     } = req.body;
     
@@ -226,9 +226,9 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
     const updates = {};
     if (firstName !== undefined) updates.firstName = firstName;
     if (lastName !== undefined) updates.lastName = lastName;
-    if (jobTitle !== undefined) updates.jobTitle = jobTitle;
+    if (churchRole !== undefined) updates.churchRole = churchRole;
     if (role !== undefined) updates.role = role;
-    if (department !== undefined) updates.department = department;
+    if (churchMinistry !== undefined) updates.churchMinistry = churchMinistry;
     if (bio !== undefined) updates.bio = bio;
 
     console.log('Updates to apply:', updates);
@@ -336,7 +336,7 @@ router.get('/statistics/overview', async (req, res) => {
         { $sort: { count: -1 } }
       ]),
       Person.find({ status: 'active' })
-        .select('firstName lastName jobTitle createdAt')
+        .select('firstName lastName churchRole createdAt')
         .sort({ createdAt: -1 })
         .limit(5)
     ]);

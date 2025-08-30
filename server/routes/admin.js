@@ -266,7 +266,7 @@ router.get('/recent-activity', async (req, res) => {
 
 
     const recentPeople = await Person.find()
-      .select('jobTitle ministrySection creator createdAt')
+      .select('churchRole ministrySection creator createdAt')
       .populate('ministrySection', 'name')
       .populate('creator', 'firstName lastName')
       .sort({ createdAt: -1 })

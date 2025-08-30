@@ -13,8 +13,8 @@ const People = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    jobTitle: '',
-    department: '',
+    churchRole: '',
+    churchMinistry: [],
     bio: '',
     profilePhoto: null
   });
@@ -54,6 +54,16 @@ const People = () => {
     }));
   };
 
+  const handleMinistryChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      churchMinistry: checked
+        ? [...prev.churchMinistry, value]
+        : prev.churchMinistry.filter(ministry => ministry !== value)
+    }));
+  };
+
   const handlePhotoChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -75,8 +85,8 @@ const People = () => {
     setFormData({
       firstName: '',
       lastName: '',
-      jobTitle: '',
-      department: '',
+      churchRole: '',
+      churchMinistry: [],
       bio: '',
       profilePhoto: null
     });
@@ -89,17 +99,24 @@ const People = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate that at least one ministry is selected
+    if (formData.churchMinistry.length === 0) {
+      setError('Please select at least one ministry');
+      return;
+    }
+    
     console.log('Form submission started');
     console.log('Form data:', formData);
     console.log('Token:', token);
     
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('firstName', formData.firstName);
-      formDataToSend.append('lastName', formData.lastName);
-      formDataToSend.append('jobTitle', formData.jobTitle);
-      formDataToSend.append('department', formData.department);
-      formDataToSend.append('bio', formData.bio);
+        const formDataToSend = new FormData();
+        formDataToSend.append('firstName', formData.firstName);
+        formDataToSend.append('lastName', formData.lastName);
+        formDataToSend.append('churchRole', formData.churchRole);
+        formDataToSend.append('role', formData.churchRole); // Map churchRole to role field
+        formDataToSend.append('churchMinistry', formData.churchMinistry.join(', '));
+        formDataToSend.append('bio', formData.bio);
       if (formData.profilePhoto) {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
       }
@@ -139,8 +156,8 @@ const People = () => {
     setFormData({
       firstName: person.firstName || '',
       lastName: person.lastName || '',
-      jobTitle: person.jobTitle || '',
-      department: person.department || '',
+      churchRole: person.churchRole || person.role || '',
+      churchMinistry: person.churchMinistry || [],
       bio: person.bio || '',
       profilePhoto: null
     });
@@ -152,12 +169,19 @@ const People = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     
+    // Validate that at least one ministry is selected
+    if (formData.churchMinistry.length === 0) {
+      setError('Please select at least one ministry');
+      return;
+    }
+    
     try {
       const formDataToSend = new FormData();
       formDataToSend.append('firstName', formData.firstName);
       formDataToSend.append('lastName', formData.lastName);
-      formDataToSend.append('jobTitle', formData.jobTitle);
-      formDataToSend.append('department', formData.department);
+      formDataToSend.append('churchRole', formData.churchRole);
+      formDataToSend.append('role', formData.churchRole); // Map churchRole to role field
+              formDataToSend.append('churchMinistry', formData.churchMinistry.join(', '));
       formDataToSend.append('bio', formData.bio);
       if (formData.profilePhoto) {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
@@ -280,30 +304,81 @@ const People = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="jobTitle">Job Title</label>
-                    <input
-                      type="text"
-                      id="jobTitle"
-                      name="jobTitle"
-                      value={formData.jobTitle}
+                    <label htmlFor="churchRole">Role</label>
+                    <select
+                      id="churchRole"
+                      name="churchRole"
+                      value={formData.churchRole}
                       onChange={handleInputChange}
                       className="form-input"
-                      placeholder="e.g., Pastor, Ministry Leader"
                       required
-                    />
+                    >
+                      <option value="">Select a role</option>
+                      <option value="Pastor">Pastor</option>
+                      <option value="Leader">Leader</option>
+                      <option value="Member">Member</option>
+                    </select>
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="department">Department</label>
-                    <input
-                      type="text"
-                      id="department"
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="e.g., Worship, Children's Ministry"
-                    />
+                    <label>Ministries</label>
+                    <div className="checkbox-group">
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Gospel"
+                          checked={formData.churchMinistry.includes('Gospel')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Gospel
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Children's Ministry"
+                          checked={formData.churchMinistry.includes('Children\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Children's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Bible Study"
+                          checked={formData.churchMinistry.includes('Bible Study')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Bible Study
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Easter Committee"
+                          checked={formData.churchMinistry.includes('Easter Committee')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Easter Committee
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Harvest Committee"
+                          checked={formData.churchMinistry.includes('Harvest Committee')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Harvest Committee
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -389,30 +464,81 @@ const People = () => {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label htmlFor="editJobTitle">Job Title</label>
-                    <input
-                      type="text"
-                      id="editJobTitle"
-                      name="jobTitle"
-                      value={formData.jobTitle}
+                    <label htmlFor="editChurchRole">Role</label>
+                    <select
+                      id="editChurchRole"
+                      name="churchRole"
+                      value={formData.churchRole}
                       onChange={handleInputChange}
                       className="form-input"
-                      placeholder="e.g., Pastor, Ministry Leader"
                       required
-                    />
+                    >
+                      <option value="">Select a role</option>
+                      <option value="Pastor">Pastor</option>
+                      <option value="Leader">Leader</option>
+                      <option value="Member">Member</option>
+                    </select>
                   </div>
 
-                  <div className="form-group">
-                    <label htmlFor="editDepartment">Department</label>
-                    <input
-                      type="text"
-                      id="editDepartment"
-                      name="department"
-                      value={formData.department}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      placeholder="e.g., Worship, Children's Ministry"
-                    />
+                                    <div className="form-group">
+                    <label>Ministries</label>
+                    <div className="checkbox-group">
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Gospel"
+                          checked={formData.churchMinistry.includes('Gospel')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Gospel
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Children's Ministry"
+                          checked={formData.churchMinistry.includes('Children\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Children's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Bible Study"
+                          checked={formData.churchMinistry.includes('Bible Study')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Bible Study
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Easter Committee"
+                          checked={formData.churchMinistry.includes('Easter Committee')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Easter Committee
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Harvest Committee"
+                          checked={formData.churchMinistry.includes('Harvest Committee')}
+                          onChange={handleMinistryChange}
+                        />
+                        <span className="checkmark"></span>
+                        Harvest Committee
+                      </label>
+                    </div>
                   </div>
                 </div>
 
@@ -489,12 +615,17 @@ const People = () => {
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
                 <div key={person._id} className="person-tile">
-                  {/* Header Section - Name, Title, Department on left, Actions on right */}
+                  {/* Header Section - Name, Role, Ministry on left, Actions on right */}
                   <div className="person-header-section">
                     <h3 className="person-name">{person.firstName} {person.lastName}</h3>
-                    <p className="person-title">{person.jobTitle}</p>
-                    {person.department && (
-                      <p className="person-department">{person.department}</p>
+                    <p className="person-title">{person.churchRole || person.role}</p>
+                    {person.churchMinistry && person.churchMinistry.length > 0 && (
+                      <p className="person-department">
+                        {Array.isArray(person.churchMinistry) 
+                          ? person.churchMinistry.join(', ')
+                          : person.churchMinistry
+                        }
+                      </p>
                     )}
                   </div>
                   

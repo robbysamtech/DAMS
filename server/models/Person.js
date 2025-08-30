@@ -13,7 +13,7 @@ const personSchema = new mongoose.Schema({
     trim: true,
     maxlength: 50
   },
-  jobTitle: {
+  churchRole: {
     type: String,
     required: true,
     trim: true,
@@ -35,14 +35,14 @@ const personSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['Leader', 'Member', 'Coordinator', 'Assistant', 'Volunteer'],
+    enum: ['Pastor', 'Leader', 'Member', 'Coordinator', 'Assistant', 'Volunteer'],
     default: 'Member'
   },
-  department: {
+  churchMinistry: [{
     type: String,
     trim: true,
     maxlength: 100
-  },
+  }],
   contactInfo: {
     email: {
       type: String,
@@ -93,7 +93,7 @@ const personSchema = new mongoose.Schema({
 personSchema.index({ creator: 1 });
 personSchema.index({ status: 1 });
 personSchema.index({ role: 1 });
-personSchema.index({ department: 1 });
+personSchema.index({ churchMinistry: 1 });
 personSchema.index({ skills: 1 });
 personSchema.index({ 'contactInfo.email': 1 });
 
@@ -110,7 +110,7 @@ personSchema.virtual('displayName').get(function() {
   if (this.firstName && this.lastName) {
     return `${this.firstName} ${this.lastName}`;
   }
-  return this.jobTitle;
+  return this.churchRole;
 });
 
 // Method to increment view count
