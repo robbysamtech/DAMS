@@ -236,7 +236,8 @@
   margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
-  text-align: left !important;
+  justify-content: center;
+  text-align: center !important;
   padding-left: 0;
   margin-left: 0;
   font-weight: 500;
@@ -463,6 +464,10 @@
 .user-role {
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Role Badges */
@@ -749,4 +754,30 @@
   .modal-actions .btn {
     width: 100%;
   }
+}
+
+/* Ensure user role text is centered with high specificity */
+.user-role,
+.user-role *,
+.user-role span,
+span.user-role,
+.user-info .user-role {
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: fit-content !important;
+}
+
+/* Force centering for all user role elements */
+.user-role {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  min-width: fit-content !important;
 }
