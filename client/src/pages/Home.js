@@ -10,12 +10,13 @@ const Home = () => {
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [carouselItems, setCarouselItems] = useState([]);
+  const [homeSections, setHomeSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   // Refs for section animations
   const sectionRefs = useRef([]);
-  const [animatedSections, setAnimatedSections] = useState(new Set([0])); // Start with first section visible
+  const [animatedSections, setAnimatedSections] = useState(new Set([0])); // Start with only first section visible
 
   // Fetch carousel items from MongoDB
   useEffect(() => {
@@ -41,6 +42,27 @@ const Home = () => {
     fetchCarouselItems();
   }, []);
 
+  // Fetch home sections from MongoDB
+  useEffect(() => {
+    const fetchHomeSections = async () => {
+      try {
+        console.log('Fetching home sections...');
+        const response = await fetch('http://localhost:5001/api/home-sections');
+        if (!response.ok) {
+          throw new Error('Failed to fetch home sections');
+        }
+        const data = await response.json();
+        console.log('Home sections fetched:', data);
+        setHomeSections(data);
+      } catch (err) {
+        console.error('Error fetching home sections:', err);
+        // Keep existing sections if fetch fails
+      }
+    };
+
+    fetchHomeSections();
+  }, []);
+
   // Auto-advance carousel
   useEffect(() => {
     if (carouselItems.length === 0) return;
@@ -61,7 +83,7 @@ const Home = () => {
       sectionRefs.current.forEach((ref, index) => {
         if (ref) {
           const rect = ref.getBoundingClientRect();
-          const threshold = windowHeight * 1.0; // Changed to 1.0 to test timing
+          const threshold = windowHeight * 1.0; // Balanced threshold for smooth animation
           
           const isVisible = rect.top < threshold;
           
@@ -256,107 +278,62 @@ const Home = () => {
 
             {/* Content Sections Below Carousel */}
       <section className="content-sections">
-
- 
-        {/* Section 1: Welcome - Text Left, Image Right */}
-        <div 
-          ref={(el) => (sectionRefs.current[0] = el)}
-          className={`content-section section-welcome ${animatedSections.has(0) ? 'animate' : ''}`}
-          style={{ 
-            opacity: animatedSections.has(0) ? 1 : 0,
-            transform: animatedSections.has(0) ? 'translateY(0)' : 'translateY(100px)',
-            transition: 'all 0.8s ease'
-          }}
-        >
-          <div className="section-content">
-            <div className="section-text">
-              <h2 className="section-title">{t('home.sections.welcome.title')}</h2>
-              <p className="section-description">{t('home.sections.welcome.description')}</p>
+        {console.log('Rendering sections, count:', homeSections.length)}
+        {homeSections.length > 0 ? (
+          homeSections.map((section, index) => (
+            <div 
+              key={section._id}
+              ref={(el) => (sectionRefs.current[index] = el)}
+              className={`content-section section-${index + 1} ${animatedSections.has(index) ? 'animate' : ''}`}
+              style={{ 
+                opacity: animatedSections.has(index) ? 1 : 0,
+                transform: animatedSections.has(index) ? 'translateY(0)' : 'translateY(100px)',
+                transition: 'all 0.8s ease',
+                backgroundImage: `url(${section.backgroundImage.startsWith('http') ? section.backgroundImage : `http://localhost:5001${section.backgroundImage}`})`
+              }}
+            >
+              <div className="section-content">
+                {/* Alternate text and image positions */}
+                {index % 2 === 0 ? (
+                  // Even sections: Text Left, Image Right
+                  <>
+                    <div className="section-text">
+                      <h2 className="section-title">{section.title}</h2>
+                      <p className="section-description">{section.description}</p>
+                    </div>
+                    <div className="section-image">
+                      <img 
+                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                        alt={section.title}
+                        className="section-photo"
+                      />
+                    </div>
+                  </>
+                ) : (
+                  // Odd sections: Image Left, Text Right
+                  <>
+                    <div className="section-image">
+                      <img 
+                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                        alt={section.title}
+                        className="section-photo"
+                      />
+                    </div>
+                    <div className="section-text">
+                      <h2 className="section-title">{section.title}</h2>
+                      <p className="section-description">{section.description}</p>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-            <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
-                alt="Colorful welcome carpet design"
-                className="section-photo"
-              />
-            </div>
+          ))
+        ) : (
+          <div className="no-sections-message">
+            <p>Loading home sections...</p>
+            <p>Debug: homeSections.length = {homeSections.length}</p>
           </div>
-        </div>
-
-        {/* Section 2: Community - Image Left, Text Right */}
-        <div 
-          ref={(el) => (sectionRefs.current[1] = el)}
-          className={`content-section section-community ${animatedSections.has(1) ? 'animate' : ''}`}
-          style={{ 
-            opacity: animatedSections.has(1) ? 1 : 0,
-            transform: animatedSections.has(1) ? 'translateY(0)' : 'translateY(100px)',
-            transition: 'all 0.8s ease'
-          }}
-        >
-          <div className="section-content">
-            <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
-                alt="Vibrant community carpet pattern"
-                className="section-photo"
-              />
-            </div>
-            <div className="section-text">
-              <h2 className="section-title">{t('home.sections.community.title')}</h2>
-              <p className="section-description">{t('home.sections.community.description')}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Section 3: Events - Text Left, Image Right */}
-        <div 
-          ref={(el) => (sectionRefs.current[2] = el)}
-          className={`content-section section-events ${animatedSections.has(2) ? 'animate' : ''}`}
-          style={{ 
-            opacity: animatedSections.has(2) ? 1 : 0,
-            transform: animatedSections.has(2) ? 'translateY(0)' : 'translateY(100px)',
-            transition: 'all 0.8s ease'
-          }}
-        >
-          <div className="section-content">
-            <div className="section-text">
-              <h2 className="section-title">{t('home.sections.events.title')}</h2>
-              <p className="section-description">{t('home.sections.events.description')}</p>
-            </div>
-            <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
-                alt="Dynamic events carpet design"
-                className="section-photo"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Section 4: Get Involved - Image Left, Text Right */}
-        <div 
-          ref={(el) => (sectionRefs.current[3] = el)}
-          className={`content-section section-involved ${animatedSections.has(3) ? 'animate' : ''}`}
-          style={{ 
-            opacity: animatedSections.has(3) ? 1 : 0,
-            transform: animatedSections.has(3) ? 'translateY(0)' : 'translateY(100px)',
-            transition: 'all 0.8s ease'
-          }}
-        >
-          <div className="section-content">
-            <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
-                alt="Inspiring ministry carpet pattern"
-                className="section-photo"
-              />
-            </div>
-            <div className="section-text">
-              <h2 className="section-title">{t('home.sections.involved.title')}</h2>
-              <p className="section-description">{t('home.sections.involved.description')}</p>
-            </div>
-          </div>
-        </div>
+        )}
       </section>
     </div>
   );

@@ -513,6 +513,22 @@
   line-height: 1.4;
 }
 
+/* Loading message for sections */
+.no-sections-message {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #2c3e50;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.no-sections-message p {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #6c757d;
+}
+
 /* Content Sections Below Carousel */
 .content-sections {
   width: 100%;
@@ -535,41 +551,15 @@
   margin-bottom: 2rem; /* Added back to create consistent gaps between sections */
 }
 
-/* Section 1: Welcome - Light Mountain Landscape */
-.section-welcome {
-  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
-              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
-  background-size: cover;
-  background-position: center;
+/* Dynamic Section Styling - Background images are now set via inline styles */
+.section-1,
+.section-2,
+.section-3,
+.section-4 {
+  background-size: cover !important;
+  background-position: center !important;
   color: #2c3e50;
   transition: background 0.3s ease;
-}
-
-/* Section 2: Community - Light Forest Landscape */
-.section-community {
-  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
-              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
-  background-size: cover;
-  background-position: center;
-  color: #2c3e50;
-}
-
-/* Section 3: Events - Light Sunset Landscape */
-.section-events {
-  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
-              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
-  background-size: cover;
-  background-position: center;
-  color: #2c3e50;
-}
-
-/* Section 4: Get Involved - Light Ocean Landscape */
-.section-involved {
-  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
-              url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
-  background-size: cover;
-  background-position: center;
-  color: #2c3e50;
 }
 
 .section-content {
