@@ -138,6 +138,21 @@
 .tile-content {
   flex: 1;
   display: flex;
+  gap: 2rem;
+}
+
+/* Left Section - Form Fields */
+.tile-left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Right Section - Image Upload */
+.tile-right-section {
+  flex: 1;
+  display: flex;
   flex-direction: column;
   gap: 1rem;
 }
@@ -406,6 +421,16 @@
   
   .edit-home-page-header h1 {
     font-size: 2rem;
+  }
+  
+  .tile-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .tile-left-section,
+  .tile-right-section {
+    flex: none;
   }
   
   .tile-header {
