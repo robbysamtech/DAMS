@@ -1,7 +1,7 @@
 /* Edit Home Page Styles */
 .edit-home-page {
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   background: var(--color-background);
   min-height: 100vh;
@@ -60,10 +60,10 @@
   text-align: center;
 }
 
-/* Carousel Grid - 2x4 Layout */
+/* Carousel Grid - Single Column Layout */
 .carousel-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 2rem;
   margin-bottom: 3rem;
 }
@@ -73,7 +73,7 @@
   background: white;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
-  padding: 2rem;
+  padding: 3rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   position: relative;
@@ -385,7 +385,7 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
   .carousel-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
   }
 }
 
