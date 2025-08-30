@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import './EditCarousel.css';
+import './EditHomePage.css';
 
-const EditCarousel = () => {
+const EditHomePage = () => {
   const { isEditor, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [carouselItems, setCarouselItems] = useState([]);
@@ -308,10 +308,10 @@ const EditCarousel = () => {
   // Redirect if not an editor
   if (!authLoading && !isEditor) {
     return (
-      <div className="edit-carousel">
+      <div className="edit-home-page">
         <div className="access-denied">
           <h2>Access Denied</h2>
-          <p>You don't have permission to edit carousel content.</p>
+          <p>You don't have permission to edit home page content.</p>
         </div>
       </div>
     );
@@ -319,23 +319,23 @@ const EditCarousel = () => {
 
   if (loading) {
     return (
-      <div className="edit-carousel">
+      <div className="edit-home-page">
         <div className="loading-container">
           <div className="loading-spinner"></div>
-          <p>Loading carousel editor...</p>
+          <p>Loading home page editor...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="edit-carousel">
-      <div className="edit-carousel-header">
+    <div className="edit-home-page">
+      <div className="edit-home-page-header">
         <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Home
         </button>
-        <h1>Edit Carousel Content</h1>
-        <p>Manage your carousel items. Each tile represents a carousel slide.</p>
+        <h1>Edit Home Page Content</h1>
+        <p>Manage your home page carousel items. Each tile represents a carousel slide.</p>
       </div>
 
       {error && (
@@ -485,4 +485,4 @@ const EditCarousel = () => {
   );
 };
 
-export default EditCarousel;
+export default EditHomePage;

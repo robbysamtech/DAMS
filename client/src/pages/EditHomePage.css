@@ -1,5 +1,5 @@
-/* Edit Carousel Page Styles */
-.edit-carousel {
+/* Edit Home Page Styles */
+.edit-home-page {
   padding: 2rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -7,7 +7,7 @@
   min-height: 100vh;
 }
 
-.edit-carousel-header {
+.edit-home-page-header {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
@@ -37,14 +37,14 @@
   transform: translateY(-1px);
 }
 
-.edit-carousel-header h1 {
+.edit-home-page-header h1 {
   color: var(--color-primary);
   margin-bottom: 1rem;
   font-size: 2.5rem;
   font-weight: 700;
 }
 
-.edit-carousel-header p {
+.edit-home-page-header p {
   color: var(--color-text);
   font-size: 1.1rem;
   margin: 0;
@@ -390,7 +390,7 @@
 }
 
 @media (max-width: 768px) {
-  .edit-carousel {
+  .edit-home-page {
     padding: 1rem;
   }
   
@@ -399,12 +399,12 @@
     gap: 1.5rem;
   }
   
-  .edit-carousel-header {
+  .edit-home-page-header {
     padding: 1.5rem;
     margin-bottom: 2rem;
   }
   
-  .edit-carousel-header h1 {
+  .edit-home-page-header h1 {
     font-size: 2rem;
   }
   

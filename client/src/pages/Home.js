@@ -157,11 +157,11 @@ const Home = () => {
       {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
       {!authLoading && isEditor && (
         <button 
-          className="carousel-edit-btn" 
+          className="home-page-edit-btn" 
           onClick={() => {
-            navigate('/edit-carousel');
+            navigate('/edit-home-page');
           }}
-          title={t('home.carousel.edit_button')}
+          title={t('home.home_page.edit_button')}
         >
           {t('common.edit')}
         </button>
@@ -197,16 +197,16 @@ const Home = () => {
           <button 
             className="carousel-nav carousel-prev" 
             onClick={goToPrevious}
-            aria-label={t('home.carousel.navigation.previous')}
-            title={t('home.carousel.navigation.previous')}
+            aria-label={t('home.home_page.navigation.previous')}
+            title={t('home.home_page.navigation.previous')}
           >
             <span>‹</span>
           </button>
           <button 
             className="carousel-nav carousel-next" 
             onClick={goToNext}
-            aria-label={t('home.carousel.navigation.next')}
-            title={t('home.carousel.navigation.next')}
+            aria-label={t('home.home_page.navigation.next')}
+            title={t('home.home_page.navigation.next')}
           >
             <span>›</span>
           </button>
@@ -239,7 +239,7 @@ const Home = () => {
                 key={index}
                 className={`carousel-indicator ${index === currentSlide ? 'active' : ''}`}
                 onClick={() => goToSlide(index)}
-                aria-label={t('home.carousel.navigation.go_to_slide', { slide: index + 1 })}
+                aria-label={t('home.home_page.navigation.go_to_slide', { slide: index + 1 })}
                 aria-selected={index === currentSlide}
                 role="tab"
               />
@@ -250,7 +250,7 @@ const Home = () => {
         </section>
       ) : (
         <div className="empty-carousel-message">
-          <p>{t('home.carousel.empty_message')}</p>
+          <p>{t('home.home_page.empty_message')}</p>
         </div>
       )}
 

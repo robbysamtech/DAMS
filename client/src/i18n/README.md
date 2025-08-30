@@ -93,7 +93,7 @@ t('common.loading')                // "Loading..."
 
 🔄 **In Progress**:
 - Events page translations
-- Edit Carousel page translations
+- Edit Home Page translations
 - Admin Dashboard translations
 - Authentication page translations
 

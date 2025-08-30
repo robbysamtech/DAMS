@@ -47,7 +47,7 @@ The translation keys are organized hierarchically:
 - Empty state messages
 
 #### Home Page
-- Edit carousel button
+- Edit home page button
 - Empty carousel message
 - Loading messages
 
@@ -102,7 +102,7 @@ If you want to add new languages in the future:
 
 🔄 **In Progress**:
 - Events page translations
-- Edit Carousel page translations
+- Edit Home Page translations
 - Admin Dashboard translations
 - Authentication page translations
 

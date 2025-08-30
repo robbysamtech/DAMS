@@ -1,5 +1,5 @@
-/* Carousel Edit Button - Top Right Corner */
-.carousel-edit-btn {
+/* Home Page Edit Button - Top Right Corner */
+.home-page-edit-btn {
   position: absolute;
   top: 2rem;
   right: 2rem;
@@ -20,12 +20,12 @@
   justify-content: center;
 }
 
-.carousel-edit-btn:hover {
+.home-page-edit-btn:hover {
   background: #1d4ed8;
   transform: scale(1.1);
 }
 
-.carousel-edit-btn:active {
+.home-page-edit-btn:active {
   transform: scale(1.05);
 }
 

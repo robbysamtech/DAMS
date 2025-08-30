@@ -71,11 +71,11 @@
   "home": {
     "page_title": "Welcome to DAMS",
     "page_description": "Digital Asset Management System for your church",
-    "carousel": {
-      "edit_button": "Edit Carousel",
-      "empty_message": "No carousel content available. Click 'Edit' to add some!",
-      "loading_error": "Failed to load carousel content",
-      "loading_message": "Loading carousel content...",
+    "home_page": {
+      "edit_button": "Edit Home Page",
+      "empty_message": "No home page content available. Click 'Edit' to add some!",
+      "loading_error": "Failed to load home page content",
+      "loading_message": "Loading home page content...",
       "navigation": {
         "previous": "Previous slide",
         "next": "Next slide",
@@ -97,7 +97,7 @@
     },
     "error": {
       "title": "Something went wrong",
-      "subtitle": "We couldn't load the carousel content",
+      "subtitle": "We couldn't load the home page content",
       "retry_button": "Try Again"
     },
     "sections": {
@@ -226,9 +226,9 @@
       "member_photo": "Profile Photo"
     }
   },
-  "edit_carousel": {
-    "page_title": "Edit Carousel",
-    "page_description": "Manage carousel content for the home page",
+  "edit_home_page": {
+    "page_title": "Edit Home Page",
+    "page_description": "Manage home page carousel content",
     "add_card": "Add New Card",
     "edit_card": "Edit Card",
     "delete_card": "Delete Card",
@@ -267,7 +267,7 @@
       "card_deletion_failed": "Failed to delete card"
     },
     "display": {
-      "no_cards": "No carousel cards found",
+      "no_cards": "No home page cards found",
       "max_cards_reached": "Maximum number of cards (8) reached",
       "card_type": "Type",
       "card_status": "Status"

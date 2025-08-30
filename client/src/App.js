@@ -19,7 +19,7 @@ import Register from './pages/Register';
 
 import Events from './pages/Events';
 import People from './pages/People';
-import EditCarousel from './pages/EditCarousel';
+import EditHomePage from './pages/EditHomePage';
 
 import AdminDashboard from './pages/AdminDashboard';
 import Profile from './pages/Profile';
@@ -63,7 +63,7 @@ const AppContent = () => {
 
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
-            <Route path="/edit-carousel" element={<ProtectedRoute allowedRoles={['editor', 'admin']}><EditCarousel /></ProtectedRoute>} />
+            <Route path="/edit-home-page" element={<ProtectedRoute allowedRoles={['editor', 'admin']}><EditHomePage /></ProtectedRoute>} />
 
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
