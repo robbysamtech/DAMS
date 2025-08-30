@@ -442,9 +442,7 @@ const EditHomePage = () => {
                       onChange={(e) => handleImageUpload(index, e.target.files[0])}
                       id={`image-upload-${index}`}
                     />
-                    <label htmlFor={`image-upload-${index}`} className="upload-button">
-                      {tile.image ? 'Change Image' : 'Upload Image'}
-                    </label>
+                    
                     {tile.image && !tile.imagePreview && (
                       <div className="image-preview">
                         <img 
@@ -462,6 +460,10 @@ const EditHomePage = () => {
                         <div className="preview-label">New Image Selected</div>
                       </div>
                     )}
+                    
+                    <label htmlFor={`image-upload-${index}`} className="upload-button">
+                      {tile.image ? 'Change' : 'Upload Image'}
+                    </label>
                   </div>
                 </div>
               </div>
