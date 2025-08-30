@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,10 @@ const Home = () => {
   const [carouselItems, setCarouselItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Refs for section animations
+  const sectionRefs = useRef([]);
+  const [animatedSections, setAnimatedSections] = useState(new Set([0])); // Start with first section visible
 
   // Fetch carousel items from MongoDB
   useEffect(() => {
@@ -47,6 +51,36 @@ const Home = () => {
 
     return () => clearInterval(timer);
   }, [carouselItems.length]);
+
+  // Simple scroll-based animation
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const windowHeight = window.innerHeight;
+      
+      sectionRefs.current.forEach((ref, index) => {
+        if (ref) {
+          const rect = ref.getBoundingClientRect();
+          const threshold = windowHeight * 1.0; // Changed to 1.0 to test timing
+          
+          const isVisible = rect.top < threshold;
+          
+          console.log(`Section ${index}: rect.top=${rect.top}, threshold=${threshold}, isVisible=${isVisible}`);
+
+          if (isVisible && !animatedSections.has(index)) {
+            console.log('Section visible on scroll:', index);
+            setAnimatedSections(prev => new Set([...prev, index]));
+          }
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Trigger once on mount
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [animatedSections]); // Dependency on animatedSections to re-run when state changes
 
   const goToSlide = (index) => {
     setCurrentSlide(index);
@@ -219,6 +253,111 @@ const Home = () => {
           <p>{t('home.carousel.empty_message')}</p>
         </div>
       )}
+
+            {/* Content Sections Below Carousel */}
+      <section className="content-sections">
+
+ 
+        {/* Section 1: Welcome - Text Left, Image Right */}
+        <div 
+          ref={(el) => (sectionRefs.current[0] = el)}
+          className={`content-section section-welcome ${animatedSections.has(0) ? 'animate' : ''}`}
+          style={{ 
+            opacity: animatedSections.has(0) ? 1 : 0,
+            transform: animatedSections.has(0) ? 'translateY(0)' : 'translateY(100px)',
+            transition: 'all 0.8s ease'
+          }}
+        >
+          <div className="section-content">
+            <div className="section-text">
+              <h2 className="section-title">{t('home.sections.welcome.title')}</h2>
+              <p className="section-description">{t('home.sections.welcome.description')}</p>
+            </div>
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
+                alt="Colorful welcome carpet design"
+                className="section-photo"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 2: Community - Image Left, Text Right */}
+        <div 
+          ref={(el) => (sectionRefs.current[1] = el)}
+          className={`content-section section-community ${animatedSections.has(1) ? 'animate' : ''}`}
+          style={{ 
+            opacity: animatedSections.has(1) ? 1 : 0,
+            transform: animatedSections.has(1) ? 'translateY(0)' : 'translateY(100px)',
+            transition: 'all 0.8s ease'
+          }}
+        >
+          <div className="section-content">
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
+                alt="Vibrant community carpet pattern"
+                className="section-photo"
+              />
+            </div>
+            <div className="section-text">
+              <h2 className="section-title">{t('home.sections.community.title')}</h2>
+              <p className="section-description">{t('home.sections.community.description')}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Events - Text Left, Image Right */}
+        <div 
+          ref={(el) => (sectionRefs.current[2] = el)}
+          className={`content-section section-events ${animatedSections.has(2) ? 'animate' : ''}`}
+          style={{ 
+            opacity: animatedSections.has(2) ? 1 : 0,
+            transform: animatedSections.has(2) ? 'translateY(0)' : 'translateY(100px)',
+            transition: 'all 0.8s ease'
+          }}
+        >
+          <div className="section-content">
+            <div className="section-text">
+              <h2 className="section-title">{t('home.sections.events.title')}</h2>
+              <p className="section-description">{t('home.sections.events.description')}</p>
+            </div>
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
+                alt="Dynamic events carpet design"
+                className="section-photo"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Get Involved - Image Left, Text Right */}
+        <div 
+          ref={(el) => (sectionRefs.current[3] = el)}
+          className={`content-section section-involved ${animatedSections.has(3) ? 'animate' : ''}`}
+          style={{ 
+            opacity: animatedSections.has(3) ? 1 : 0,
+            transform: animatedSections.has(3) ? 'translateY(0)' : 'translateY(100px)',
+            transition: 'all 0.8s ease'
+          }}
+        >
+          <div className="section-content">
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1400&q=80" 
+                alt="Inspiring ministry carpet pattern"
+                className="section-photo"
+              />
+            </div>
+            <div className="section-text">
+              <h2 className="section-title">{t('home.sections.involved.title')}</h2>
+              <p className="section-description">{t('home.sections.involved.description')}</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

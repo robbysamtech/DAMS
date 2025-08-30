@@ -99,6 +99,24 @@
       "title": "Something went wrong",
       "subtitle": "We couldn't load the carousel content",
       "retry_button": "Try Again"
+    },
+    "sections": {
+      "welcome": {
+        "title": "Welcome to Our Church Family",
+        "description": "Join us in a warm, welcoming community where faith grows and relationships flourish. We're here to support you on your spiritual journey with open hearts and open doors. Our church family extends beyond Sunday services, offering support groups, prayer meetings, and fellowship opportunities throughout the week. Whether you're new to faith or have been walking this path for years, you'll find a place to belong and grow in our caring community."
+      },
+      "community": {
+        "title": "Building Strong Community Bonds",
+        "description": "Experience the power of genuine fellowship as we come together to worship, learn, and serve. Our diverse congregation creates a rich tapestry of faith and friendship that spans generations and backgrounds. Through small groups, Bible studies, and community outreach programs, we build lasting relationships that support and encourage one another. Together, we create a network of care that extends beyond our church walls into the broader community."
+      },
+      "events": {
+        "title": "Engaging Events & Activities",
+        "description": "From inspiring worship services to exciting community events, there's always something happening at our church. Discover opportunities to connect, grow, and make lasting memories through our dynamic calendar of activities. We host seasonal celebrations, educational workshops, youth programs, and family-friendly gatherings that bring our community together. Each event is designed to strengthen bonds, deepen faith, and create joyful experiences for everyone involved."
+      },
+      "involved": {
+        "title": "Get Involved in Our Ministry",
+        "description": "Find your place in our vibrant ministry where every member has a role to play. Whether through service, leadership, or participation, there are countless ways to contribute to our mission. We offer various ministry teams including worship, children's ministry, outreach, hospitality, and technical support. Your unique gifts and talents can make a real difference in our community and help us fulfill our calling to serve others with love and compassion."
+      }
     }
   },
   "events": {

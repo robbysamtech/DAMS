@@ -526,3 +526,213 @@
   max-width: 500px;
   line-height: 1.4;
 }
+
+/* Content Sections Below Carousel */
+.content-sections {
+  width: 100%;
+  background: #ffffff;
+  margin-top: 2rem; /* Add space between carousel and first section */
+}
+
+/* Content Sections Below Carousel */
+.content-sections {
+  width: 100%;
+  background: #ffffff;
+  margin-top: 2rem; /* Add space between carousel and first section */
+}
+
+.content-section {
+  width: 100%;
+  padding: 2rem 0; /* Reduced from 4rem to 2rem */
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 2rem; /* Added back to create consistent gaps between sections */
+}
+
+/* Section 1: Welcome - Light Mountain Landscape */
+.section-welcome {
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
+              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+  background-size: cover;
+  background-position: center;
+  color: #2c3e50;
+  transition: background 0.3s ease;
+}
+
+/* Section 2: Community - Light Forest Landscape */
+.section-community {
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
+              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+  background-size: cover;
+  background-position: center;
+  color: #2c3e50;
+}
+
+/* Section 3: Events - Light Sunset Landscape */
+.section-events {
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
+              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+  background-size: cover;
+  background-position: center;
+  color: #2c3e50;
+}
+
+/* Section 4: Get Involved - Light Ocean Landscape */
+.section-involved {
+  background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1)), 
+              url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80');
+  background-size: cover;
+  background-position: center;
+  color: #2c3e50;
+}
+
+.section-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  min-height: 550px;
+}
+
+.section-text {
+  flex: 1;
+  max-width: 550px;
+  padding: 1rem 0;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
+  color: #2c3e50;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  opacity: 0.95;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.85);
+  color: #2c3e50;
+  padding: 1.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.section-image {
+  flex: 1;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-photo {
+  width: 100%;
+  max-width: 600px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  filter: brightness(1.1) contrast(1.1);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Removed hover effects */
+
+/* Section base styles */
+.content-section {
+  transition: background 0.3s ease;
+  opacity: 0;
+  transform: translateY(100px);
+  transition: all 0.8s ease;
+}
+
+/* Animation state for sections */
+.content-section.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered animation delays for each section */
+.section-welcome.animate {
+  animation-delay: 0s;
+}
+
+.section-community.animate {
+  animation-delay: 0.2s;
+}
+
+.section-events.animate {
+  animation-delay: 0.4s;
+}
+
+.section-involved.animate {
+  animation-delay: 0.6s;
+}
+
+/* Alternate layout for sections 2 and 4 (image on left) */
+.section-community .section-content,
+.section-involved .section-content {
+  flex-direction: row-reverse;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .section-content {
+    flex-direction: column;
+    gap: 2rem;
+    text-align: center;
+    padding: 0 1rem;
+  }
+
+  .section-community .section-content,
+  .section-involved .section-content {
+    flex-direction: column;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-description {
+    font-size: 1rem;
+  }
+
+  .section-photo {
+    height: 350px;
+    max-width: 500px;
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.75rem;
+  }
+
+  .section-photo {
+    height: 300px;
+    max-width: 400px;
+  }
+
+  .content-section {
+    padding: 2rem 0;
+  }
+}
