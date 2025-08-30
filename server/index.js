@@ -51,6 +51,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static file serving
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/logo', express.static(path.join(__dirname, 'logo')));
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Database connection

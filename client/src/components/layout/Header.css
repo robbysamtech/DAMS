@@ -356,3 +356,38 @@
     right: -1rem;
   }
 }
+
+/* Logo styling */
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-logo {
+  height: 112.5px; /* Adjusted to 2.25x original size (50px * 2.25 = 112.5px) */
+  width: auto;
+  max-width: 450px; /* Adjusted to 2.25x original size (200px * 2.25 = 450px) */
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.2s ease;
+}
+
+.header-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive logo sizing */
+@media (max-width: 768px) {
+  .header-logo {
+    height: 90px; /* Adjusted to 2.25x original size (40px * 2.25 = 90px) */
+    max-width: 337.5px; /* Adjusted to 2.25x original size (150px * 2.25 = 337.5px) */
+  }
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    height: 78.75px; /* Adjusted to 2.25x original size (35px * 2.25 = 78.75px) */
+    max-width: 270px; /* Adjusted to 2.25x original size (120px * 2.25 = 270px) */
+  }
+}

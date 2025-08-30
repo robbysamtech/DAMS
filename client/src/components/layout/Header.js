@@ -34,8 +34,13 @@ const Header = () => {
         <div className="header-content">
           <div className="header-brand">
             <Link to="/" className="brand-link">
-              <h1 className="brand-title">{t('navigation.header.logo')}</h1>
-              <span className="brand-subtitle">Digital Asset Management System</span>
+              <div className="logo-container">
+                <img 
+                  src="http://localhost:5001/logo/logo.png" 
+                  alt="Christ Church of India" 
+                  className="header-logo"
+                />
+              </div>
             </Link>
           </div>
 
