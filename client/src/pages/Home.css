@@ -3,7 +3,7 @@
   position: absolute;
   top: 2rem;
   right: 2rem;
-  z-index: 999; /* Lower than header (1000) so it goes under when scrolling */
+  z-index: 5; /* Lower than header (1000) so it goes under when scrolling */
   background: #1e40af;
   border: none;
   border-radius: 6px;
@@ -202,7 +202,7 @@
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  z-index: 10;
+  z-index: 8;
 }
 
 .carousel-nav:hover {
@@ -231,7 +231,7 @@
   transform: translateX(-50%);
   display: flex;
   gap: 1rem;
-  z-index: 1000;
+  z-index: 10;
   padding: 1rem;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
@@ -348,7 +348,7 @@
   bottom: 0.25rem; /* Moved down further */
   left: auto; /* Removed left positioning */
   right: 2rem; /* Positioned on the right side */
-  z-index: 1000;
+  z-index: 10;
   padding: 1.5rem;
   transition: opacity 0.3s ease-in-out; /* Smooth opacity transition */
 }
@@ -408,21 +408,7 @@
   font-size: 1rem;
 }
 
-/* Adjust carousel indicators position to be below the text section */
-.carousel-indicators {
-  position: absolute;
-  bottom: 0.25rem; /* Moved down further to match text section */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1rem;
-  z-index: 1000;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+
 
 /* Loading and Error States */
 .loading-container,
