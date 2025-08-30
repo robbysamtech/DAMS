@@ -246,8 +246,8 @@
 }
 
 .upload-button {
-  background: var(--color-primary);
-  color: white;
+  background: #8b5cf6 !important;
+  color: #ffffff !important;
   padding: 0.75rem 1.5rem;
   border-radius: 6px;
   text-align: center;
@@ -256,10 +256,14 @@
   transition: all 0.3s ease;
   border: none;
   font-size: 0.9rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .upload-button:hover {
-  background: var(--color-primary-dark);
+  background: #7c3aed !important;
   transform: translateY(-1px);
 }
 
