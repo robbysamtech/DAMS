@@ -2,7 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const HomeSection = require('./models/HomeSection');
 
-// Sample home sections data with contemporary content and modern images
+// Sample home sections data with contemporary content and modern images - 6 total sections
 const homeSectionsData = [
   {
     order: 1,
@@ -35,6 +35,22 @@ const homeSectionsData = [
     backgroundImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
     tileImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
     isActive: true
+  },
+  {
+    order: 5,
+    title: "Empowering Youth for Tomorrow",
+    description: "Investing in the next generation through youth programs, leadership development, and mentorship opportunities. We believe every young person has the potential to make a positive impact on our world. Join us in nurturing the leaders of tomorrow.",
+    backgroundImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    isActive: true
+  },
+  {
+    order: 6,
+    title: "Creating Lasting Family Bonds",
+    description: "Strengthening family relationships through shared experiences, support groups, and family-oriented activities. We understand that strong families are the foundation of a thriving community. Let's build stronger connections together.",
+    backgroundImage: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80",
+    tileImage: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80",
+    isActive: true
   }
 ];
 
@@ -51,33 +67,33 @@ async function seedHomeSections() {
     await HomeSection.deleteMany({});
     console.log('Cleared existing home sections');
 
-    // Ensure we only create exactly 4 sections
-    if (homeSectionsData.length !== 4) {
-      throw new Error(`Expected exactly 4 sections, but found ${homeSectionsData.length}`);
-    }
-
-    // Validate order numbers are 1-4
-    const validOrders = homeSectionsData.every(section => section.order >= 1 && section.order <= 4);
-    if (!validOrders) {
-      throw new Error('All sections must have order numbers between 1 and 4');
-    }
-
-    // Check for duplicate order numbers
-    const orders = homeSectionsData.map(section => section.order);
-    const uniqueOrders = new Set(orders);
-    if (uniqueOrders.size !== 4) {
-      throw new Error('All sections must have unique order numbers');
-    }
+               // Ensure we only create exactly 6 sections
+           if (homeSectionsData.length !== 6) {
+             throw new Error(`Expected exactly 6 sections, but found ${homeSectionsData.length}`);
+           }
+       
+           // Validate order numbers are 1-6
+           const validOrders = homeSectionsData.every(section => section.order >= 1 && section.order <= 6);
+           if (!validOrders) {
+             throw new Error('All sections must have order numbers between 1 and 6');
+           }
+       
+           // Check for duplicate order numbers
+           const orders = homeSectionsData.map(section => section.order);
+           const uniqueOrders = new Set(orders);
+           if (uniqueOrders.size !== 6) {
+             throw new Error('All sections must have unique order numbers');
+           }
 
     // Insert new home sections
     const insertedSections = await HomeSection.insertMany(homeSectionsData);
     console.log(`Successfully inserted ${insertedSections.length} home sections`);
     
-    // Verify we have exactly 4 sections
-    const finalCount = await HomeSection.countDocuments();
-    if (finalCount !== 4) {
-      throw new Error(`Database should contain exactly 4 sections, but found ${finalCount}`);
-    }
+               // Verify we have exactly 6 sections
+           const finalCount = await HomeSection.countDocuments();
+           if (finalCount !== 6) {
+             throw new Error(`Database should contain exactly 6 sections, but found ${finalCount}`);
+           }
 
     // Display the inserted sections
     insertedSections.forEach(section => {

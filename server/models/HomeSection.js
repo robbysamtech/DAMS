@@ -5,7 +5,7 @@ const homeSectionSchema = new mongoose.Schema({
     type: Number,
     required: true,
     min: 1,
-    max: 4,
+    max: 6,
     unique: true
   },
   title: {
