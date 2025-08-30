@@ -334,8 +334,7 @@ const EditHomePage = () => {
         <button className="back-button" onClick={() => navigate('/')}>
           ← Back to Home
         </button>
-        <h1>Edit Home Page Content</h1>
-        <p>Manage your home page carousel items. Each tile represents a carousel slide.</p>
+                  <h1>Edit Home Page Content</h1>
       </div>
 
       {error && (
