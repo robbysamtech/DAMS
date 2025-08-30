@@ -1,7 +1,7 @@
 /* Edit Carousel Page Styles */
 .edit-carousel {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   background: var(--color-background);
   min-height: 100vh;
@@ -60,10 +60,10 @@
   text-align: center;
 }
 
-/* Carousel Grid - 3x3 Layout */
+/* Carousel Grid - 2x4 Layout */
 .carousel-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   margin-bottom: 3rem;
 }
@@ -73,11 +73,11 @@
   background: white;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
   position: relative;
-  min-height: 400px;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
 }

@@ -52,10 +52,10 @@ const EditCarousel = () => {
     }
   }, [token]);
 
-  // Initialize 9 tiles (3x3 grid)
+  // Initialize 8 tiles (2x4 grid)
   const initializeTiles = useCallback(() => {
     const tiles = [];
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 8; i++) {
       const existingItem = carouselItems.find(item => item.order === i + 1);
       tiles.push({
         id: existingItem?._id || `tile-${i + 1}`,
