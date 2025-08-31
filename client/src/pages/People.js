@@ -26,7 +26,6 @@ const People = () => {
     try {
       const response = await fetch('http://localhost:5001/api/people', {
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -42,7 +41,7 @@ const People = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchPeople();

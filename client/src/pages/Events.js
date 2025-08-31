@@ -23,17 +23,30 @@ const Events = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showFullScreen, setShowFullScreen] = useState(false);
 
+  // Helper function to get location name from location ID
+  const getLocationName = useCallback((locationId) => {
+    if (!locationId) return 'Location not set';
+    if (typeof locationId === 'string') {
+      const location = locations.find(loc => loc._id === locationId);
+      return location ? location.name : 'Location not set';
+    }
+    if (locationId.name) {
+      return locationId.name;
+    }
+    return 'Location not set';
+  }, [locations]);
+
   const fetchLocations = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:5001/api/locations', {
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Locations data received:', data);
         setLocations(data);
       } else {
         console.error('Failed to fetch locations:', response.status);
@@ -41,7 +54,7 @@ const Events = () => {
     } catch (err) {
       console.error('Error fetching locations:', err);
     }
-  }, [token]);
+  }, []);
 
   const fetchEvents = useCallback(async () => {
     // Add timeout to prevent freezing
@@ -53,7 +66,6 @@ const Events = () => {
     try {
       const response = await fetch('http://localhost:5001/api/events', {
         headers: {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
@@ -62,6 +74,8 @@ const Events = () => {
       
       if (response.ok) {
         const data = await response.json();
+        console.log('Events data received:', data.events);
+        console.log('First event location:', data.events?.[0]?.location);
         setEvents(data.events || []);
         setFilteredEvents(data.events || []);
       } else {
@@ -75,16 +89,12 @@ const Events = () => {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
-    if (token) {
-      fetchLocations();
-      fetchEvents();
-    } else {
-      setLoading(false); // Don't keep loading if no token
-    }
-  }, [token, fetchLocations, fetchEvents]);
+    fetchEvents();
+    fetchLocations();
+  }, [fetchEvents, fetchLocations]);
 
   // Real-time search filtering
   useEffect(() => {
@@ -98,7 +108,7 @@ const Events = () => {
       return (
         event.title?.toLowerCase().includes(query) ||
         event.description?.toLowerCase().includes(query) ||
-        event.location?.name?.toLowerCase().includes(query) ||
+        getLocationName(event.location).toLowerCase().includes(query) ||
         event.category?.toLowerCase().includes(query) ||
         event.tags?.some(tag => tag.toLowerCase().includes(query))
       );
@@ -613,7 +623,7 @@ const Events = () => {
                       
                       <div className="event-location">
                         <span className="icon">📍</span>
-                        {event.location?.name || 'Location not set'}
+                        {getLocationName(event.location)}
                       </div>
                     </div>
                   </div>
@@ -718,7 +728,7 @@ const Events = () => {
                     <div className="info-card-icon">📍</div>
                     <div className="info-card-content">
                       <h4>Location</h4>
-                      <p>{selectedEvent.location?.name || 'Location not set'}</p>
+                      <p>{getLocationName(selectedEvent.location)}</p>
                     </div>
                   </div>
                 </div>

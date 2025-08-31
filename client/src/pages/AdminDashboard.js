@@ -21,10 +21,13 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
         const data = await response.json();
         setActiveUsers(data.users || []);
       } else {
+        const errorText = await response.text();
+        console.error('Failed to fetch approved users:', response.status, errorText);
         setError('Failed to fetch approved users');
       }
     } catch (err) {
-              setError('Error fetching approved users');
+      console.error('Error fetching approved users:', err);
+      setError('Error fetching approved users');
     } finally {
       setLoading(false);
     }
@@ -155,11 +158,11 @@ const AdminDashboard = () => {
     people: 0,
     events: 0
   });
-  const [refreshKey, setRefreshKey] = useState(0); // Add refresh key for ApprovedUsersList
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [rejectDialog, setRejectDialog] = useState({ show: false, userId: null, reason: '' });
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchPendingUsers = useCallback(async () => {
     try {

@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const Event = require('../models/Event');
 const router = express.Router();
+const auth = require('../middleware/auth');
 
 // Get all events with filtering
 router.get('/', async (req, res) => {
@@ -136,7 +137,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new event
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
   try {
     const {
       title,
@@ -194,7 +195,7 @@ router.post('/', async (req, res) => {
 });
 
 // Update event
-router.put('/:id', async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
   try {
     const {
       title,
@@ -260,7 +261,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete event
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) {

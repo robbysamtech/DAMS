@@ -4,6 +4,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const auth = require('../middleware/auth');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -104,7 +105,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new person
-router.post('/', upload.single('profilePhoto'), async (req, res) => {
+router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
   try {
     console.log('POST /api/people - Request received');
     console.log('Request body:', req.body);
@@ -191,7 +192,7 @@ router.post('/', upload.single('profilePhoto'), async (req, res) => {
 });
 
 // Update person
-router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
+router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
   try {
     console.log('PUT /api/people/:id - Update request received');
     console.log('Request body:', req.body);
@@ -289,7 +290,7 @@ router.put('/:id', upload.single('profilePhoto'), async (req, res) => {
 });
 
 // Delete person
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
   try {
     const person = await Person.findById(req.params.id);
     if (!person) {

@@ -66,8 +66,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams', {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', auth, adminAuth, adminRoutes);
 
-app.use('/api/people', auth, peopleRoutes);
-app.use('/api/events', auth, eventsRoutes);
+app.use('/api/people', peopleRoutes);
+app.use('/api/events', eventsRoutes);
 app.use('/api/upload', auth, uploadRoutes);
 app.use('/api/carousel', carouselRoutes);
 app.use('/api/locations', locationRoutes);
