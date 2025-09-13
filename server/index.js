@@ -27,7 +27,6 @@ const peopleRoutes = require('./routes/people');
 const eventsRoutes = require('./routes/events');
 const uploadRoutes = require('./routes/upload');
 const carouselRoutes = require('./routes/carousel');
-const locationRoutes = require('./routes/locations');
 const homeSectionRoutes = require('./routes/homeSections');
 
 // Security middleware
@@ -70,7 +69,6 @@ app.use('/api/people', peopleRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/upload', auth, uploadRoutes);
 app.use('/api/carousel', carouselRoutes);
-app.use('/api/locations', locationRoutes);
 app.use('/api/home-sections', homeSectionRoutes);
 
 // Health check endpoint

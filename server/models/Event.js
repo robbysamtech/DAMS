@@ -20,10 +20,31 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  location: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Location',
-    required: true
+  address: {
+    streetAddress: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 200
+    },
+    city: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 100
+    },
+    state: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50
+    },
+    zipCode: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 20
+    }
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
@@ -127,6 +148,30 @@ eventSchema.virtual('formattedDateTime').get(function() {
   return `${eventDate.toLocaleDateString('en-US', options)} at ${this.time}`;
 });
 
+// Virtual for full address
+eventSchema.virtual('fullAddress').get(function() {
+  if (!this.address) return '';
+  
+  const parts = [];
+  if (this.address.streetAddress) parts.push(this.address.streetAddress);
+  if (this.address.city) parts.push(this.address.city);
+  if (this.address.state) parts.push(this.address.state);
+  if (this.address.zipCode) parts.push(this.address.zipCode);
+  
+  return parts.join(', ');
+});
+
+// Virtual for short address (city, state)
+eventSchema.virtual('shortAddress').get(function() {
+  if (!this.address) return '';
+  
+  const parts = [];
+  if (this.address.city) parts.push(this.address.city);
+  if (this.address.state) parts.push(this.address.state);
+  
+  return parts.join(', ');
+});
+
 // Virtual for is upcoming
 eventSchema.virtual('isUpcoming').get(function() {
   return new Date(this.date) > new Date();
@@ -153,15 +198,10 @@ eventSchema.methods.incrementViewCount = function() {
 
 // Method to check if user can manage this event
 eventSchema.methods.canManage = async function(userId) {
-  // Allow creator to manage their own events
-  if (this.creator.toString() === userId.toString()) {
-    return true;
-  }
-  
-  // Allow admins and super admins to manage all events
+  // Allow editors, admins, and super admins to manage all events
   const User = require('./User');
   const user = await User.findById(userId);
-  if (user && (user.role === 'admin' || user.role === 'superadmin')) {
+  if (user && (user.role === 'editor' || user.role === 'admin' || user.role === 'superadmin')) {
     return true;
   }
   

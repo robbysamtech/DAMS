@@ -16,45 +16,37 @@ const Events = () => {
     description: '',
     date: '',
     time: '',
-    location: '',
+    address: {
+      streetAddress: '',
+      city: '',
+      state: '',
+      zipCode: ''
+    },
     eventImage: null
   });
-  const [locations, setLocations] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showFullScreen, setShowFullScreen] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
-  // Helper function to get location name from location ID
-  const getLocationName = useCallback((locationId) => {
-    if (!locationId) return 'Location not set';
-    if (typeof locationId === 'string') {
-      const location = locations.find(loc => loc._id === locationId);
-      return location ? location.name : 'Location not set';
-    }
-    if (locationId.name) {
-      return locationId.name;
-    }
-    return 'Location not set';
-  }, [locations]);
 
-  const fetchLocations = useCallback(async () => {
-    try {
-      const response = await fetch('http://localhost:5001/api/locations', {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Locations data received:', data);
-        setLocations(data);
-      } else {
-        console.error('Failed to fetch locations:', response.status);
-      }
-    } catch (err) {
-      console.error('Error fetching locations:', err);
+  // Helper function to get full address display
+  const getAddressDisplay = useCallback((event) => {
+    if (!event.address) return 'Address not set';
+    
+    const addressParts = [];
+    if (event.address.streetAddress) addressParts.push(event.address.streetAddress);
+    if (event.address.city) addressParts.push(event.address.city);
+    if (event.address.state) addressParts.push(event.address.state);
+    if (event.address.zipCode) addressParts.push(event.address.zipCode);
+    
+    if (addressParts.length > 0) {
+      return addressParts.join(', ');
     }
+    
+    return 'Address not set';
   }, []);
+
 
   const fetchEvents = useCallback(async () => {
     // Add timeout to prevent freezing
@@ -93,8 +85,7 @@ const Events = () => {
 
   useEffect(() => {
     fetchEvents();
-    fetchLocations();
-  }, [fetchEvents, fetchLocations]);
+  }, [fetchEvents]);
 
   // Real-time search filtering
   useEffect(() => {
@@ -108,13 +99,13 @@ const Events = () => {
       return (
         event.title?.toLowerCase().includes(query) ||
         event.description?.toLowerCase().includes(query) ||
-        getLocationName(event.location).toLowerCase().includes(query) ||
+        getAddressDisplay(event).toLowerCase().includes(query) ||
         event.category?.toLowerCase().includes(query) ||
         event.tags?.some(tag => tag.toLowerCase().includes(query))
       );
     });
     setFilteredEvents(filtered);
-  }, [searchQuery, events]);
+  }, [searchQuery, events, getAddressDisplay]);
 
   // Cleanup fullscreen classes when component unmounts
   useEffect(() => {
@@ -130,6 +121,15 @@ const Events = () => {
       setFormData(prev => ({
         ...prev,
         [name]: files[0]
+      }));
+    } else if (name.startsWith('address.')) {
+      const addressField = name.split('.')[1];
+      setFormData(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          [addressField]: value
+        }
       }));
     } else {
       setFormData(prev => ({
@@ -178,7 +178,7 @@ const Events = () => {
         description: formData.description,
         date: formData.date,
         time: formData.time,
-        location: formData.location,
+        address: formData.address,
         eventImage: imageUrl
       };
 
@@ -194,8 +194,7 @@ const Events = () => {
       if (response.ok) {
         const newEvent = await response.json();
         setEvents(prev => [newEvent.event, ...prev]);
-        resetForm();
-        setShowCreateForm(false);
+        closeCreateModal();
         setError('');
       } else {
         const errorData = await response.json();
@@ -213,10 +212,15 @@ const Events = () => {
       description: event.description,
       date: event.date.split('T')[0], // Convert ISO date to YYYY-MM-DD
       time: event.time,
-      location: event.location?._id || event.location,
+      address: event.address || {
+        streetAddress: '',
+        city: '',
+        state: '',
+        zipCode: ''
+      },
       eventImage: null
     });
-    setShowCreateForm(true);
+    setShowEditModal(true);
   };
 
   const handleUpdate = async (e) => {
@@ -233,7 +237,7 @@ const Events = () => {
         description: formData.description,
         date: formData.date,
         time: formData.time,
-        location: formData.location,
+        address: formData.address,
         eventImage: imageUrl
       };
 
@@ -251,9 +255,7 @@ const Events = () => {
         setEvents(prev => prev.map(event => 
           event._id === editingEvent._id ? updatedEvent.event : event
         ));
-        resetForm();
-        setEditingEvent(null);
-        setShowCreateForm(false);
+        closeEditModal();
         setError('');
       } else {
         const errorData = await response.json();
@@ -270,10 +272,34 @@ const Events = () => {
       description: '',
       date: '',
       time: '',
-      location: '',
+      address: {
+        streetAddress: '',
+        city: '',
+        state: '',
+        zipCode: ''
+      },
       eventImage: null
     });
     setEditingEvent(null);
+    setShowCreateForm(false);
+    setShowEditModal(false);
+    setShowCreateModal(false);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingEvent(null);
+    resetForm();
+  };
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
+    resetForm();
+  };
+
+  const openCreateModal = () => {
+    resetForm();
+    setShowCreateModal(true);
   };
 
   const handleEventClick = (event) => {
@@ -370,15 +396,39 @@ const Events = () => {
 
         {/* Search Bar */}
         <div className="search-section">
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search events by title, description, location, or tags..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="search-input"
-            />
-            <span className="search-icon">🔍</span>
+          <div className="search-row">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Search events by title, description, address, or tags..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              <span className="search-icon">🔍</span>
+            </div>
+            {(isEditor || isAdmin) && (
+              <div className="search-actions">
+                <button 
+                  onClick={openCreateModal}
+                  className="btn btn-primary"
+                  style={{
+                    backgroundColor: '#2563eb',
+                    color: 'white',
+                    border: '2px solid #2563eb',
+                    padding: '0.875rem 1.5rem',
+                    borderRadius: '8px',
+                    fontSize: '1rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    minHeight: '44px',
+                    minWidth: '120px'
+                  }}
+                >
+                  +New Event
+                </button>
+              </div>
+            )}
           </div>
           <div className="search-results">
             {searchQuery && (
@@ -386,194 +436,6 @@ const Events = () => {
             )}
           </div>
         </div>
-
-        {(isEditor || isAdmin) && (
-          <div className="create-event-section">
-            <button 
-              onClick={() => {
-                if (editingEvent) {
-                  resetForm();
-                } else {
-                  setShowCreateForm(!showCreateForm);
-                }
-              }}
-              className="btn btn-primary"
-              style={{
-                backgroundColor: '#2563eb',
-                color: 'white',
-                border: '2px solid #2563eb',
-                padding: '0.875rem 1.5rem',
-                borderRadius: '8px',
-                fontSize: '1rem',
-                fontWeight: '600',
-                cursor: 'pointer',
-                minHeight: '44px',
-                minWidth: '120px'
-              }}
-            >
-              {showCreateForm ? 'Cancel' : '➕ Create New Event'}
-            </button>
-
-            {showCreateForm && (
-              <form onSubmit={editingEvent ? handleUpdate : handleSubmit} className="create-event-form">
-                <h3>{editingEvent ? 'Edit Event' : 'Create New Event'}</h3>
-                
-                <div className="form-group">
-                  <label htmlFor="title">Event Title</label>
-                  <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    placeholder="Enter event title"
-                    required
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="description">Description</label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    placeholder="Describe the event"
-                    rows="4"
-                    required
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="date">Date</label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={formData.date}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label htmlFor="time">Time</label>
-                    <select
-                      id="time"
-                      name="time"
-                      value={formData.time}
-                      onChange={handleInputChange}
-                      className="form-input"
-                      required
-                    >
-                      <option value="">Select a time</option>
-                      {Array.from({ length: 96 }, (_, i) => {
-                        const hour = Math.floor(i / 4);
-                        const minute = (i % 4) * 15;
-                        const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-                        const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        return (
-                          <option key={timeString} value={timeString}>
-                            {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
-                          </option>
-                        );
-                      })}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="location">Location</label>
-                  <select
-                    id="location"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleInputChange}
-                    className="form-input"
-                    required
-                  >
-                    <option value="">Select a location</option>
-                    {locations.map(location => (
-                      <option key={location._id} value={location._id}>
-                        {location.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="eventImage">Event Image (Optional)</label>
-                  <input
-                    type="file"
-                    id="eventImage"
-                    name="eventImage"
-                    onChange={handleInputChange}
-                    className="form-input"
-                    accept="image/*"
-                  />
-                  {editingEvent?.eventImage && (
-                    <div className="current-image">
-                      <p>Current image:</p>
-                      <img 
-                        src={editingEvent.eventImage} 
-                        alt="Current event" 
-                        className="current-image-preview"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="form-actions">
-                  <button 
-                    type="submit" 
-                    className="btn btn-success"
-                    style={{
-                      backgroundColor: '#059669',
-                      color: 'white',
-                      border: '2px solid #059669',
-                      padding: '0.875rem 1.5rem',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      minHeight: '44px',
-                      minWidth: '120px'
-                    }}
-                  >
-                    {editingEvent ? 'Update Event' : 'Create Event'}
-                  </button>
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      resetForm();
-                      setShowCreateForm(false);
-                    }}
-                    className="btn btn-secondary"
-                    style={{
-                      backgroundColor: '#64748b',
-                      color: 'white',
-                      border: '2px solid #64748b',
-                      padding: '0.875rem 1.5rem',
-                      borderRadius: '8px',
-                      fontSize: '1rem',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      minHeight: '44px',
-                      minWidth: '120px'
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </form>
-            )}
-          </div>
-        )}
 
         <div className="events-list">
           <h2>Events ({filteredEvents.length})</h2>
@@ -623,7 +485,7 @@ const Events = () => {
                       
                       <div className="event-location">
                         <span className="icon">📍</span>
-                        {getLocationName(event.location)}
+                        {getAddressDisplay(event)}
                       </div>
                     </div>
                   </div>
@@ -728,7 +590,7 @@ const Events = () => {
                     <div className="info-card-icon">📍</div>
                     <div className="info-card-content">
                       <h4>Location</h4>
-                      <p>{getLocationName(selectedEvent.location)}</p>
+                      <p>{getAddressDisplay(selectedEvent)}</p>
                     </div>
                   </div>
                 </div>
@@ -778,6 +640,328 @@ const Events = () => {
 
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Event Modal */}
+      {showEditModal && (
+        <div className="modal-overlay" onClick={closeEditModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Edit Event</h2>
+              <button className="modal-close" onClick={closeEditModal}>&times;</button>
+            </div>
+            
+            <form onSubmit={handleUpdate} className="edit-event-form">
+              <div className="form-group">
+                <label htmlFor="edit-title">Event Title</label>
+                <input
+                  type="text"
+                  id="edit-title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  placeholder="Enter event title"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="edit-description">Description</label>
+                <textarea
+                  id="edit-description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  placeholder="Describe the event"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="edit-date">Date</label>
+                  <input
+                    type="date"
+                    id="edit-date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="edit-time">Time</label>
+                  <select
+                    id="edit-time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  >
+                    <option value="">Select a time</option>
+                    {Array.from({ length: 96 }, (_, i) => {
+                      const hour = Math.floor(i / 4);
+                      const minute = (i % 4) * 15;
+                      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                      const ampm = hour >= 12 ? 'PM' : 'AM';
+                      return (
+                        <option key={timeString} value={timeString}>
+                          {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
+
+              <div className="form-group">
+                <label>Address Details (Optional)</label>
+                <div className="address-fields">
+                  <input
+                    type="text"
+                    name="address.streetAddress"
+                    value={formData.address.streetAddress}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Street Address"
+                    required
+                  />
+                  <div className="address-row">
+                    <input
+                      type="text"
+                      name="address.city"
+                      value={formData.address.city}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="City"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="address.state"
+                      value={formData.address.state}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="State"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="address.zipCode"
+                      value={formData.address.zipCode}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="ZIP Code"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="edit-eventImage">Event Image (Optional)</label>
+                <input
+                  type="file"
+                  id="edit-eventImage"
+                  name="eventImage"
+                  onChange={handleInputChange}
+                  className="form-input"
+                  accept="image/*"
+                />
+                {editingEvent?.eventImage && (
+                  <div className="current-image">
+                    <p>Current image:</p>
+                    <img 
+                      src={editingEvent.eventImage} 
+                      alt="Current event" 
+                      className="current-image-preview"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="modal-actions">
+                <button 
+                  type="submit" 
+                  className="btn btn-success"
+                >
+                  Update Event
+                </button>
+                <button 
+                  type="button" 
+                  onClick={closeEditModal}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Create Event Modal */}
+      {showCreateModal && (
+        <div className="modal-overlay" onClick={closeCreateModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>Create New Event</h2>
+              <button className="modal-close" onClick={closeCreateModal}>&times;</button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="create-event-form">
+              <div className="form-group">
+                <label htmlFor="create-title">Event Title</label>
+                <input
+                  type="text"
+                  id="create-title"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  placeholder="Enter event title"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="create-description">Description</label>
+                <textarea
+                  id="create-description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  placeholder="Describe the event"
+                  rows="4"
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="create-date">Date</label>
+                  <input
+                    type="date"
+                    id="create-date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="create-time">Time</label>
+                  <select
+                    id="create-time"
+                    name="time"
+                    value={formData.time}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    required
+                  >
+                    <option value="">Select a time</option>
+                    {Array.from({ length: 96 }, (_, i) => {
+                      const hour = Math.floor(i / 4);
+                      const minute = (i % 4) * 15;
+                      const timeString = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                      const ampm = hour >= 12 ? 'PM' : 'AM';
+                      return (
+                        <option key={timeString} value={timeString}>
+                          {displayHour}:{minute.toString().padStart(2, '0')} {ampm}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+
+
+              <div className="form-group">
+                <label>Address Details</label>
+                <div className="address-fields">
+                  <input
+                    type="text"
+                    name="address.streetAddress"
+                    value={formData.address.streetAddress}
+                    onChange={handleInputChange}
+                    className="form-input"
+                    placeholder="Street Address"
+                    required
+                  />
+                  <div className="address-row">
+                    <input
+                      type="text"
+                      name="address.city"
+                      value={formData.address.city}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="City"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="address.state"
+                      value={formData.address.state}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="State"
+                      required
+                    />
+                    <input
+                      type="text"
+                      name="address.zipCode"
+                      value={formData.address.zipCode}
+                      onChange={handleInputChange}
+                      className="form-input"
+                      placeholder="ZIP Code"
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="create-eventImage">Event Image (Optional)</label>
+                <input
+                  type="file"
+                  id="create-eventImage"
+                  name="eventImage"
+                  onChange={handleInputChange}
+                  className="form-input"
+                  accept="image/*"
+                />
+              </div>
+
+              <div className="modal-actions">
+                <button 
+                  type="submit" 
+                  className="btn btn-success"
+                >
+                  Create Event
+                </button>
+                <button 
+                  type="button" 
+                  onClick={closeCreateModal}
+                  className="btn btn-secondary"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

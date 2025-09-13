@@ -25,7 +25,11 @@ router.get('/', async (req, res) => {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } }
+        { tags: { $in: [new RegExp(search, 'i')] } },
+        { 'address.streetAddress': { $regex: search, $options: 'i' } },
+        { 'address.city': { $regex: search, $options: 'i' } },
+        { 'address.state': { $regex: search, $options: 'i' } },
+        { 'address.zipCode': { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -67,7 +71,6 @@ router.get('/upcoming', async (req, res) => {
 
     const events = await Event.find(filter)
       .populate('creator', 'firstName lastName')
-      .populate('location', 'name')
       .sort({ date: 1, time: 1 })
       .limit(parseInt(limit));
 
@@ -119,7 +122,6 @@ router.get('/:id', async (req, res) => {
   try {
     const event = await Event.findById(req.params.id)
       .populate('creator', 'firstName lastName profile')
-      .populate('location', 'name')
 
 
     if (!event) {
@@ -144,7 +146,7 @@ router.post('/', auth, async (req, res) => {
       description,
       date,
       time,
-      location,
+      address,
       category,
       eventType,
       maxAttendees,
@@ -165,7 +167,7 @@ router.post('/', auth, async (req, res) => {
       description,
       date,
       time,
-      location,
+      address,
       creator: req.user._id,
       category,
       eventType,
@@ -180,8 +182,7 @@ router.post('/', auth, async (req, res) => {
     await event.save();
 
     const populatedEvent = await event.populate([
-      { path: 'creator', select: 'firstName lastName' },
-      { path: 'location', select: 'name' }
+      { path: 'creator', select: 'firstName lastName' }
     ]);
 
     res.status(201).json({
@@ -202,7 +203,7 @@ router.put('/:id', auth, async (req, res) => {
       description,
       date,
       time,
-      location,
+      address,
       category,
       eventType,
       maxAttendees,
@@ -229,7 +230,7 @@ router.put('/:id', auth, async (req, res) => {
     if (description !== undefined) updates.description = description;
     if (date !== undefined) updates.date = date;
     if (time !== undefined) updates.time = time;
-    if (location !== undefined) updates.location = location;
+    if (address !== undefined) updates.address = address;
     if (category !== undefined) updates.category = category;
     if (eventType !== undefined) updates.eventType = eventType;
     if (maxAttendees !== undefined) updates.maxAttendees = maxAttendees;
@@ -246,8 +247,7 @@ router.put('/:id', auth, async (req, res) => {
       { $set: updates },
       { new: true, runValidators: true }
     ).populate([
-      { path: 'creator', select: 'firstName lastName' },
-      { path: 'location', select: 'name' }
+      { path: 'creator', select: 'firstName lastName' }
     ]);
 
     res.json({
@@ -347,7 +347,7 @@ router.get('/statistics/overview', async (req, res) => {
         date: { $gte: new Date() }
       }),
       Event.find({ status: 'published' })
-              .select('title date location')
+              .select('title date address')
         .sort({ date: -1 })
         .limit(5)
     ]);
@@ -385,7 +385,11 @@ router.get('/search/advanced', async (req, res) => {
       filter.$or = [
         { title: { $regex: query, $options: 'i' } },
         { description: { $regex: query, $options: 'i' } },
-        { tags: { $in: [new RegExp(query, 'i')] } }
+        { tags: { $in: [new RegExp(query, 'i')] } },
+        { 'address.streetAddress': { $regex: query, $options: 'i' } },
+        { 'address.city': { $regex: query, $options: 'i' } },
+        { 'address.state': { $regex: query, $options: 'i' } },
+        { 'address.zipCode': { $regex: query, $options: 'i' } }
       ];
     }
     
@@ -403,7 +407,6 @@ router.get('/search/advanced', async (req, res) => {
     
     const events = await Event.find(filter)
       .populate('creator', 'firstName lastName')
-      .populate('location', 'name')
       .sort({ date: 1, time: 1 })
       .skip(skip)
       .limit(parseInt(limit));
