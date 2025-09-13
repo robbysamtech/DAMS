@@ -11,8 +11,10 @@ const People = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showCreateForm, setShowCreateForm] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [showFullScreen, setShowFullScreen] = useState(false);
   const [editingPerson, setEditingPerson] = useState(null);
   const [formData, setFormData] = useState({
     firstName: '',
@@ -116,9 +118,52 @@ const People = () => {
       profilePhoto: null
     });
     setPhotoPreview('');
-    setShowCreateForm(false);
-    setShowEditForm(false);
     setEditingPerson(null);
+    setShowCreateModal(false);
+    setShowEditModal(false);
+  };
+
+  const openCreateModal = () => {
+    resetForm();
+    setShowCreateModal(true);
+  };
+
+  const closeCreateModal = () => {
+    setShowCreateModal(false);
+    resetForm();
+  };
+
+  const openEditModal = (person) => {
+    setEditingPerson(person);
+    setFormData({
+      firstName: person.firstName || '',
+      lastName: person.lastName || '',
+      churchRole: person.churchRole || person.role || '',
+      churchMinistry: Array.isArray(person.churchMinistry) ? person.churchMinistry : [],
+      bio: person.bio || '',
+      profilePhoto: null
+    });
+    setPhotoPreview('');
+    setShowEditModal(true);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    resetForm();
+  };
+
+  const handlePersonClick = (person) => {
+    setSelectedPerson(person);
+    setShowFullScreen(true);
+    document.body.classList.add('fullscreen-active');
+    document.documentElement.classList.add('fullscreen-active');
+  };
+
+  const closeFullScreen = () => {
+    setShowFullScreen(false);
+    setSelectedPerson(null);
+    document.body.classList.remove('fullscreen-active');
+    document.documentElement.classList.remove('fullscreen-active');
   };
 
   const handleSubmit = async (e) => {
@@ -159,7 +204,7 @@ const People = () => {
       if (response.ok) {
         const newPerson = await response.json();
         setPeople(prev => [newPerson.person, ...prev]);
-        resetForm();
+        closeCreateModal();
         setError('');
       } else {
         const errorData = await response.json();
@@ -171,18 +216,7 @@ const People = () => {
   };
 
   const handleEdit = (person) => {
-    setEditingPerson(person);
-    setFormData({
-      firstName: person.firstName || '',
-      lastName: person.lastName || '',
-      churchRole: person.churchRole || person.role || '',
-      churchMinistry: person.churchMinistry || [],
-      bio: person.bio || '',
-      profilePhoto: null
-    });
-    setPhotoPreview(null); // Clear any previous preview
-    setShowEditForm(true);
-    setShowCreateForm(false);
+    openEditModal(person);
   };
 
   const handleUpdate = async (e) => {
@@ -222,7 +256,7 @@ const People = () => {
         setPeople(prev => prev.map(p => 
           p._id === editingPerson._id ? updatedPerson.person : p
         ));
-        resetForm();
+        closeEditModal();
         setError('');
       } else {
         const errorData = await response.json();
@@ -291,24 +325,29 @@ const People = () => {
               />
               <div className="search-icon">🔍</div>
             </div>
-            {(isEditor || isAdmin) && (
-              <div className="search-actions">
-                <button 
-                  onClick={() => setShowCreateForm(!showCreateForm)}
-                  className="btn btn-primary"
-                >
-                  {showCreateForm ? t('common.cancel') : '+New Person'}
-                </button>
-              </div>
-            )}
+                {(isEditor || isAdmin) && (
+                  <div className="search-actions">
+                    <button
+                      onClick={openCreateModal}
+                      className="btn btn-primary"
+                    >
+                      +New Person
+                    </button>
+                  </div>
+                )}
           </div>
         </div>
 
 
-        {/* Create Person Form */}
-        {showCreateForm && (
+        {/* Create Person Modal */}
+        {showCreateModal && (
+          <div className="modal-overlay" onClick={closeCreateModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Add People</h3>
+                <button className="modal-close" onClick={closeCreateModal}>×</button>
+              </div>
               <form onSubmit={handleSubmit} className="create-form">
-                <h3>{t('people.add_member')}</h3>
                 
                 <div className="form-row">
                   <div className="form-group">
@@ -357,10 +396,11 @@ const People = () => {
                       <option value="Member">{t('people.roles.member')}</option>
                     </select>
                   </div>
+                </div>
 
-                  <div className="form-group">
-                    <label>Ministries</label>
-                    <div className="checkbox-group">
+                <div className="form-group">
+                  <label>Ministries</label>
+                  <div className="checkbox-group">
                       <label className="checkbox-item">
                         <input
                           type="checkbox"
@@ -369,7 +409,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Gospel')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Gospel
                       </label>
                       <label className="checkbox-item">
@@ -380,7 +419,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Children\'s Ministry')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Children's Ministry
                       </label>
                       <label className="checkbox-item">
@@ -391,7 +429,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Bible Study')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Bible Study
                       </label>
                       <label className="checkbox-item">
@@ -402,7 +439,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Easter Committee')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Easter Committee
                       </label>
                       <label className="checkbox-item">
@@ -413,11 +449,9 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Harvest Committee')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Harvest Committee
                       </label>
                     </div>
-                  </div>
                 </div>
 
                 <div className="form-group">
@@ -451,24 +485,31 @@ const People = () => {
                 </div>
 
                 <div className="form-actions">
-                  <button type="submit" className="btn btn-success">
+                  <button type="submit" className="btn-edit">
                     {t('people.form.submit')}
                   </button>
                   <button 
                     type="button" 
-                    onClick={resetForm}
+                    onClick={closeCreateModal}
                     className="btn btn-secondary"
                   >
                     {t('common.cancel')}
                   </button>
                 </div>
               </form>
-            )}
+            </div>
+          </div>
+        )}
 
-            {/* Edit Person Form */}
-            {showEditForm && editingPerson && (
-              <form onSubmit={handleUpdate} className="create-form">
-                <h3>{t('people.edit_member')}</h3>
+            {/* Edit Person Modal */}
+            {showEditModal && editingPerson && (
+              <div className="modal-overlay" onClick={closeEditModal}>
+                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                  <div className="modal-header">
+                    <h3>Edit People</h3>
+                    <button className="modal-close" onClick={closeEditModal}>×</button>
+                  </div>
+                  <form onSubmit={handleUpdate} className="create-form">
                 
                 <div className="form-row">
                   <div className="form-group">
@@ -517,10 +558,11 @@ const People = () => {
                       <option value="Member">Member</option>
                     </select>
                   </div>
+                </div>
 
-                                    <div className="form-group">
-                    <label>Ministries</label>
-                    <div className="checkbox-group">
+                <div className="form-group">
+                  <label>Ministries</label>
+                  <div className="checkbox-group">
                       <label className="checkbox-item">
                         <input
                           type="checkbox"
@@ -529,7 +571,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Gospel')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Gospel
                       </label>
                       <label className="checkbox-item">
@@ -540,7 +581,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Children\'s Ministry')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Children's Ministry
                       </label>
                       <label className="checkbox-item">
@@ -551,7 +591,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Bible Study')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Bible Study
                       </label>
                       <label className="checkbox-item">
@@ -562,7 +601,6 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Easter Committee')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Easter Committee
                       </label>
                       <label className="checkbox-item">
@@ -573,11 +611,9 @@ const People = () => {
                           checked={formData.churchMinistry.includes('Harvest Committee')}
                           onChange={handleMinistryChange}
                         />
-                        <span className="checkmark"></span>
                         Harvest Committee
                       </label>
                     </div>
-                  </div>
                 </div>
 
                 <div className="form-group">
@@ -619,24 +655,103 @@ const People = () => {
                 </div>
 
                 <div className="form-actions">
-                  <button type="submit" className="btn btn-success">
+                  <button type="submit" className="btn-edit">
                     {t('people.form.update')}
                   </button>
                   <button 
                     type="button" 
-                    onClick={resetForm}
+                    onClick={closeEditModal}
                     className="btn btn-secondary"
                   >
                     Cancel
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {/* Full Screen Person View */}
+        {showFullScreen && selectedPerson && (
+          <div className="fullscreen-overlay">
+            <div className="fullscreen-content">
+              {/* Header with person name only */}
+              <div className="fullscreen-header-section">
+                <div className="fullscreen-title-section">
+                  <h1 className="fullscreen-main-title">{selectedPerson.firstName} {selectedPerson.lastName}</h1>
+                  <div className="fullscreen-subtitle">
+                    <span className="role-badge"><span>{selectedPerson.churchRole || selectedPerson.role}</span></span>
+                    {selectedPerson.churchMinistry && selectedPerson.churchMinistry.length > 0 && (
+                      <span className="ministry-badge">
+                        {Array.isArray(selectedPerson.churchMinistry) 
+                          ? selectedPerson.churchMinistry.join(', ')
+                          : selectedPerson.churchMinistry
+                        }
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              <div className="fullscreen-body">
+                {/* Left side - Profile Image Section */}
+                <div className="fullscreen-left">
+                  <div className="hero-image-container">
+                    {selectedPerson.profilePhoto ? (
+                      <div className="hero-image-wrapper">
+                        <img 
+                          src={`http://localhost:5001/${selectedPerson.profilePhoto}`} 
+                          alt={`${selectedPerson.firstName} ${selectedPerson.lastName}`}
+                          className="hero-image"
+                        />
+                        <div className="image-overlay">
+                          <div className="image-overlay-content">
+                            <span className="overlay-icon">👤</span>
+                            <p>Profile Photo</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="hero-image-placeholder">
+                        <div className="placeholder-content">
+                          <span className="placeholder-icon">👤</span>
+                          <h3>No Photo Available</h3>
+                          <p>This person doesn't have a profile photo yet</p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                {/* Right side - Details */}
+                <div className="fullscreen-right">
+                  <div className="detail-section description-section full-height">
+                    <div className="section-header">
+                      <h2>About {selectedPerson.firstName} {selectedPerson.lastName}</h2>
+                    </div>
+                    
+                    <div className="description-content scrollable">
+                      <div className="description-text-scrollable">
+                        {selectedPerson.bio || 'No bio available for this person.'}
+                      </div>
+                    </div>
+                    
+                    {/* Back button below description */}
+                    <div className="description-back-btn-container">
+                      <button className="fullscreen-back-btn" onClick={closeFullScreen}>
+                        <span className="back-icon">←</span>
+                        <span>Back to People</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {/* Team Members */}
         <div className="team-section">
-          <h2>{t('people.page_title')} ({people.length})</h2>
-          
           {people.length === 0 ? (
             <div className="no-people">
               <p>{t('people.display.no_members')}</p>
@@ -648,7 +763,7 @@ const People = () => {
             <div className="people-grid">
               {filteredPeople.map(person => {
                 return (
-                <div key={person._id} className="person-tile">
+                <div key={person._id} className="person-tile" onClick={() => handlePersonClick(person)}>
                   {/* Header Section - Name, Role, Ministry on left, Actions on right */}
                   <div className="person-header-section">
                     <h3 className="person-name">{person.firstName} {person.lastName}</h3>
@@ -665,7 +780,7 @@ const People = () => {
                   
                   {/* Action Buttons - Top Right */}
                   {(isEditor || isAdmin) && (
-                    <div className="person-actions">
+                    <div className="person-actions" onClick={(e) => e.stopPropagation()}>
                       <button 
                         onClick={() => handleEdit(person)}
                         className="btn-edit"
