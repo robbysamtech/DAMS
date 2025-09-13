@@ -132,13 +132,9 @@ const Header = () => {
                 </div>
               </div>
             ) : (
-              <div className="auth-buttons">
-                <Link to="/login" className="btn btn-outline">
-                  {t('common.login')}
-                </Link>
-                <Link to="/register" className="btn btn-primary">
-                  {t('common.register')}
-                </Link>
+              // Auth buttons removed for guest users - only accessible via direct URLs
+              <div className="guest-placeholder">
+                {/* Empty div to maintain layout spacing */}
               </div>
             )}
           </div>
