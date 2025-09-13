@@ -5,7 +5,10 @@ import './Events.css';
 const Events = () => {
   const { user, token, isEditor, isAdmin } = useAuth();
   const [events, setEvents] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
+  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
+  const [filteredUpcomingEvents, setFilteredUpcomingEvents] = useState([]);
+  const [filteredPastEvents, setFilteredPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -68,8 +71,9 @@ const Events = () => {
         const data = await response.json();
         console.log('Events data received:', data.events);
         console.log('First event location:', data.events?.[0]?.location);
-        setEvents(data.events || []);
-        setFilteredEvents(data.events || []);
+        const eventsData = data.events || [];
+        setEvents(eventsData);
+        reclassifyEvents(eventsData);
       } else {
         console.error('Response not ok:', response.status);
         setError('Failed to fetch events');
@@ -87,25 +91,33 @@ const Events = () => {
     fetchEvents();
   }, [fetchEvents]);
 
-  // Real-time search filtering
+  // Real-time search filtering for both upcoming and past events
   useEffect(() => {
     if (!searchQuery.trim()) {
-      setFilteredEvents(events);
+      setFilteredUpcomingEvents(upcomingEvents);
+      setFilteredPastEvents(pastEvents);
       return;
     }
 
-    const filtered = events.filter(event => {
-      const query = searchQuery.toLowerCase();
-      return (
-        event.title?.toLowerCase().includes(query) ||
-        event.description?.toLowerCase().includes(query) ||
-        getAddressDisplay(event).toLowerCase().includes(query) ||
-        event.category?.toLowerCase().includes(query) ||
-        event.tags?.some(tag => tag.toLowerCase().includes(query))
-      );
-    });
-    setFilteredEvents(filtered);
-  }, [searchQuery, events, getAddressDisplay]);
+    const query = searchQuery.toLowerCase();
+    const filterEvents = (eventsList) => {
+      return eventsList.filter(event => {
+        return (
+          event.title?.toLowerCase().includes(query) ||
+          event.description?.toLowerCase().includes(query) ||
+          getAddressDisplay(event).toLowerCase().includes(query) ||
+          event.category?.toLowerCase().includes(query) ||
+          event.tags?.some(tag => tag.toLowerCase().includes(query))
+        );
+      });
+    };
+
+    const filteredUpcoming = filterEvents(upcomingEvents);
+    const filteredPast = filterEvents(pastEvents);
+    
+    setFilteredUpcomingEvents(filteredUpcoming);
+    setFilteredPastEvents(filteredPast);
+  }, [searchQuery, upcomingEvents, pastEvents, events, getAddressDisplay]);
 
   // Cleanup fullscreen classes when component unmounts
   useEffect(() => {
@@ -193,7 +205,9 @@ const Events = () => {
 
       if (response.ok) {
         const newEvent = await response.json();
-        setEvents(prev => [newEvent.event, ...prev]);
+        const updatedEvents = [newEvent.event, ...events];
+        setEvents(updatedEvents);
+        reclassifyEvents(updatedEvents);
         closeCreateModal();
         setError('');
       } else {
@@ -252,9 +266,11 @@ const Events = () => {
 
       if (response.ok) {
         const updatedEvent = await response.json();
-        setEvents(prev => prev.map(event => 
+        const updatedEvents = events.map(event => 
           event._id === editingEvent._id ? updatedEvent.event : event
-        ));
+        );
+        setEvents(updatedEvents);
+        reclassifyEvents(updatedEvents);
         closeEditModal();
         setError('');
       } else {
@@ -264,6 +280,57 @@ const Events = () => {
     } catch (err) {
       setError('Error updating event');
     }
+  };
+
+  const handleDelete = async (eventId) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
+    
+    try {
+      const response = await fetch(`http://localhost:5001/api/events/${eventId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const updatedEvents = events.filter(event => event._id !== eventId);
+        setEvents(updatedEvents);
+        reclassifyEvents(updatedEvents);
+        setError('');
+      } else {
+        setError('Failed to delete event');
+      }
+    } catch (err) {
+      setError('Error deleting event');
+    }
+  };
+
+  // Helper function to reclassify events into upcoming and past
+  const reclassifyEvents = (eventsList) => {
+    const now = new Date();
+    const upcoming = [];
+    const past = [];
+    
+    eventsList.forEach(event => {
+      const eventDate = new Date(event.date);
+      if (eventDate >= now) {
+        upcoming.push(event);
+      } else {
+        past.push(event);
+      }
+    });
+    
+    // Sort upcoming events by date (ascending)
+    upcoming.sort((a, b) => new Date(a.date) - new Date(b.date));
+    // Sort past events by date (descending - most recent first)
+    past.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    setUpcomingEvents(upcoming);
+    setPastEvents(past);
+    setFilteredUpcomingEvents(upcoming);
+    setFilteredPastEvents(past);
   };
 
   const resetForm = () => {
@@ -316,27 +383,6 @@ const Events = () => {
     document.documentElement.classList.remove('fullscreen-active');
   };
 
-  const deleteEvent = async (eventId) => {
-    if (!window.confirm('Are you sure you want to delete this event?')) return;
-    
-    try {
-      const response = await fetch(`http://localhost:5001/api/events/${eventId}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        setEvents(prev => prev.filter(event => event._id !== eventId));
-      } else {
-        setError('Failed to delete event');
-      }
-    } catch (err) {
-      setError('Error deleting event');
-    }
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -428,28 +474,29 @@ const Events = () => {
           </div>
           <div className="search-results">
             {searchQuery && (
-              <p>Found {filteredEvents.length} event{filteredEvents.length !== 1 ? 's' : ''}</p>
+              <p>Found {filteredUpcomingEvents.length + filteredPastEvents.length} event{(filteredUpcomingEvents.length + filteredPastEvents.length) !== 1 ? 's' : ''}</p>
             )}
           </div>
         </div>
 
-        <div className="events-list">
-          <h2>Events ({filteredEvents.length})</h2>
+        {/* Upcoming Events Section */}
+        <div className="events-section">
+          <div className="section-header">
+            <h2>Upcoming Events ({filteredUpcomingEvents.length})</h2>
+            <div className="section-indicator upcoming">●</div>
+          </div>
           
-          {filteredEvents.length === 0 ? (
+          {filteredUpcomingEvents.length === 0 ? (
             <div className="no-events">
               {searchQuery ? (
-                <p>No events found matching "{searchQuery}".</p>
+                <p>No upcoming events found matching "{searchQuery}".</p>
               ) : (
-                <p>No events scheduled yet.</p>
-              )}
-              {user?.role === 'editor' && !searchQuery && (
-                <p>Create your first event to get started!</p>
+                <p>No upcoming events scheduled.</p>
               )}
             </div>
           ) : (
             <div className="events-grid">
-              {filteredEvents.map(event => (
+              {filteredUpcomingEvents.map(event => (
                 <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
                   {event.eventImage && (
                     <div className="event-image">
@@ -502,10 +549,94 @@ const Events = () => {
                         <button 
                           onClick={(e) => {
                             e.stopPropagation();
-                            deleteEvent(event._id);
+                            handleDelete(event._id);
                           }}
                           className="btn-delete"
                           title="Delete event"
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Past Events Section */}
+        <div className="events-section">
+          <div className="section-header">
+            <h2>Past Events ({filteredPastEvents.length})</h2>
+            <div className="section-indicator past">●</div>
+          </div>
+          
+          {filteredPastEvents.length === 0 ? (
+            <div className="no-events">
+              {searchQuery ? (
+                <p>No past events found matching "{searchQuery}".</p>
+              ) : (
+                <p>No past events available.</p>
+              )}
+            </div>
+          ) : (
+            <div className="events-grid">
+              {filteredPastEvents.map(event => (
+                <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
+                  {event.eventImage && (
+                    <div className="event-image">
+                      <img 
+                        src={event.eventImage} 
+                        alt={event.title}
+                        className="event-image-preview"
+                      />
+                    </div>
+                  )}
+                  
+                  <div className="event-header">
+                    <h3>{event.title}</h3>
+                  </div>
+                  
+                  <div className="event-details">
+                    <p className="event-description">{truncateDescription(event.description)}</p>
+                    
+                    <div className="event-meta">
+                      <div className="event-date">
+                        <span className="icon">🗓️</span>
+                        {formatDate(event.date)}
+                      </div>
+                      
+                      <div className="event-time">
+                        <span className="icon">🕒</span>
+                        {formatTime(event.time)}
+                      </div>
+                      
+                      <div className="event-location">
+                        <span className="icon">📍</span>
+                        {getAddressDisplay(event)}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="event-actions">
+                    {(isEditor || isAdmin) && (
+                      <>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(event);
+                          }}
+                          className="btn-edit"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(event._id);
+                          }}
+                          className="btn-delete"
                         >
                           Delete
                         </button>

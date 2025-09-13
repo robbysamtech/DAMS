@@ -214,6 +214,54 @@
   margin-top: 2rem;
 }
 
+/* Events Section Styling */
+.events-section {
+  background: linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.section-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.section-indicator.upcoming {
+  background: #10b981;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+
+.section-indicator.past {
+  background: #6b7280;
+  color: white;
+  box-shadow: 0 0 0 3px rgba(107, 114, 128, 0.2);
+}
+
 /* Events List - Professional Styling */
 .events-list {
   background: linear-gradient(145deg, #ffffff 0%, #f8fafc 50%, #f1f5f9 100%);

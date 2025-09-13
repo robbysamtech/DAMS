@@ -7,8 +7,10 @@ const People = () => {
   const { user, token, isEditor, isAdmin } = useAuth();
   const { t } = useTranslation();
   const [people, setPeople] = useState([]);
+  const [filteredPeople, setFilteredPeople] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [editingPerson, setEditingPerson] = useState(null);
@@ -46,6 +48,28 @@ const People = () => {
   useEffect(() => {
     fetchPeople();
   }, [fetchPeople]);
+
+  // Filter people based on search query
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setFilteredPeople(people);
+    } else {
+      const filtered = people.filter(person => {
+        const fullName = `${person.firstName} ${person.lastName}`.toLowerCase();
+        const role = (person.churchRole || person.role || '').toLowerCase();
+        const ministry = Array.isArray(person.churchMinistry) 
+          ? person.churchMinistry.join(' ').toLowerCase()
+          : (person.churchMinistry || '').toLowerCase();
+        const bio = (person.bio || '').toLowerCase();
+        
+        return fullName.includes(searchQuery.toLowerCase()) ||
+               role.includes(searchQuery.toLowerCase()) ||
+               ministry.includes(searchQuery.toLowerCase()) ||
+               bio.includes(searchQuery.toLowerCase());
+      });
+      setFilteredPeople(filtered);
+    }
+  }, [people, searchQuery]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -263,19 +287,35 @@ const People = () => {
           </div>
         )}
 
-        {(isEditor || isAdmin) && (
-          <div className="editor-actions">
-            <div className="action-buttons">
-              <button 
-                onClick={() => setShowCreateForm(!showCreateForm)}
-                className="btn btn-primary"
-              >
-                {showCreateForm ? t('common.cancel') : `👤 ${t('people.add_member')}`}
-              </button>
+        {/* Search Section */}
+        <div className="search-section">
+          <div className="search-row">
+            <div className="search-input-container">
+              <input
+                type="text"
+                placeholder="Search people by name, role, ministry, or bio..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+              />
+              <div className="search-icon">🔍</div>
             </div>
+            {(isEditor || isAdmin) && (
+              <div className="search-actions">
+                <button 
+                  onClick={() => setShowCreateForm(!showCreateForm)}
+                  className="btn btn-primary"
+                >
+                  {showCreateForm ? t('common.cancel') : '+New Person'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
 
-            {/* Create Person Form */}
-            {showCreateForm && (
+
+        {/* Create Person Form */}
+        {showCreateForm && (
               <form onSubmit={handleSubmit} className="create-form">
                 <h3>{t('people.add_member')}</h3>
                 
@@ -600,8 +640,6 @@ const People = () => {
                   </button>
                 </div>
               </form>
-            )}
-          </div>
         )}
 
         {/* Team Members */}
@@ -617,7 +655,7 @@ const People = () => {
             </div>
           ) : (
             <div className="people-grid">
-              {people.map(person => {
+              {filteredPeople.map(person => {
                 console.log('Person data:', person);
                 console.log('Profile photo path:', person.profilePhoto);
                 return (
