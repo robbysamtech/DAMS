@@ -1,8 +1,8 @@
-# DAMS Web Application - Requirements Specification Document
+# CCI Web Application - Requirements Specification Document
 
 **Document Version:** 1.0  
 **Last Updated:** August 24, 2024  
-**Project:** DAMS (Digital Asset Management System)  
+**Project:** CCI (Digital Asset Management System)  
 **Status:** In Development  
 
 ---
@@ -29,7 +29,7 @@
 
 ## Executive Summary
 
-The DAMS (Digital Asset Management System) is a modern, scalable web application designed to handle digital asset management with high traffic capabilities. The system provides a robust foundation for managing, organizing, and distributing digital content through an intuitive web interface backed by a powerful API.
+The CCI (Digital Asset Management System) is a modern, scalable web application designed to handle digital asset management with high traffic capabilities. The system provides a robust foundation for managing, organizing, and distributing digital content through an intuitive web interface backed by a powerful API.
 
 **Key Objectives:**
 - Create a high-performance web application capable of handling significant user traffic
@@ -42,7 +42,7 @@ The DAMS (Digital Asset Management System) is a modern, scalable web application
 ## Project Overview
 
 ### Purpose
-The DAMS application serves as a specialized content platform where specific user types can upload content and other specific user types can view, consume, and interact with that content. The system provides role-based access control and content management capabilities.
+The CCI application serves as a specialized content platform where specific user types can upload content and other specific user types can view, consume, and interact with that content. The system provides role-based access control and content management capabilities.
 
 ### Scope
 - Web-based frontend application with role-based interfaces

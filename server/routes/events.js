@@ -220,7 +220,7 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     // Check if user can manage this event
-    if (!event.canManage(req.user._id)) {
+    if (!(await event.canManage(req.user._id))) {
       return res.status(403).json({ error: 'You do not have permission to edit this event.' });
     }
 
@@ -269,7 +269,7 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     // Check if user can manage this event
-    if (!event.canManage(req.user._id)) {
+    if (!(await event.canManage(req.user._id))) {
       return res.status(403).json({ error: 'You do not have permission to delete this event.' });
     }
 

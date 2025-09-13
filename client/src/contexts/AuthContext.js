@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, fetchUserProfile]);
 
-  const login = async (email, password) => {
+  const login = async (userId, password) => {
     try {
-      const response = await axios.post('http://localhost:5001/api/auth/login', { email, password });
+      const response = await axios.post('http://localhost:5001/api/auth/login', { userId, password });
       const { token: newToken, user: userData } = response.data;
       
       setToken(newToken);
@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post('http://localhost:5001/api/auth/register', userData);
       console.log('AuthContext: Registration response:', response.data);
       
-      const { user: newUser, message } = response.data;
+      const { user: newUser, message, userId } = response.data;
       
       // For pending approval, don't set token or log user in
       // Only set user data temporarily for success message
@@ -71,7 +71,8 @@ export const AuthProvider = ({ children }) => {
         return { 
           success: true, 
           user: newUser,
-          message: message || 'Registration successful! Your account is pending admin approval.'
+          userId: userId,
+          message: message || 'Account request submitted successfully! Your request is pending admin approval.'
         };
       } else {
         console.log('AuthContext: User is approved, logging in');
@@ -84,7 +85,7 @@ export const AuthProvider = ({ children }) => {
           axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
         }
         
-        return { success: true, user: newUser };
+        return { success: true, user: newUser, userId: userId };
       }
     } catch (error) {
       console.error('AuthContext: Registration error:', error);
@@ -137,7 +138,8 @@ export const AuthProvider = ({ children }) => {
     updateProfile,
     changePassword,
     isAuthenticated: !!user,
-    isAdmin: user?.role === 'admin',
+    isAdmin: user?.role === 'admin' || user?.role === 'superadmin',
+    isSuperAdmin: user?.role === 'superadmin',
     isEditor: user?.role === 'editor',
     isPending: user?.status === 'pending'
   };

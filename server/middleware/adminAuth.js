@@ -5,8 +5,8 @@ const adminAuth = async (req, res, next) => {
       return res.status(401).json({ error: 'Access denied. Authentication required.' });
     }
 
-    // Check if user is admin by checking properties directly
-    if (req.user.status !== 'active' || req.user.role !== 'admin') {
+    // Check if user is admin or super admin by checking properties directly
+    if (req.user.status !== 'active' || (req.user.role !== 'admin' && req.user.role !== 'superadmin')) {
       return res.status(403).json({ error: 'Access denied. Admin privileges required.' });
     }
 

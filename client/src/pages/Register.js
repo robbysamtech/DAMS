@@ -6,13 +6,15 @@ const Register = () => {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    email: '',
+    userId: '',
     password: '',
     confirmPassword: ''
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [userIdAvailable, setUserIdAvailable] = useState(null);
+  const [checkingUserId, setCheckingUserId] = useState(false);
   
   const { register } = useAuth();
 
@@ -25,7 +27,94 @@ const Register = () => {
     // Clear messages when user starts typing
     if (error) setError('');
     if (success) setSuccess('');
+    
+    // Reset user ID availability when user changes the ID
+    if (name === 'userId') {
+      setUserIdAvailable(null);
+    }
   };
+
+  // Generate user ID based on first and last name
+  const generateUserId = React.useCallback(async () => {
+    if (!formData.firstName || !formData.lastName) {
+      setError('Please enter first and last name to generate User ID');
+      return;
+    }
+
+    try {
+      console.log('Making API call to generate user ID with:', formData.firstName, formData.lastName);
+      const response = await fetch('http://localhost:5001/api/auth/generate-user-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName
+        })
+      });
+
+      const data = await response.json();
+      console.log('API response:', data);
+      if (data.userId) {
+        console.log('Setting generated user ID:', data.userId);
+        setFormData(prev => ({
+          ...prev,
+          userId: data.userId
+        }));
+        setUserIdAvailable(null); // Reset availability check
+      }
+    } catch (error) {
+      console.error('Error generating user ID:', error);
+      setError('Failed to generate User ID');
+    }
+  }, [formData.firstName, formData.lastName]);
+
+  // Check if user ID is available
+  const checkUserIdAvailability = async (userId) => {
+    if (!userId) {
+      setUserIdAvailable(null);
+      return;
+    }
+
+    setCheckingUserId(true);
+    try {
+      const response = await fetch('http://localhost:5001/api/auth/check-user-id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId })
+      });
+
+      const data = await response.json();
+      setUserIdAvailable(data.available);
+    } catch (error) {
+      console.error('Error checking user ID:', error);
+      setUserIdAvailable(null);
+    } finally {
+      setCheckingUserId(false);
+    }
+  };
+
+  // Handle User ID generation on focus
+  const handleUserIdFocus = () => {
+    if (formData.firstName && formData.lastName && !formData.userId) {
+      console.log('Generating user ID on focus for:', formData.firstName, formData.lastName);
+      generateUserId();
+    }
+  };
+
+  // Check user ID availability when user ID changes
+  React.useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (formData.userId) {
+        checkUserIdAvailability(formData.userId);
+      }
+    }, 500); // Debounce the check
+
+    return () => clearTimeout(timeoutId);
+  }, [formData.userId]);
 
   const validateForm = () => {
     if (formData.password !== formData.confirmPassword) {
@@ -35,6 +124,21 @@ const Register = () => {
     
     if (formData.password.length < 8) {
       setError('Password must be at least 8 characters long');
+      return false;
+    }
+
+    if (!formData.userId) {
+      setError('User ID is required');
+      return false;
+    }
+
+    if (userIdAvailable === false) {
+      setError('This User ID is already taken. Please choose a different one.');
+      return false;
+    }
+
+    if (userIdAvailable === null && formData.userId) {
+      setError('Please wait while we check if your User ID is available');
       return false;
     }
     
@@ -55,7 +159,7 @@ const Register = () => {
       const result = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
-        email: formData.email,
+        userId: formData.userId,
         password: formData.password
       });
       
@@ -75,10 +179,11 @@ const Register = () => {
         setFormData({
           firstName: '',
           lastName: '',
-          email: '',
+          userId: '',
           password: '',
           confirmPassword: ''
         });
+        setUserIdAvailable(null);
         
         // Don't redirect - let user see the success message and choose what to do next
       } else {
@@ -94,16 +199,16 @@ const Register = () => {
   };
 
   const isFormValid = formData.firstName && formData.lastName && 
-                     formData.email && formData.password && 
-                     formData.confirmPassword;
+                     formData.userId && formData.password && 
+                     formData.confirmPassword && userIdAvailable === true;
 
   return (
     <div className="auth-page">
       <div className="container">
         <div className="auth-container">
           <div className="auth-header">
-            <h1>Create Account</h1>
-            <p>Join DAMS to manage your ministry effectively</p>
+            <h1>Request Account</h1>
+            <p>Request access to join our church community</p>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -118,30 +223,7 @@ const Register = () => {
                 <div className="success-content">
                   <div className="success-icon">✅</div>
                   <div className="success-text">
-                    <h3>Registration Successful!</h3>
                     <p>{success}</p>
-                    <div className="next-steps">
-                      <p><strong>What happens next?</strong></p>
-                      <ul>
-                        <li>An administrator will review your registration</li>
-                        <li>You'll receive an email notification once approved</li>
-                        <li>You can then log in and access the platform</li>
-                      </ul>
-                    </div>
-                    <div className="success-actions">
-                      <button 
-                        onClick={() => window.location.href = '/login'} 
-                        className="btn btn-secondary"
-                      >
-                        Go to Login
-                      </button>
-                      <button 
-                        onClick={() => setSuccess('')} 
-                        className="btn btn-outline"
-                      >
-                        Register Another Account
-                      </button>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -184,20 +266,56 @@ const Register = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="email" className="form-label">
-                Email Address
+              <label htmlFor="userId" className="form-label">
+                User ID
+                <span className="required">*</span>
               </label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                className="form-input"
-                placeholder="Enter your email"
-                required
-                disabled={loading}
-              />
+              <div className="user-id-input-group">
+                <input
+                  type="text"
+                  id="userId"
+                  name="userId"
+                  value={formData.userId}
+                  onChange={handleInputChange}
+                  onFocus={handleUserIdFocus}
+                  className={`form-input ${userIdAvailable === false ? 'error' : userIdAvailable === true ? 'success' : ''}`}
+                  placeholder="Enter / Generate your user id"
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  onClick={generateUserId}
+                  className="btn btn-outline btn-small"
+                  disabled={loading || !formData.firstName || !formData.lastName}
+                  title="Generate User ID from name"
+                >
+                  Generate
+                </button>
+              </div>
+              <div className="user-id-status">
+                {checkingUserId && (
+                  <small className="form-help checking">
+                    <span className="loading-spinner-small"></span>
+                    Checking availability...
+                  </small>
+                )}
+                {userIdAvailable === true && (
+                  <small className="form-help success">
+                    ✅ User ID is available
+                  </small>
+                )}
+                {userIdAvailable === false && (
+                  <small className="form-help error">
+                    ❌ User ID is already taken
+                  </small>
+                )}
+                {!checkingUserId && userIdAvailable === null && formData.userId && (
+                  <small className="form-help">
+                    User ID will be checked automatically
+                  </small>
+                )}
+              </div>
             </div>
 
             <div className="form-group">
@@ -240,9 +358,7 @@ const Register = () => {
 
             <div className="form-info">
               <p>
-                <strong>Important:</strong> Your account will be reviewed by an administrator 
-                before you can access all features. You'll receive an email notification 
-                once your account is approved.
+                <strong>Important:</strong> Your account request will be reviewed by an administrator before you can access all features.
               </p>
             </div>
 
@@ -254,10 +370,10 @@ const Register = () => {
               {loading ? (
                 <>
                   <span className="loading-spinner-small"></span>
-                  Creating Account...
+                  Requesting Account...
                 </>
               ) : (
-                'Create Account'
+                'Request Account'
               )}
             </button>
           </form>

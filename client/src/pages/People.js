@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import './People.css';
 
 const People = () => {
-  const { user, token } = useAuth();
+  const { user, token, isEditor, isAdmin } = useAuth();
   const { t } = useTranslation();
   const [people, setPeople] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -116,7 +116,10 @@ const People = () => {
         formDataToSend.append('lastName', formData.lastName);
         formDataToSend.append('churchRole', formData.churchRole);
         formDataToSend.append('role', formData.churchRole); // Map churchRole to role field
-        formDataToSend.append('churchMinistry', formData.churchMinistry.join(', '));
+        // Send each ministry as a separate field
+        formData.churchMinistry.forEach(ministry => {
+          formDataToSend.append('churchMinistry', ministry);
+        });
         formDataToSend.append('bio', formData.bio);
       if (formData.profilePhoto) {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
@@ -182,7 +185,10 @@ const People = () => {
       formDataToSend.append('lastName', formData.lastName);
       formDataToSend.append('churchRole', formData.churchRole);
       formDataToSend.append('role', formData.churchRole); // Map churchRole to role field
-              formDataToSend.append('churchMinistry', formData.churchMinistry.join(', '));
+      // Send each ministry as a separate field
+      formData.churchMinistry.forEach(ministry => {
+        formDataToSend.append('churchMinistry', ministry);
+      });
       formDataToSend.append('bio', formData.bio);
       if (formData.profilePhoto) {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
@@ -257,7 +263,7 @@ const People = () => {
           </div>
         )}
 
-        {user?.role === 'editor' && (
+        {(isEditor || isAdmin) && (
           <div className="editor-actions">
             <div className="action-buttons">
               <button 
@@ -605,7 +611,7 @@ const People = () => {
           {people.length === 0 ? (
             <div className="no-people">
               <p>{t('people.display.no_members')}</p>
-              {user?.role === 'editor' && (
+              {(isEditor || isAdmin) && (
                 <p>{t('people.add_member')}</p>
               )}
             </div>
@@ -631,7 +637,7 @@ const People = () => {
                   </div>
                   
                   {/* Action Buttons - Top Right */}
-                  {user?.role === 'editor' && (
+                  {(isEditor || isAdmin) && (
                     <div className="person-actions">
                       <button 
                         onClick={() => handleEdit(person)}

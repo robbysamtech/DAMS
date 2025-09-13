@@ -152,8 +152,20 @@ eventSchema.methods.incrementViewCount = function() {
 };
 
 // Method to check if user can manage this event
-eventSchema.methods.canManage = function(userId) {
-  return this.creator.toString() === userId.toString();
+eventSchema.methods.canManage = async function(userId) {
+  // Allow creator to manage their own events
+  if (this.creator.toString() === userId.toString()) {
+    return true;
+  }
+  
+  // Allow admins and super admins to manage all events
+  const User = require('./User');
+  const user = await User.findById(userId);
+  if (user && (user.role === 'admin' || user.role === 'superadmin')) {
+    return true;
+  }
+  
+  return false;
 };
 
 // Method to check if event is published

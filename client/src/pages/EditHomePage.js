@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditHomePage.css';
 
 const EditHomePage = () => {
-  const { isEditor, loading: authLoading, token } = useAuth();
+  const { isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [carouselItems, setCarouselItems] = useState([]);
   const [homeSections, setHomeSections] = useState([]);
@@ -502,8 +502,8 @@ const EditHomePage = () => {
     }
   };
 
-  // Redirect if not an editor
-  if (!authLoading && !isEditor) {
+  // Redirect if not an editor or admin
+  if (!authLoading && !isEditor && !isAdmin) {
     return (
       <div className="edit-home-page">
         <div className="access-denied">

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 const Home = () => {
-  const { isEditor, loading: authLoading } = useAuth();
+  const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -177,8 +177,8 @@ const Home = () => {
   return (
     <div className="home">
       {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-      {console.log('Auth loading:', authLoading, 'Is editor:', isEditor)}
-      {!authLoading && isEditor && (
+      {console.log('Auth loading:', authLoading, 'Is editor:', isEditor, 'Is admin:', isAdmin)}
+      {!authLoading && (isEditor || isAdmin) && (
         <button 
           className="home-page-edit-btn" 
           onClick={() => {

@@ -38,7 +38,6 @@
     "info": "Information",
     "help": "Help",
     "settings": "Settings",
-    "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
     "register": "Register",
@@ -52,7 +51,7 @@
   },
   "navigation": {
     "header": {
-      "logo": "DAMS",
+      "logo": "Christ Church of India",
       "nav_home": "Home",
       "nav_events": "Events",
       "nav_people": "People",
@@ -62,14 +61,14 @@
       "user_role_pending": "⏳ Pending"
     },
     "footer": {
-      "copyright": "© 2024 DAMS. All rights reserved.",
+      "copyright": "© 2024 Christ Church of India. All rights reserved.",
       "privacy_policy": "Privacy Policy",
       "terms_of_service": "Terms of Service",
       "contact_us": "Contact Us"
     }
   },
   "home": {
-    "page_title": "Welcome to DAMS",
+    "page_title": "Welcome to Christ Church of India",
     "page_description": "Digital Asset Management System for your church",
     "home_page": {
       "edit_button": "Edit Home Page",
@@ -87,7 +86,7 @@
       }
     },
     "hero": {
-      "title": "Welcome to DAMS",
+      "title": "Welcome to Christ Church of India",
       "subtitle": "Digital Asset Management System",
       "description": "Manage your church's digital assets efficiently and securely"
     },

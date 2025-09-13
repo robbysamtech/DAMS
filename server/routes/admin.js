@@ -25,8 +25,8 @@ router.put('/users/:userId/approve', async (req, res) => {
     const { userId } = req.params;
     const { role } = req.body;
 
-    if (!['editor'].includes(role)) {
-      return res.status(400).json({ error: 'Invalid role. Must be "editor".' });
+    if (!['editor', 'admin'].includes(role)) {
+      return res.status(400).json({ error: 'Invalid role. Must be "editor" or "admin". Super admin cannot be assigned.' });
     }
 
     const user = await User.findById(userId);
@@ -50,7 +50,7 @@ router.put('/users/:userId/approve', async (req, res) => {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
+        userId: user.userId,
         role: user.role,
         status: user.status,
         approvalDetails: user.approvalDetails
@@ -88,7 +88,7 @@ router.put('/users/:userId/reject', async (req, res) => {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
+        userId: user.userId,
         status: user.status,
         approvalDetails: user.approvalDetails
       }
@@ -114,9 +114,9 @@ router.delete('/users/:userId', async (req, res) => {
       return res.status(400).json({ error: 'Cannot delete your own account.' });
     }
 
-    // Prevent deletion of other admin users
-    if (user.role === 'admin') {
-      return res.status(400).json({ error: 'Cannot delete admin users.' });
+    // Prevent deletion of super admin users
+    if (user.role === 'superadmin') {
+      return res.status(400).json({ error: 'Cannot delete super admin users.' });
     }
 
     await User.findByIdAndDelete(userId);
@@ -142,7 +142,7 @@ router.get('/users', async (req, res) => {
       filter.$or = [
         { firstName: { $regex: search, $options: 'i' } },
         { lastName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } }
+        { userId: { $regex: search, $options: 'i' } }
       ];
     }
 
@@ -290,7 +290,7 @@ router.get('/recent-activity', async (req, res) => {
     const { limit = 20 } = req.query;
 
     const recentUsers = await User.find()
-      .select('firstName lastName email role status createdAt')
+      .select('firstName lastName userId role status createdAt')
       .sort({ createdAt: -1 })
       .limit(parseInt(limit));
 

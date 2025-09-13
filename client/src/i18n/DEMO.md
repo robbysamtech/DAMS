@@ -1,6 +1,6 @@
-# DAMS i18n Demo
+# CCI i18n Demo
 
-This file demonstrates how the internationalization system works in the DAMS application.
+This file demonstrates how the internationalization system works in the CCI application.
 
 ## What We've Implemented
 

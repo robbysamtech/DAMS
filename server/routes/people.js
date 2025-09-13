@@ -137,7 +137,29 @@ router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
       churchRole,
       creator: req.user._id,
       role: role || 'Member',
-      churchMinistry,
+      churchMinistry: (() => {
+        // Handle both array and string formats
+        let ministries = Array.isArray(churchMinistry) 
+          ? churchMinistry 
+          : typeof churchMinistry === 'string' 
+            ? churchMinistry.split(',').map(item => item.trim()).filter(item => item.length > 0)
+            : churchMinistry;
+        
+        // Flatten any nested comma-separated strings and remove duplicates
+        const flattenedMinistries = [];
+        ministries.forEach(ministry => {
+          if (ministry.includes(',')) {
+            // Split comma-separated strings
+            const splitMinistries = ministry.split(',').map(item => item.trim()).filter(item => item.length > 0);
+            flattenedMinistries.push(...splitMinistries);
+          } else {
+            flattenedMinistries.push(ministry);
+          }
+        });
+        
+        // Remove duplicates and empty strings
+        return [...new Set(flattenedMinistries)].filter(ministry => ministry.length > 0);
+      })(),
       bio
     };
 
@@ -220,7 +242,7 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
     console.log('User ID:', req.user._id);
     console.log('Can manage result:', person.canManage(req.user._id));
     
-    if (!person.canManage(req.user._id)) {
+    if (!(await person.canManage(req.user._id))) {
       return res.status(403).json({ error: 'You do not have permission to edit this person profile.' });
     }
 
@@ -229,7 +251,29 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
     if (lastName !== undefined) updates.lastName = lastName;
     if (churchRole !== undefined) updates.churchRole = churchRole;
     if (role !== undefined) updates.role = role;
-    if (churchMinistry !== undefined) updates.churchMinistry = churchMinistry;
+    if (churchMinistry !== undefined) {
+      // Handle both array and string formats
+      let ministries = Array.isArray(churchMinistry) 
+        ? churchMinistry 
+        : typeof churchMinistry === 'string' 
+          ? churchMinistry.split(',').map(item => item.trim()).filter(item => item.length > 0)
+          : churchMinistry;
+      
+      // Flatten any nested comma-separated strings and remove duplicates
+      const flattenedMinistries = [];
+      ministries.forEach(ministry => {
+        if (ministry.includes(',')) {
+          // Split comma-separated strings
+          const splitMinistries = ministry.split(',').map(item => item.trim()).filter(item => item.length > 0);
+          flattenedMinistries.push(...splitMinistries);
+        } else {
+          flattenedMinistries.push(ministry);
+        }
+      });
+      
+      // Remove duplicates and empty strings
+      updates.churchMinistry = [...new Set(flattenedMinistries)].filter(ministry => ministry.length > 0);
+    }
     if (bio !== undefined) updates.bio = bio;
 
     console.log('Updates to apply:', updates);
@@ -298,7 +342,7 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     // Check if user can manage this person
-    if (!person.canManage(req.user._id)) {
+    if (!(await person.canManage(req.user._id))) {
       return res.status(403).json({ error: 'You do not have permission to delete this person profile.' });
     }
 

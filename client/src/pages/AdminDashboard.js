@@ -115,9 +115,11 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
           <div className="user-info">
             <div className="user-name-container">
               <span className="user-name">{user.firstName} {user.lastName}</span>
-              <span className={`role-badge role-${user.role}`}>{user.role}</span>
+              <span className={`role-badge role-${user.role}`}>
+                {user.role === 'superadmin' ? 'Super Admin' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              </span>
             </div>
-            <p className="user-email">{user.email}</p>
+            <p className="user-id">User ID: {user.userId}</p>
           </div>
           <div className="user-actions">
             <div className="role-selection">
@@ -127,15 +129,18 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
                 value={user.role}
                 onChange={(e) => updateUserRole(user._id, e.target.value)}
                 className="role-select"
+                disabled={user.role === 'superadmin'}
               >
                 <option value="editor">Editor</option>
                 <option value="admin">Admin</option>
+                {user.role === 'superadmin' && <option value="superadmin">Super Admin</option>}
               </select>
             </div>
             <button 
               onClick={() => deleteUser(user._id)}
               className="btn-delete"
-              title="Delete this user"
+              title={user.role === 'superadmin' ? 'Cannot delete super admin' : 'Delete this user'}
+              disabled={user.role === 'superadmin'}
             >
               Delete
             </button>
@@ -161,7 +166,6 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [rejectDialog, setRejectDialog] = useState({ show: false, userId: null, reason: '' });
   const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchPendingUsers = useCallback(async () => {
@@ -307,26 +311,8 @@ const AdminDashboard = () => {
     }
   };
 
-  const showRejectDialog = (userId) => {
-    setRejectDialog({ show: true, userId, reason: '' });
-  };
-
-  const hideRejectDialog = () => {
-    // Add a small delay for smooth animation
-    const modal = document.querySelector('.modal-content');
-    if (modal) {
-      modal.style.animation = 'modalSlideOut 0.2s ease-in forwards';
-      setTimeout(() => {
-        setRejectDialog({ show: false, userId: null, reason: '' });
-      }, 200);
-    } else {
-      setRejectDialog({ show: false, userId: null, reason: '' });
-    }
-  };
-
-  const rejectUser = async () => {
-    const { userId, reason } = rejectDialog;
-    if (!reason.trim()) return;
+  const rejectUser = async (userId) => {
+    if (!window.confirm('Are you sure you want to reject this user? This action cannot be undone.')) return;
     
     try {
       const response = await fetch(`http://localhost:5001/api/admin/users/${userId}/reject`, {
@@ -335,7 +321,7 @@ const AdminDashboard = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ reason })
+        body: JSON.stringify({ reason: 'Rejected by admin' })
       });
 
       if (response.ok) {
@@ -344,7 +330,6 @@ const AdminDashboard = () => {
         fetchStatistics(); // Refresh stats
         setSuccessMessage('User rejected successfully!');
         setTimeout(() => setSuccessMessage(''), 5000); // Auto-hide after 5 seconds
-        hideRejectDialog();
       } else {
         setError('Failed to reject user');
       }
@@ -421,7 +406,7 @@ const AdminDashboard = () => {
                 <div key={user._id} className="pending-user-card">
                   <div className="user-info">
                     <p className="user-name">{user.firstName} {user.lastName}</p>
-                    <p className="user-email">{user.email}</p>
+                    <p className="user-id">User ID: {user.userId}</p>
                   </div>
                   <div className="user-actions">
                     <div className="role-selection">
@@ -444,7 +429,7 @@ const AdminDashboard = () => {
                         Approve
                       </button>
                       <button 
-                        onClick={() => showRejectDialog(user._id)}
+                        onClick={() => rejectUser(user._id)}
                         className="btn-delete"
                         title="Reject this user registration"
                       >
@@ -472,37 +457,6 @@ const AdminDashboard = () => {
           />
         </div>
 
-        {/* Rejection Dialog */}
-        {rejectDialog.show && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h3>Reject User</h3>
-                <button onClick={hideRejectDialog} className="modal-close">&times;</button>
-              </div>
-              <p>Please provide a reason for rejecting this user:</p>
-              <textarea
-                value={rejectDialog.reason}
-                onChange={(e) => setRejectDialog(prev => ({ ...prev, reason: e.target.value }))}
-                placeholder="Enter rejection reason..."
-                rows="3"
-                className="rejection-reason"
-              />
-              <div className="modal-actions">
-                <button onClick={hideRejectDialog} className="btn btn-secondary">
-                  Cancel
-                </button>
-                <button 
-                  onClick={rejectUser} 
-                  className="btn btn-danger"
-                  disabled={!rejectDialog.reason.trim()}
-                >
-                  Reject User
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('./models/User');
 
-const MONGODB_URI = 'mongodb://localhost:27017/dams';
+const MONGODB_URI = 'mongodb://localhost:27017/cci';
 
 async function verifyU4Password() {
   try {

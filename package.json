@@ -1,5 +1,5 @@
 {
-  "name": "dams-web-app",
+  "name": "cci-web-app",
   "version": "1.0.0",
   "description": "A sample web application with frontend and backend",
   "main": "server/index.js",

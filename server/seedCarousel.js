@@ -5,7 +5,7 @@ require('dotenv').config();
 // Sample carousel data
 const carouselItems = [
   {
-    title: "Welcome to DAMS",
+    title: "Welcome to Christ Church of India",
     description: "Streamline your ministry operations with our comprehensive platform for managing events, people, and digital assets.",
     type: "image",
     image: "https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80",
@@ -41,7 +41,7 @@ const carouselItems = [
 async function seedCarousel() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams');
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cci');
     console.log('Connected to MongoDB');
 
     // Clear existing carousel items

@@ -1,10 +1,10 @@
-# DAMS Externalized Labels System
+# CCI Externalized Labels System
 
-This document explains how to use the externalized labels system in the DAMS application.
+This document explains how to use the externalized labels system in the CCI application.
 
 ## Overview
 
-The DAMS application uses `react-i18next` to externalize all user-facing text into locale files. This makes the application easier to maintain and allows for future language support if needed. Currently, the application supports English only.
+The CCI application uses `react-i18next` to externalize all user-facing text into locale files. This makes the application easier to maintain and allows for future language support if needed. Currently, the application supports English only.
 
 ## Structure
 

@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import './Events.css';
 
 const Events = () => {
-  const { user, token } = useAuth();
+  const { user, token, isEditor, isAdmin } = useAuth();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -387,7 +387,7 @@ const Events = () => {
           </div>
         </div>
 
-        {user?.role === 'editor' && (
+        {(isEditor || isAdmin) && (
           <div className="create-event-section">
             <button 
               onClick={() => {
@@ -629,7 +629,7 @@ const Events = () => {
                   </div>
                   
                   <div className="event-actions">
-                    {user?.role === 'editor' && (
+                    {(isEditor || isAdmin) && (
                       <>
                         <button 
                           onClick={(e) => {

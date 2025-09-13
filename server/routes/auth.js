@@ -16,19 +16,24 @@ const generateToken = (userId) => {
 // User Registration
 router.post('/register', async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, userId, password } = req.body;
 
-    // Check if user already exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ error: 'User with this email already exists.' });
+    // Validate required fields
+    if (!firstName || !lastName || !userId || !password) {
+      return res.status(400).json({ error: 'First name, last name, user ID, and password are required.' });
+    }
+
+    // Check if user ID already exists
+    const userIdExists = await User.userIdExists(userId);
+    if (userIdExists) {
+      return res.status(400).json({ error: 'This User ID is already taken. Please choose a different one.' });
     }
 
     // Create new user (pending approval)
     const user = new User({
       firstName,
       lastName,
-      email,
+      userId,
       password,
       role: 'pending',
       status: 'pending'
@@ -36,18 +41,19 @@ router.post('/register', async (req, res) => {
 
     await user.save();
 
-    // Don't generate token for pending users - they need admin approval first
-    res.status(201).json({
-      message: 'Registration successful! Your account is pending admin approval.',
-      user: {
-        id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        role: user.role,
-        status: user.status
-      }
-    });
+    // Return the user ID for display
+      res.status(201).json({ 
+        message: 'Editor access request sent! An administrator will review your request.', 
+        userId: user.userId,
+        user: {
+          id: user._id,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          userId: user.userId,
+          role: user.role,
+          status: user.status
+        }
+      });
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({ error: 'Registration failed. Please try again.' });
@@ -57,15 +63,13 @@ router.post('/register', async (req, res) => {
 // User Login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { userId, password } = req.body;
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Find user by userId
+    const user = await User.findOne({ userId });
     if (!user) {
-      return res.status(401).json({ error: 'Invalid email or password.' });
+      return res.status(401).json({ error: 'Invalid user ID or password.' });
     }
-
-
 
     // Check if user account is active
     if (user.status !== 'active') {
@@ -77,7 +81,7 @@ router.post('/login', async (req, res) => {
     // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: 'Invalid email or password.' });
+      return res.status(401).json({ error: 'Invalid user ID or password.' });
     }
 
     // Update last login
@@ -94,7 +98,7 @@ router.post('/login', async (req, res) => {
         id: user._id,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email,
+        userId: user.userId,
         role: user.role,
         status: user.status,
         profile: user.profile
@@ -171,6 +175,40 @@ router.put('/change-password', auth, async (req, res) => {
   } catch (error) {
     console.error('Password change error:', error);
     res.status(500).json({ error: 'Failed to change password.' });
+  }
+});
+
+// Check if User ID is available
+router.post('/check-user-id', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required.' });
+    }
+
+    const exists = await User.userIdExists(userId);
+    res.json({ available: !exists });
+  } catch (error) {
+    console.error('User ID check error:', error);
+    res.status(500).json({ error: 'Failed to check user ID availability.' });
+  }
+});
+
+// Generate User ID from name
+router.post('/generate-user-id', async (req, res) => {
+  try {
+    const { firstName, lastName } = req.body;
+    
+    if (!firstName || !lastName) {
+      return res.status(400).json({ error: 'First name and last name are required.' });
+    }
+
+    const userId = User.generateUserIdFromName(firstName, lastName);
+    res.json({ userId });
+  } catch (error) {
+    console.error('User ID generation error:', error);
+    res.status(500).json({ error: 'Failed to generate user ID.' });
   }
 });
 

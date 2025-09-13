@@ -1,4 +1,4 @@
-# DAMS - Digital Asset Management System
+# CCI - Digital Asset Management System
 
 A comprehensive ministry management platform built with modern web technologies, designed to streamline ministry operations through organized content management, role-based access control, and responsive design.
 
@@ -58,7 +58,7 @@ Before running this application, make sure you have the following installed:
 ### 1. Clone the Repository
 ```bash
 git clone <repository-url>
-cd DAMS
+cd CCI
 ```
 
 ### 2. Install Dependencies
@@ -80,7 +80,7 @@ Update the `.env` file with your configuration:
 ```env
 PORT=5001
 NODE_ENV=development
-MONGODB_URI=mongodb://localhost:27017/dams
+MONGODB_URI=mongodb://localhost:27017/cci
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
 CLIENT_URL=http://localhost:3000
 ```
@@ -193,7 +193,7 @@ npm start
 ## 🏗️ Project Structure
 
 ```
-DAMS/
+CCI/
 ├── client/                 # React frontend
 │   ├── public/            # Static assets
 │   ├── src/               # Source code

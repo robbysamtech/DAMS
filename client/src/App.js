@@ -22,7 +22,6 @@ import People from './pages/People';
 import EditHomePage from './pages/EditHomePage';
 
 import AdminDashboard from './pages/AdminDashboard';
-import Profile from './pages/Profile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
@@ -59,14 +58,13 @@ const AppContent = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={user ? <Navigate to="/events" replace /> : <Login />} />
-            <Route path="/register" element={user ? <Navigate to="/events" replace /> : <Register />} />
+            <Route path="/requestaccount" element={user ? <Navigate to="/events" replace /> : <Register />} />
 
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
-            <Route path="/edit-home-page" element={<ProtectedRoute allowedRoles={['editor', 'admin']}><EditHomePage /></ProtectedRoute>} />
+            <Route path="/edit-home-page" element={<ProtectedRoute allowedRoles={['editor', 'admin', 'superadmin']}><EditHomePage /></ProtectedRoute>} />
 
-            <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'superadmin']}><AdminDashboard /></ProtectedRoute>} />
           </Routes>
         </main>
       </div>

@@ -55,7 +55,7 @@ app.use('/logo', express.static(path.join(__dirname, 'logo')));
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cci', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
@@ -77,7 +77,7 @@ app.use('/api/home-sections', homeSectionRoutes);
 app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
-    message: 'DAMS Server is running!',
+    message: 'CCI Server is running!',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });
@@ -103,7 +103,7 @@ app.use((req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 DAMS Server running on port ${PORT}`);
+  console.log(`🚀 CCI Server running on port ${PORT}`);
   console.log(`📊 API available at http://localhost:${PORT}/api`);
   console.log(`🌐 Health check: http://localhost:${PORT}/api/health`);
 });

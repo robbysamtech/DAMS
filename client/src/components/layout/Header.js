@@ -102,6 +102,7 @@ const Header = () => {
                 <div className="user-info">
                   <span className="user-name">{user.firstName} {user.lastName}</span>
                   <span className={`user-role user-role-${user.role}`}>
+                    {user.role === 'superadmin' && 'Super Admin'}
                     {user.role === 'admin' && 'Admin'}
                     {user.role === 'editor' && 'Editor'}
                     {user.role === 'pending' && t('navigation.header.user_role_pending')}
@@ -110,16 +111,10 @@ const Header = () => {
                 
                 <div className="user-dropdown">
                   <button className="user-dropdown-toggle">
-                    <span className="user-avatar">
-                      {user.firstName?.[0]}{user.lastName?.[0] || 'U'}
-                    </span>
+                    <span className="dropdown-arrow">▼</span>
                   </button>
                   
                   <div className="user-dropdown-menu">
-                    <Link to="/profile" className="dropdown-item">
-                      <span>{t('common.profile')}</span>
-                    </Link>
-
                     {isAdmin && (
                       <Link to="/admin" className="dropdown-item">
                         <span>{t('common.admin')}</span>

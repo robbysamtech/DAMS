@@ -3,7 +3,7 @@
 ## Date: August 30, 2025
 
 ### Summary
-Updated the DAMS carousel with 8 new biblical-themed carousel cards featuring diverse people from around the world.
+Updated the CCI carousel with 8 new biblical-themed carousel cards featuring diverse people from around the world.
 
 ### Changes Made
 1. **Wiped out all previous carousel data** from the database

@@ -5,7 +5,7 @@ import './Auth.css';
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    email: '',
+    userId: '',
     password: ''
   });
   const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ const Login = () => {
     setError('');
 
     try {
-      const result = await login(formData.email, formData.password);
+      const result = await login(formData.userId, formData.password);
       
       if (result.success) {
         navigate('/events');
@@ -44,7 +44,7 @@ const Login = () => {
     }
   };
 
-  const isFormValid = formData.email && formData.password;
+  const isFormValid = formData.userId && formData.password;
 
   return (
     <div className="auth-page">
@@ -52,7 +52,7 @@ const Login = () => {
         <div className="auth-container">
           <div className="auth-header">
             <h1>Welcome Back</h1>
-            <p>Sign in to your DAMS account</p>
+            <p>Sign in to your Christ Church of India account</p>
           </div>
 
           <form onSubmit={handleSubmit} className="auth-form">
@@ -63,17 +63,17 @@ const Login = () => {
             )}
 
             <div className="form-group">
-              <label htmlFor="email" className="form-label">
-                Email Address
+              <label htmlFor="userId" className="form-label">
+                User ID
               </label>
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
+                type="text"
+                id="userId"
+                name="userId"
+                value={formData.userId}
                 onChange={handleInputChange}
                 className="form-input"
-                placeholder="Enter your email"
+                placeholder="Enter your User ID"
                 required
                 disabled={loading}
               />

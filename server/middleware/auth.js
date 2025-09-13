@@ -25,7 +25,8 @@ const auth = async (req, res, next) => {
     req.user = user;
     
     // Add convenience properties for role checking
-    req.user.isAdmin = user.role === 'admin';
+    req.user.isAdmin = user.role === 'admin' || user.role === 'superadmin';
+    req.user.isSuperAdmin = user.role === 'superadmin';
     req.user.isEditor = user.role === 'editor';
 
     next();

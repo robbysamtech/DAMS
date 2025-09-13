@@ -121,8 +121,20 @@ personSchema.methods.incrementViewCount = function() {
 };
 
 // Method to check if user can manage this person
-personSchema.methods.canManage = function(userId) {
-  return this.creator.toString() === userId.toString();
+personSchema.methods.canManage = async function(userId) {
+  // Allow creator to manage their own people
+  if (this.creator.toString() === userId.toString()) {
+    return true;
+  }
+  
+  // Allow admins and super admins to manage all people
+  const User = require('./User');
+  const user = await User.findById(userId);
+  if (user && (user.role === 'admin' || user.role === 'superadmin')) {
+    return true;
+  }
+  
+  return false;
 };
 
 // Pre-save middleware to update last updated timestamp
