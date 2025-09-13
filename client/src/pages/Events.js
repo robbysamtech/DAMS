@@ -382,10 +382,6 @@ const Events = () => {
   return (
     <div className="events-page">
       <div className="container">
-        <div className="events-header">
-          <h1>Ministry Events</h1>
-          <p>Manage and view upcoming ministry events</p>
-        </div>
 
         {error && (
           <div className="alert alert-error">
