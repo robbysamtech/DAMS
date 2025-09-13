@@ -14,7 +14,6 @@ router.get('/pending-users', async (req, res) => {
 
     res.json({ pendingUsers });
   } catch (error) {
-    console.error('Error fetching pending users:', error);
     res.status(500).json({ error: 'Failed to fetch pending users.' });
   }
 });
@@ -57,7 +56,6 @@ router.put('/users/:userId/approve', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error approving user:', error);
     res.status(500).json({ error: 'Failed to process user approval.' });
   }
 });
@@ -94,7 +92,6 @@ router.put('/users/:userId/reject', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error rejecting user:', error);
     res.status(500).json({ error: 'Failed to process user rejection.' });
   }
 });
@@ -125,7 +122,6 @@ router.delete('/users/:userId', async (req, res) => {
       message: 'User deleted successfully!'
     });
   } catch (error) {
-    console.error('Error deleting user:', error);
     res.status(500).json({ error: 'Failed to delete user.' });
   }
 });
@@ -166,7 +162,6 @@ router.get('/users', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Failed to fetch users.' });
   }
 });
@@ -203,7 +198,6 @@ router.put('/users/:userId', async (req, res) => {
       user
     });
   } catch (error) {
-    console.error('Error updating user:', error);
     res.status(500).json({ error: 'Failed to update user.' });
   }
 });
@@ -236,7 +230,6 @@ router.put('/users/:userId/status', async (req, res) => {
       user
     });
   } catch (error) {
-    console.error('Error updating user status:', error);
     res.status(500).json({ error: 'Failed to update user status.' });
   }
 });
@@ -279,7 +272,6 @@ router.get('/statistics', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error fetching statistics:', error);
     res.status(500).json({ error: 'Failed to fetch statistics.' });
   }
 });
@@ -316,7 +308,6 @@ router.get('/recent-activity', async (req, res) => {
       recentEvents
     });
   } catch (error) {
-    console.error('Error fetching recent activity:', error);
     res.status(500).json({ error: 'Failed to fetch recent activity.' });
   }
 });

@@ -42,7 +42,6 @@ const Register = () => {
     }
 
     try {
-      console.log('Making API call to generate user ID with:', formData.firstName, formData.lastName);
       const response = await fetch('http://localhost:5001/api/auth/generate-user-id', {
         method: 'POST',
         headers: {
@@ -55,9 +54,7 @@ const Register = () => {
       });
 
       const data = await response.json();
-      console.log('API response:', data);
       if (data.userId) {
-        console.log('Setting generated user ID:', data.userId);
         setFormData(prev => ({
           ...prev,
           userId: data.userId
@@ -65,7 +62,6 @@ const Register = () => {
         setUserIdAvailable(null); // Reset availability check
       }
     } catch (error) {
-      console.error('Error generating user ID:', error);
       setError('Failed to generate User ID');
     }
   }, [formData.firstName, formData.lastName]);
@@ -90,7 +86,6 @@ const Register = () => {
       const data = await response.json();
       setUserIdAvailable(data.available);
     } catch (error) {
-      console.error('Error checking user ID:', error);
       setUserIdAvailable(null);
     } finally {
       setCheckingUserId(false);
@@ -100,7 +95,6 @@ const Register = () => {
   // Handle User ID generation on focus
   const handleUserIdFocus = () => {
     if (formData.firstName && formData.lastName && !formData.userId) {
-      console.log('Generating user ID on focus for:', formData.firstName, formData.lastName);
       generateUserId();
     }
   };
@@ -155,7 +149,6 @@ const Register = () => {
     setSuccess('');
 
     try {
-      console.log('Submitting registration...');
       const result = await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -163,15 +156,12 @@ const Register = () => {
         password: formData.password
       });
       
-      console.log('Registration result:', result);
       
       if (result.success) {
         if (result.message) {
           // Show the custom message from AuthContext
-          console.log('Setting success message:', result.message);
           setSuccess(result.message);
         } else {
-          console.log('Setting default success message');
           setSuccess('Registration successful! You can now log in.');
         }
         
@@ -187,11 +177,9 @@ const Register = () => {
         
         // Don't redirect - let user see the success message and choose what to do next
       } else {
-        console.log('Registration failed:', result.error);
         setError(result.error);
       }
     } catch (err) {
-      console.error('Registration error:', err);
       setError('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);

@@ -53,7 +53,6 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching events:', error);
     res.status(500).json({ error: 'Failed to fetch events.' });
   }
 });
@@ -76,7 +75,6 @@ router.get('/upcoming', async (req, res) => {
 
     res.json({ events });
   } catch (error) {
-    console.error('Error fetching upcoming events:', error);
     res.status(500).json({ error: 'Failed to fetch upcoming events.' });
   }
 });
@@ -112,7 +110,6 @@ router.get('/category/:category', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching events by category:', error);
     res.status(500).json({ error: 'Failed to fetch events by category.' });
   }
 });
@@ -133,7 +130,6 @@ router.get('/:id', async (req, res) => {
 
     res.json({ event });
   } catch (error) {
-    console.error('Error fetching event:', error);
     res.status(500).json({ error: 'Failed to fetch event.' });
   }
 });
@@ -190,7 +186,6 @@ router.post('/', auth, async (req, res) => {
       event: populatedEvent
     });
   } catch (error) {
-    console.error('Error creating event:', error);
     res.status(500).json({ error: 'Failed to create event.' });
   }
 });
@@ -255,7 +250,6 @@ router.put('/:id', auth, async (req, res) => {
       event: updatedEvent
     });
   } catch (error) {
-    console.error('Error updating event:', error);
     res.status(500).json({ error: 'Failed to update event.' });
   }
 });
@@ -289,7 +283,6 @@ router.delete('/:id', auth, async (req, res) => {
         // Check if file exists and delete it
         if (fs.existsSync(imagePath)) {
           fs.unlinkSync(imagePath);
-          console.log(`Deleted image file: ${filename}`);
         }
         
         // Also try to delete thumbnail if it exists
@@ -298,10 +291,8 @@ router.delete('/:id', auth, async (req, res) => {
         
         if (fs.existsSync(thumbPath)) {
           fs.unlinkSync(thumbPath);
-          console.log(`Deleted thumbnail file: ${thumbFilename}`);
         }
       } catch (imageError) {
-        console.error('Error deleting image files:', imageError);
         // Don't fail the event deletion if image cleanup fails
       }
     }
@@ -311,7 +302,6 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.json({ message: 'Event deleted successfully!' });
   } catch (error) {
-    console.error('Error deleting event:', error);
     res.status(500).json({ error: 'Failed to delete event.' });
   }
 });
@@ -361,7 +351,6 @@ router.get('/statistics/overview', async (req, res) => {
       recentEvents
     });
   } catch (error) {
-    console.error('Error fetching event statistics:', error);
     res.status(500).json({ error: 'Failed to fetch event statistics.' });
   }
 });
@@ -423,7 +412,6 @@ router.get('/search/advanced', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error searching events:', error);
     res.status(500).json({ error: 'Failed to search events.' });
   }
 });

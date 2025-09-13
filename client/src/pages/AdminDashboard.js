@@ -22,11 +22,9 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
         setActiveUsers(data.users || []);
       } else {
         const errorText = await response.text();
-        console.error('Failed to fetch approved users:', response.status, errorText);
         setError('Failed to fetch approved users');
       }
     } catch (err) {
-      console.error('Error fetching approved users:', err);
       setError('Error fetching approved users');
     } finally {
       setLoading(false);
@@ -63,7 +61,6 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
     if (!window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
     
     try {
-      console.log('Attempting to delete user:', userId);
       const response = await fetch(`http://localhost:5001/api/admin/users/${userId}`, {
         method: 'DELETE',
         headers: {
@@ -72,22 +69,18 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
         }
       });
 
-      console.log('Delete response status:', response.status);
       
       if (response.ok) {
         const result = await response.json();
-        console.log('Delete successful:', result);
         setActiveUsers(prev => prev.filter(user => user._id !== userId));
         onUserUpdate(); // Refresh statistics
         setSuccessMessage('User deleted successfully!');
         setTimeout(() => setSuccessMessage(''), 5000);
       } else {
         const errorText = await response.text();
-        console.error('Delete failed:', response.status, errorText);
         setError(`Failed to delete user: ${response.status} - ${errorText}`);
       }
     } catch (err) {
-      console.error('Error deleting user:', err);
       setError(`Error deleting user: ${err.message}`);
     }
   };
@@ -182,11 +175,9 @@ const AdminDashboard = () => {
         setPendingUsers(data.pendingUsers || []);
       } else {
         const errorText = await response.text();
-        console.error('Failed to fetch pending users:', errorText);
         setError('Failed to fetch pending users');
       }
     } catch (err) {
-      console.error('Error fetching pending users:', err);
       setError('Error fetching pending users');
     }
   }, [token]);
@@ -208,7 +199,6 @@ const AdminDashboard = () => {
         }));
       }
     } catch (err) {
-      console.error('Error fetching editor count:', err);
     }
   }, [token]);
 
@@ -229,7 +219,6 @@ const AdminDashboard = () => {
         }));
       }
     } catch (err) {
-      console.error('Error fetching admin count:', err);
     } finally {
       setLoading(false);
     }
@@ -264,16 +253,14 @@ const AdminDashboard = () => {
         fetchAdminCount();
       } else {
         const errorText = await response.text();
-        console.error('Failed to fetch statistics:', errorText);
         setError('Failed to fetch statistics');
         setLoading(false);
       }
     } catch (err) {
-      console.error('Error fetching statistics:', err);
       setError('Error fetching statistics');
       setLoading(false);
     }
-  }, [token, fetchEditorCount]);
+  }, [token, fetchEditorCount, fetchAdminCount]);
 
   // Fetch pending users and statistics
   useEffect(() => {

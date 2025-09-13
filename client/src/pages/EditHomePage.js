@@ -18,7 +18,6 @@ const EditHomePage = () => {
     const fetchCarouselItems = async () => {
       try {
         setLoading(true);
-        console.log('Fetching carousel items with token:', token ? 'Token exists' : 'No token');
         
         const response = await fetch('http://localhost:5001/api/carousel/admin', {
           headers: {
@@ -26,20 +25,15 @@ const EditHomePage = () => {
           }
         });
         
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
         
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Response error:', errorText);
           throw new Error(`Failed to fetch carousel items: ${response.status} ${errorText}`);
         }
         const data = await response.json();
-        console.log('Carousel data received:', data);
         setCarouselItems(data);
         setError(null);
       } catch (err) {
-        console.error('Error fetching carousel items:', err);
         setError(`Failed to load carousel content: ${err.message}`);
       } finally {
         setLoading(false);
@@ -57,13 +51,10 @@ const EditHomePage = () => {
         
         if (response.ok) {
           const data = await response.json();
-          console.log('Home sections data received:', data);
           setHomeSections(data);
         } else {
-          console.error('Failed to fetch home sections');
         }
       } catch (err) {
-        console.error('Error fetching home sections:', err);
       }
     };
 
@@ -71,7 +62,6 @@ const EditHomePage = () => {
       fetchCarouselItems();
       fetchHomeSections();
     } else {
-      console.log('No token available, skipping fetch');
       setLoading(false);
       setError('No authentication token available');
     }
@@ -143,23 +133,14 @@ const EditHomePage = () => {
 
   const handleSectionUpdate = async (sectionId, sectionData) => {
     try {
-      console.log('Starting section update for:', sectionId);
-      console.log('Section data:', sectionData);
       
       // Find the section in state to check for temporary files
       const sectionIndex = homeSections.findIndex(s => s._id === sectionId);
       const section = homeSections[sectionIndex];
       
-      console.log('Found section at index:', sectionIndex);
-      console.log('Section from state:', section);
-      console.log('Temporary files:', {
-        background: section?.tempBackgroundFile,
-        tile: section?.tempTileFile
-      });
       
       // Upload background image if a new one was selected
       if (section?.tempBackgroundFile) {
-        console.log('Uploading background image...');
         const formData = new FormData();
         formData.append('backgroundImage', section.tempBackgroundFile);
         
@@ -174,10 +155,8 @@ const EditHomePage = () => {
         if (backgroundResponse.ok) {
           const backgroundResult = await backgroundResponse.json();
           sectionData.backgroundImage = backgroundResult.backgroundImage;
-          console.log('Background image uploaded successfully:', backgroundResult.backgroundImage);
         } else {
           const errorText = await backgroundResponse.text();
-          console.error('Background upload failed:', errorText);
           showAlert('Failed to upload background image', 'error');
           return;
         }
@@ -185,7 +164,6 @@ const EditHomePage = () => {
       
       // Upload tile image if a new one was selected
       if (section?.tempTileFile) {
-        console.log('Uploading tile image...');
         const formData = new FormData();
         formData.append('tileImage', section.tempTileFile);
         
@@ -200,16 +178,13 @@ const EditHomePage = () => {
         if (tileResponse.ok) {
           const tileResult = await tileResponse.json();
           sectionData.tileImage = tileResult.tileImage;
-          console.log('Tile image uploaded successfully:', tileResult.tileImage);
         } else {
           const errorText = await tileResponse.text();
-          console.error('Tile upload failed:', errorText);
           showAlert('Failed to upload tile image', 'error');
           return;
         }
       }
       
-      console.log('Final section data to update:', sectionData);
       
       // Now update the section with all data including new image URLs
       const response = await fetch(`http://localhost:5001/api/home-sections/${sectionId}`, {
@@ -223,7 +198,6 @@ const EditHomePage = () => {
 
       if (response.ok) {
         const updatedSection = await response.json();
-        console.log('Section updated successfully:', updatedSection);
         
         setHomeSections(prev => 
           prev.map(section => 
@@ -247,11 +221,9 @@ const EditHomePage = () => {
         await refreshHomeSections();
       } else {
         const errorText = await response.text();
-        console.error('Section update failed:', errorText);
         showAlert('Failed to update section', 'error');
       }
     } catch (err) {
-      console.error('Error updating section:', err);
       showAlert(`Error updating section: ${err.message}`, 'error');
     }
   };
@@ -263,8 +235,6 @@ const EditHomePage = () => {
   const handleImageUpload = async (tileIndex, file) => {
     if (!file) return;
 
-    console.log('File selected for tile:', tileIndex);
-    console.log('File details:', file.name, file.type, file.size);
 
     // Store the file temporarily in the tile
     const updatedTiles = [...tiles];
@@ -397,7 +367,6 @@ const EditHomePage = () => {
         showAlert(`Failed to save tile: ${errorData.error || 'Unknown error'}`, 'error');
       }
     } catch (err) {
-      console.error('Error saving tile:', err);
       showAlert('Error saving tile: ' + err.message, 'error');
     }
   };
@@ -458,7 +427,6 @@ const EditHomePage = () => {
           showAlert('Failed to delete tile', 'error');
         }
       } catch (err) {
-        console.error('Error deleting tile:', err);
         showAlert('Error deleting tile', 'error');
       }
     }
@@ -495,10 +463,8 @@ const EditHomePage = () => {
       if (response.ok) {
         const sections = await response.json();
         setHomeSections(sections);
-        console.log('Home sections refreshed:', sections);
       }
     } catch (err) {
-      console.error('Error refreshing home sections:', err);
     }
   };
 

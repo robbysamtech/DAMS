@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import './Events.css';
 
 const Events = () => {
-  const { user, token, isEditor, isAdmin } = useAuth();
+  const { token, isEditor, isAdmin } = useAuth();
   const [events, setEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
   const [pastEvents, setPastEvents] = useState([]);
@@ -11,7 +11,6 @@ const Events = () => {
   const [filteredPastEvents, setFilteredPastEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [formData, setFormData] = useState({
@@ -69,18 +68,14 @@ const Events = () => {
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Events data received:', data.events);
-        console.log('First event location:', data.events?.[0]?.location);
         const eventsData = data.events || [];
         setEvents(eventsData);
         reclassifyEvents(eventsData);
       } else {
-        console.error('Response not ok:', response.status);
         setError('Failed to fetch events');
       }
     } catch (err) {
       clearTimeout(timeoutId); // Clear timeout if error
-      console.error('Error in fetchEvents:', err);
       setError('Error fetching events');
     } finally {
       setLoading(false);
@@ -171,7 +166,6 @@ const Events = () => {
         return data.imageUrl;
       }
     } catch (err) {
-      console.error('Error uploading image:', err);
     }
     return null;
   };
@@ -348,7 +342,6 @@ const Events = () => {
       eventImage: null
     });
     setEditingEvent(null);
-    setShowCreateForm(false);
     setShowEditModal(false);
     setShowCreateModal(false);
   };
@@ -398,7 +391,6 @@ const Events = () => {
     
     const [hours, minutes] = timeString.split(':');
     const hour = parseInt(hours);
-    const minute = parseInt(minutes);
     
     const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
     const ampm = hour >= 12 ? 'PM' : 'AM';

@@ -21,7 +21,6 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get('http://localhost:5001/api/auth/profile');
       setUser(response.data.user);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
       logout();
     } finally {
       setLoading(false);
@@ -58,16 +57,13 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      console.log('AuthContext: Making registration request...');
       const response = await axios.post('http://localhost:5001/api/auth/register', userData);
-      console.log('AuthContext: Registration response:', response.data);
       
       const { user: newUser, message, userId } = response.data;
       
       // For pending approval, don't set token or log user in
       // Only set user data temporarily for success message
       if (newUser.status === 'pending') {
-        console.log('AuthContext: User is pending, returning success with message');
         return { 
           success: true, 
           user: newUser,
@@ -75,7 +71,6 @@ export const AuthProvider = ({ children }) => {
           message: message || 'Account request submitted successfully! Your request is pending admin approval.'
         };
       } else {
-        console.log('AuthContext: User is approved, logging in');
         // If somehow user is approved immediately, log them in
         const { token: newToken } = response.data;
         if (newToken) {
@@ -88,7 +83,6 @@ export const AuthProvider = ({ children }) => {
         return { success: true, user: newUser, userId: userId };
       }
     } catch (error) {
-      console.error('AuthContext: Registration error:', error);
       return {
         success: false,
         error: error.response?.data?.error || 'Registration failed'

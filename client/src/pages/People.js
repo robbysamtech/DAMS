@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import './People.css';
 
 const People = () => {
-  const { user, token, isEditor, isAdmin } = useAuth();
+  const { token, isEditor, isAdmin } = useAuth();
   const { t } = useTranslation();
   const [people, setPeople] = useState([]);
   const [filteredPeople, setFilteredPeople] = useState([]);
@@ -43,7 +43,7 @@ const People = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchPeople();
@@ -130,9 +130,6 @@ const People = () => {
       return;
     }
     
-    console.log('Form submission started');
-    console.log('Form data:', formData);
-    console.log('Token:', token);
     
     try {
         const formDataToSend = new FormData();
@@ -149,7 +146,6 @@ const People = () => {
         formDataToSend.append('profilePhoto', formData.profilePhoto);
       }
 
-      console.log('FormData created:', formDataToSend);
 
       const response = await fetch('http://localhost:5001/api/people', {
         method: 'POST',
@@ -159,22 +155,17 @@ const People = () => {
         body: formDataToSend
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
 
       if (response.ok) {
         const newPerson = await response.json();
-        console.log('Success response:', newPerson);
         setPeople(prev => [newPerson.person, ...prev]);
         resetForm();
         setError('');
       } else {
         const errorData = await response.json();
-        console.log('Error response:', errorData);
         setError(errorData.error || 'Failed to create person');
       }
     } catch (err) {
-      console.error('Exception during submission:', err);
       setError('Error creating person');
     }
   };
@@ -656,8 +647,6 @@ const People = () => {
           ) : (
             <div className="people-grid">
               {filteredPeople.map(person => {
-                console.log('Person data:', person);
-                console.log('Profile photo path:', person.profilePhoto);
                 return (
                 <div key={person._id} className="person-tile">
                   {/* Header Section - Name, Role, Ministry on left, Actions on right */}
@@ -704,7 +693,6 @@ const People = () => {
                           alt={`${person.firstName} ${person.lastName}`}
                           className="person-photo"
                           onError={(e) => {
-                            console.error('Image failed to load:', person.profilePhoto);
                             e.target.style.display = 'none';
                             e.target.nextSibling.style.display = 'flex';
                           }}

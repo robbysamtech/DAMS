@@ -47,7 +47,6 @@ router.get('/', async (req, res) => {
     
     res.json(carouselItems);
   } catch (error) {
-    console.error('Error fetching carousel items:', error);
     res.status(500).json({ error: 'Failed to fetch carousel items' });
   }
 });
@@ -61,7 +60,6 @@ router.get('/admin', auth, carouselAuth, async (req, res) => {
     
     res.json(carouselItems);
   } catch (error) {
-    console.error('Error fetching carousel items for admin:', error);
     res.status(500).json({ error: 'Failed to fetch carousel items' });
   }
 });
@@ -97,7 +95,6 @@ router.post('/', auth, carouselAuth, upload.single('image'), async (req, res) =>
     const populatedItem = await carouselItem.populate('creator', 'firstName lastName');
     res.status(201).json(populatedItem);
   } catch (error) {
-    console.error('Error creating carousel item:', error);
     res.status(500).json({ error: 'Failed to create carousel item' });
   }
 });
@@ -138,7 +135,6 @@ router.put('/:id', auth, carouselAuth, upload.single('image'), async (req, res) 
     const updatedItem = await carouselItem.populate('creator', 'firstName lastName');
     res.json(updatedItem);
   } catch (error) {
-    console.error('Error updating carousel item:', error);
     res.status(500).json({ error: 'Failed to update carousel item' });
   }
 });
@@ -162,7 +158,6 @@ router.delete('/:id', auth, carouselAuth, async (req, res) => {
     await Carousel.findByIdAndDelete(req.params.id);
     res.json({ message: 'Carousel item deleted successfully' });
   } catch (error) {
-    console.error('Error deleting carousel item:', error);
     res.status(500).json({ error: 'Failed to delete carousel item' });
   }
 });

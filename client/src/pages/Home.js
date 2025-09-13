@@ -32,7 +32,6 @@ const Home = () => {
         setError(null);
       } catch (err) {
         setError('Failed to load carousel content');
-        console.error('Error fetching carousel:', err);
         // No fallback data - only load from database
       } finally {
         setLoading(false);
@@ -46,16 +45,13 @@ const Home = () => {
   useEffect(() => {
     const fetchHomeSections = async () => {
       try {
-        console.log('Fetching home sections...');
         const response = await fetch('http://localhost:5001/api/home-sections');
         if (!response.ok) {
           throw new Error('Failed to fetch home sections');
         }
         const data = await response.json();
-        console.log('Home sections fetched:', data);
         setHomeSections(data);
       } catch (err) {
-        console.error('Error fetching home sections:', err);
         // Keep existing sections if fetch fails
       }
     };
@@ -77,7 +73,6 @@ const Home = () => {
   // Simple scroll-based animation
   useEffect(() => {
     const handleScroll = () => {
-      const scrollY = window.scrollY;
       const windowHeight = window.innerHeight;
       
       sectionRefs.current.forEach((ref, index) => {
@@ -87,10 +82,7 @@ const Home = () => {
           
           const isVisible = rect.top < threshold;
           
-          console.log(`Section ${index}: rect.top=${rect.top}, threshold=${threshold}, isVisible=${isVisible}`);
-
           if (isVisible && !animatedSections.has(index)) {
-            console.log('Section visible on scroll:', index);
             setAnimatedSections(prev => new Set([...prev, index]));
           }
         }
@@ -121,7 +113,6 @@ const Home = () => {
     
     const [hours, minutes] = timeString.split(':');
     const hour = parseInt(hours);
-    const minute = parseInt(minutes);
     
     const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
     const ampm = hour >= 12 ? 'PM' : 'AM';
@@ -177,7 +168,6 @@ const Home = () => {
   return (
     <div className="home">
       {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-      {console.log('Auth loading:', authLoading, 'Is editor:', isEditor, 'Is admin:', isAdmin)}
       {!authLoading && (isEditor || isAdmin) && (
         <button 
           className="home-page-edit-btn" 
@@ -279,7 +269,6 @@ const Home = () => {
 
             {/* Content Sections Below Carousel */}
       <section className="content-sections">
-        {console.log('Rendering sections, count:', homeSections.length)}
         {homeSections.length > 0 ? (
           homeSections.map((section, index) => (
             <div 

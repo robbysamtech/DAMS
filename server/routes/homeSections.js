@@ -16,7 +16,6 @@ router.get('/', async (req, res) => {
     
     res.json(sections);
   } catch (error) {
-    console.error('Error fetching home sections:', error);
     res.status(500).json({ message: 'Failed to fetch home sections' });
   }
 });
@@ -34,7 +33,6 @@ router.get('/admin', auth, async (req, res) => {
     
     res.json(sections);
   } catch (error) {
-    console.error('Error fetching home sections for admin:', error);
     res.status(500).json({ message: 'Failed to fetch home sections' });
   }
 });
@@ -71,7 +69,6 @@ router.post('/', auth, async (req, res) => {
     const savedSection = await newSection.save();
     res.status(201).json(savedSection);
   } catch (error) {
-    console.error('Error creating home section:', error);
     res.status(500).json({ message: 'Failed to create home section' });
   }
 });
@@ -115,7 +112,6 @@ router.put('/:id', auth, async (req, res) => {
 
     res.json(updatedSection);
   } catch (error) {
-    console.error('Error updating home section:', error);
     res.status(500).json({ message: 'Failed to update home section' });
   }
 });
@@ -136,7 +132,6 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.json({ message: 'Home section deleted successfully' });
   } catch (error) {
-    console.error('Error deleting home section:', error);
     res.status(500).json({ message: 'Failed to delete home section' });
   }
 });
@@ -195,7 +190,6 @@ router.patch('/:id/background-image', auth, upload.single('backgroundImage'), as
       thumbnailUrl
     });
   } catch (error) {
-    console.error('Error uploading background image:', error);
     res.status(500).json({ message: 'Failed to upload background image' });
   }
 });
@@ -254,7 +248,6 @@ router.patch('/:id/tile-image', auth, upload.single('tileImage'), async (req, re
       thumbnailUrl
     });
   } catch (error) {
-    console.error('Error uploading tile image:', error);
     res.status(500).json({ message: 'Failed to upload tile image' });
   }
 });
@@ -278,7 +271,6 @@ router.patch('/:id/toggle', auth, async (req, res) => {
 
     res.json(updatedSection);
   } catch (error) {
-    console.error('Error toggling home section status:', error);
     res.status(500).json({ message: 'Failed to toggle home section status' });
   }
 });

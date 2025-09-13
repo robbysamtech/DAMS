@@ -39,7 +39,6 @@ router.post('/', upload.single('image'), async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error uploading image:', error);
     res.status(500).json({ error: 'Failed to upload image' });
   }
 });
@@ -63,7 +62,6 @@ router.get('/:filename', (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error getting image info:', error);
     res.status(500).json({ error: 'Failed to get image info' });
   }
 });

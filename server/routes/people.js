@@ -79,7 +79,6 @@ router.get('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching people:', error);
     res.status(500).json({ error: 'Failed to fetch people.' });
   }
 });
@@ -99,7 +98,6 @@ router.get('/:id', async (req, res) => {
 
     res.json({ person });
   } catch (error) {
-    console.error('Error fetching person:', error);
     res.status(500).json({ error: 'Failed to fetch person.' });
   }
 });
@@ -107,10 +105,6 @@ router.get('/:id', async (req, res) => {
 // Create new person
 router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
   try {
-    console.log('POST /api/people - Request received');
-    console.log('Request body:', req.body);
-    console.log('Request file:', req.file);
-    console.log('Request user:', req.user);
     
     const {
       firstName,
@@ -121,15 +115,12 @@ router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
       bio
     } = req.body;
 
-    console.log('Extracted data:', { firstName, lastName, churchRole, role, churchMinistry, bio });
 
     // Check if user can create content
     if (!req.user.canCreateContent()) {
-      console.log('User cannot create content. Role:', req.user.role, 'Status:', req.user.status);
       return res.status(403).json({ error: 'You do not have permission to create people profiles.' });
     }
 
-    console.log('User can create content. Proceeding...');
 
     const personData = {
       firstName,
@@ -163,41 +154,26 @@ router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
       bio
     };
 
-    console.log('Person data to save:', personData);
 
     // Add profile photo if uploaded
     if (req.file) {
       // Save only the relative path for the frontend to access
       const relativePath = path.relative(path.join(__dirname, '..'), req.file.path);
       personData.profilePhoto = relativePath;
-      console.log('Profile photo added:', req.file.path);
-      console.log('Relative path saved:', relativePath);
-      console.log('File exists check:', fs.existsSync(req.file.path));
-      console.log('File stats:', fs.statSync(req.file.path));
     }
 
     const person = new Person(personData);
-    console.log('Person model created, saving...');
-    
     await person.save();
-    console.log('Person saved successfully:', person._id);
 
     const populatedPerson = await person.populate('creator', 'firstName lastName');
-    console.log('Person populated:', populatedPerson);
 
     res.status(201).json({
       message: 'Person profile created successfully!',
       person: populatedPerson
     });
   } catch (error) {
-    console.error('Error creating person:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
-    
     // Check for validation errors
     if (error.name === 'ValidationError') {
-      console.error('Validation errors:', error.errors);
       return res.status(400).json({ 
         error: 'Validation failed', 
         details: Object.values(error.errors).map(e => e.message)
@@ -216,11 +192,6 @@ router.post('/', auth, upload.single('profilePhoto'), async (req, res) => {
 // Update person
 router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
   try {
-    console.log('PUT /api/people/:id - Update request received');
-    console.log('Request body:', req.body);
-    console.log('Request file:', req.file);
-    console.log('Request user:', req.user);
-    console.log('Person ID:', req.params.id);
     
     const {
       firstName,
@@ -237,10 +208,6 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
     }
 
     // Check if user can manage this person
-    console.log('Checking permissions...');
-    console.log('Person creator ID:', person.creator);
-    console.log('User ID:', req.user._id);
-    console.log('Can manage result:', person.canManage(req.user._id));
     
     if (!(await person.canManage(req.user._id))) {
       return res.status(403).json({ error: 'You do not have permission to edit this person profile.' });
@@ -276,8 +243,6 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
     }
     if (bio !== undefined) updates.bio = bio;
 
-    console.log('Updates to apply:', updates);
-    console.log('Person found:', person);
 
     // Handle profile photo update
     if (req.file) {
@@ -289,14 +254,11 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
             fs.unlinkSync(oldPhotoPath);
           }
         } catch (err) {
-          console.error('Error deleting old photo:', err);
         }
       }
       // Save only the relative path for the frontend to access
       const relativePath = path.relative(path.join(__dirname, '..'), req.file.path);
       updates.profilePhoto = relativePath;
-      console.log('Profile photo updated:', req.file.path);
-      console.log('Relative path saved:', relativePath);
     }
 
     const updatedPerson = await Person.findByIdAndUpdate(
@@ -310,14 +272,9 @@ router.put('/:id', auth, upload.single('profilePhoto'), async (req, res) => {
       person: updatedPerson
     });
   } catch (error) {
-    console.error('Error updating person:', error);
-    console.error('Error name:', error.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
     
     // Check for validation errors
     if (error.name === 'ValidationError') {
-      console.error('Validation errors:', error.errors);
       return res.status(400).json({ 
         error: 'Validation failed', 
         details: Object.values(error.errors).map(e => e.message)
@@ -353,7 +310,6 @@ router.delete('/:id', auth, async (req, res) => {
           fs.unlinkSync(person.profilePhoto);
         }
       } catch (err) {
-        console.error('Error deleting profile photo:', err);
       }
     }
     
@@ -361,7 +317,6 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.json({ message: 'Person profile deleted successfully!' });
   } catch (error) {
-    console.error('Error deleting person:', error);
     res.status(500).json({ error: 'Failed to delete person profile.' });
   }
 });
@@ -392,7 +347,6 @@ router.get('/statistics/overview', async (req, res) => {
       recentAdditions
     });
   } catch (error) {
-    console.error('Error fetching people statistics:', error);
     res.status(500).json({ error: 'Failed to fetch people statistics.' });
   }
 });

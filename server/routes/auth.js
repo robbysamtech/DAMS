@@ -55,7 +55,6 @@ router.post('/register', async (req, res) => {
         }
       });
   } catch (error) {
-    console.error('Registration error:', error);
     res.status(500).json({ error: 'Registration failed. Please try again.' });
   }
 });
@@ -105,7 +104,6 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 });
@@ -116,7 +114,6 @@ router.get('/profile', auth, async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
     res.json({ user });
   } catch (error) {
-    console.error('Profile fetch error:', error);
     res.status(500).json({ error: 'Failed to fetch profile.' });
   }
 });
@@ -145,7 +142,6 @@ router.put('/profile', auth, async (req, res) => {
       user 
     });
   } catch (error) {
-    console.error('Profile update error:', error);
     res.status(500).json({ error: 'Failed to update profile.' });
   }
 });
@@ -173,7 +169,6 @@ router.put('/change-password', auth, async (req, res) => {
 
     res.json({ message: 'Password changed successfully!' });
   } catch (error) {
-    console.error('Password change error:', error);
     res.status(500).json({ error: 'Failed to change password.' });
   }
 });
@@ -190,7 +185,6 @@ router.post('/check-user-id', async (req, res) => {
     const exists = await User.userIdExists(userId);
     res.json({ available: !exists });
   } catch (error) {
-    console.error('User ID check error:', error);
     res.status(500).json({ error: 'Failed to check user ID availability.' });
   }
 });
@@ -207,7 +201,6 @@ router.post('/generate-user-id', async (req, res) => {
     const userId = User.generateUserIdFromName(firstName, lastName);
     res.json({ userId });
   } catch (error) {
-    console.error('User ID generation error:', error);
     res.status(500).json({ error: 'Failed to generate user ID.' });
   }
 });

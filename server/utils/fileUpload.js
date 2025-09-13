@@ -57,7 +57,6 @@ const processImage = async (filePath, options = {}) => {
 
     return processedImagePath;
   } catch (error) {
-    console.error('Error processing image:', error);
     throw error;
   }
 };
@@ -84,7 +83,6 @@ const generateThumbnail = async (filePath, options = {}) => {
 
     return thumbnailPath;
   } catch (error) {
-    console.error('Error generating thumbnail:', error);
     throw error;
   }
 };
@@ -95,7 +93,6 @@ const deleteFile = async (filePath) => {
     await fs.unlink(filePath);
     return true;
   } catch (error) {
-    console.error('Error deleting file:', error);
     return false;
   }
 };
