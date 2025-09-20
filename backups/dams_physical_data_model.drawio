@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="2025-09-14T18:03:00.000Z" agent="5.0" etag="abc123" version="24.7.17" type="device">
+  <diagram name="DAMS Physical Data Model" id="dams-physical-model">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- Users Collection -->
+        <mxCell id="users" value="users" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="280" height="400" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="users-title" value="USERS" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="users">
+          <mxGeometry y="10" width="260" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="users-fields" value="_id: ObjectId (PK)&#xa;firstName: String (required, max:50)&#xa;lastName: String (required, max:50)&#xa;userId: String (unique, required)&#xa;password: String (required, min:8)&#xa;role: String (enum: pending, editor, admin, superadmin)&#xa;status: String (enum: pending, active, suspended, rejected)&#xa;profile.phone: String&#xa;profile.department: String&#xa;profile.bio: String (max:500)&#xa;profile.avatar: String&#xa;profile.socialLinks.linkedin: String&#xa;profile.socialLinks.twitter: String&#xa;profile.socialLinks.website: String&#xa;approvalDetails.approvedBy: ObjectId (FK → users._id)&#xa;approvalDetails.approvedAt: Date&#xa;approvalDetails.approvalNotes: String&#xa;approvalDetails.rejectionReason: String&#xa;lastLogin: Date&#xa;createdAt: Date&#xa;updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="users">
+          <mxGeometry x="10" y="40" width="260" height="350" as="geometry" />
+        </mxCell>
+        
+        <!-- Events Collection -->
+        <mxCell id="events" value="events" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="380" y="40" width="320" height="500" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="events-title" value="EVENTS" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="events">
+          <mxGeometry y="10" width="300" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="events-fields" value="_id: ObjectId (PK)&#xa;title: String (required, max:200)&#xa;description: String (required)&#xa;date: Date (required)&#xa;time: String (required)&#xa;address.streetAddress: String (required, max:200)&#xa;address.city: String (required, max:100)&#xa;address.state: String (required, max:50)&#xa;address.zipCode: String (required, max:20)&#xa;creator: ObjectId (FK → users._id)&#xa;status: String (enum: draft, published, cancelled, completed)&#xa;category: String (max:200)&#xa;eventType: String (enum: in-person, virtual, hybrid)&#xa;maxAttendees: Number (min:1)&#xa;registrationRequired: Boolean&#xa;eventImage: String&#xa;tags: [String] (max:100 each)&#xa;metadata.viewCount: Number&#xa;metadata.attendeeCount: Number&#xa;metadata.registrationCount: Number&#xa;metadata.lastUpdated: Date&#xa;visibility: String (enum: public, private, restricted)&#xa;recurring.isRecurring: Boolean&#xa;recurring.frequency: String (enum: daily, weekly, monthly, yearly)&#xa;recurring.endDate: Date&#xa;recurring.daysOfWeek: [Number] (0-6)&#xa;createdAt: Date&#xa;updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="events">
+          <mxGeometry x="10" y="40" width="300" height="450" as="geometry" />
+        </mxCell>
+        
+        <!-- People Collection -->
+        <mxCell id="people" value="people" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="40" y="500" width="280" height="320" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="people-title" value="PEOPLE" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="people">
+          <mxGeometry y="10" width="260" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="people-fields" value="_id: ObjectId (PK)&#xa;firstName: String (required, max:50)&#xa;lastName: String (required, max:50)&#xa;churchRole: String (required, max:100)&#xa;profilePhoto: String&#xa;creator: ObjectId (FK → users._id)&#xa;status: String (enum: active, inactive, archived)&#xa;role: String (enum: Pastor, Leader, Member, Coordinator, Assistant, Volunteer)&#xa;churchMinistry: [String] (max:100 each)&#xa;contactInfo.email: String&#xa;contactInfo.phone: String&#xa;bio: String&#xa;socialLinks.linkedin: String&#xa;socialLinks.twitter: String&#xa;socialLinks.facebook: String&#xa;socialLinks.instagram: String&#xa;socialLinks.website: String&#xa;skills: [String] (max:50 each)&#xa;expertise: [String] (max:100 each)&#xa;metadata.viewCount: Number&#xa;metadata.lastUpdated: Date&#xa;createdAt: Date&#xa;updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="people">
+          <mxGeometry x="10" y="40" width="260" height="270" as="geometry" />
+        </mxCell>
+        
+        <!-- Carousel Collection -->
+        <mxCell id="carousel" value="carousels" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="380" y="580" width="280" height="240" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="carousel-title" value="CAROUSELS" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="carousel">
+          <mxGeometry y="10" width="260" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="carousel-fields" value="_id: ObjectId (PK)&#xa;title: String (required, max:100)&#xa;description: String (required, max:500)&#xa;type: String (enum: image, event)&#xa;image: String (required)&#xa;eventDate: String (required if type=event)&#xa;eventTime: String (required if type=event)&#xa;order: Number (required, min:1)&#xa;isActive: Boolean&#xa;creator: ObjectId (FK → users._id)&#xa;status: String (enum: active, inactive, draft)&#xa;createdAt: Date&#xa;updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="carousel">
+          <mxGeometry x="10" y="40" width="260" height="190" as="geometry" />
+        </mxCell>
+        
+        <!-- HomeSections Collection -->
+        <mxCell id="homesections" value="homesections" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="720" y="40" width="280" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="homesections-title" value="HOMESECTIONS" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="homesections">
+          <mxGeometry y="10" width="260" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="homesections-fields" value="_id: ObjectId (PK)&#xa;order: Number (required, min:1, max:6, unique)&#xa;title: String (required, max:100)&#xa;description: String (required, max:500)&#xa;backgroundImage: String&#xa;tileImage: String&#xa;backgroundImageFile: String&#xa;tileImageFile: String&#xa;isActive: Boolean&#xa;createdAt: Date&#xa;updatedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="homesections">
+          <mxGeometry x="10" y="40" width="260" height="150" as="geometry" />
+        </mxCell>
+        
+        <!-- Relationships -->
+        <mxCell id="users-events" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="users" target="events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="users-people" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="users" target="people">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="users-carousel" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="users" target="carousel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="users-self" value="1:N" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;curved=1;" edge="1" parent="1" source="users" target="users">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="40" y="240" as="sourcePoint" />
+            <mxPoint x="20" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        
+        <!-- Indexes Information -->
+        <mxCell id="indexes" value="INDEXES" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="860" width="960" height="200" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="indexes-title" value="DATABASE INDEXES" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="indexes">
+          <mxGeometry y="10" width="940" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="indexes-details" value="USERS:&#xa;• userId (unique)&#xa;• role + status (compound)&#xa;• approvalDetails.approvedBy&#xa;&#xa;EVENTS:&#xa;• creator&#xa;• status&#xa;• date&#xa;• category&#xa;• eventType&#xa;• tags&#xa;• visibility&#xa;&#xa;PEOPLE:&#xa;• creator&#xa;• status&#xa;• role&#xa;• churchMinistry&#xa;• skills&#xa;• contactInfo.email&#xa;&#xa;CAROUSELS:&#xa;• order + isActive (compound)&#xa;• status&#xa;&#xa;HOMESECTIONS:&#xa;• order (unique)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="indexes">
+          <mxGeometry x="10" y="40" width="940" height="150" as="geometry" />
+        </mxCell>
+        
+        <!-- Legend -->
+        <mxCell id="legend" value="LEGEND" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1100" width="400" height="120" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-title" value="LEGEND" style="text;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontStyle=1;" vertex="1" parent="legend">
+          <mxGeometry y="10" width="380" height="20" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="legend-details" value="PK = Primary Key&#xa;FK = Foreign Key&#xa;required = Field is required&#xa;unique = Field must be unique&#xa;enum = Field must be one of the specified values&#xa;max/min = Maximum/minimum length or value&#xa;1:N = One-to-Many relationship" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;" vertex="1" parent="legend">
+          <mxGeometry x="10" y="40" width="380" height="70" as="geometry" />
+        </mxCell>
+        
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
+

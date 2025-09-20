@@ -129,14 +129,15 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
                 {user.role === 'superadmin' && <option value="superadmin">Super Admin</option>}
               </select>
             </div>
-            <button 
-              onClick={() => deleteUser(user._id)}
-              className="btn-delete"
-              title={user.role === 'superadmin' ? 'Cannot delete super admin' : 'Delete this user'}
-              disabled={user.role === 'superadmin'}
-            >
-              Delete
-            </button>
+            {user.role !== 'superadmin' && (
+              <button 
+                onClick={() => deleteUser(user._id)}
+                className="btn-delete"
+                title="Delete this user"
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       ))}

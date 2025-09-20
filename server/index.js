@@ -54,7 +54,7 @@ app.use('/logo', express.static(path.join(__dirname, 'logo')));
 app.use(express.static(path.join(__dirname, '../client/build')));
 
 // Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/cci', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/dams', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
