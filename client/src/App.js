@@ -19,6 +19,7 @@ import Register from './pages/Register';
 
 import Events from './pages/Events';
 import People from './pages/People';
+import EasterMinistry from './pages/EasterMinistry';
 import EditHomePage from './pages/EditHomePage';
 
 import AdminDashboard from './pages/AdminDashboard';
@@ -62,6 +63,7 @@ const AppContent = () => {
 
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
+            <Route path="/easter-ministry" element={<EasterMinistry />} />
             <Route path="/edit-home-page" element={<ProtectedRoute allowedRoles={['editor', 'admin', 'superadmin']}><EditHomePage /></ProtectedRoute>} />
 
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'superadmin']}><AdminDashboard /></ProtectedRoute>} />

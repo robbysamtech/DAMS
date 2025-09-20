@@ -8,6 +8,7 @@ const Header = () => {
   const { user, logout, isAdmin } = useAuth();
   const { t } = useTranslation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMinistryDropdownOpen, setIsMinistryDropdownOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,6 +23,14 @@ const Header = () => {
 
   const closeMobileMenu = () => {
     setIsMobileMenuOpen(false);
+  };
+
+  const toggleMinistryDropdown = () => {
+    setIsMinistryDropdownOpen(!isMinistryDropdownOpen);
+  };
+
+  const closeMinistryDropdown = () => {
+    setIsMinistryDropdownOpen(false);
   };
 
   const isActive = (path) => {
@@ -74,6 +83,31 @@ const Header = () => {
                 >
                   {t('navigation.header.nav_people')}
                 </Link>
+              </li>
+              
+              <li className="nav-item dropdown">
+                <button 
+                  className={`nav-link dropdown-toggle ${isMinistryDropdownOpen ? 'active' : ''}`}
+                  onClick={toggleMinistryDropdown}
+                  onBlur={() => setTimeout(closeMinistryDropdown, 200)}
+                >
+                  Ministry
+                  <span className="dropdown-arrow">▼</span>
+                </button>
+                <ul className={`dropdown-menu ${isMinistryDropdownOpen ? 'show' : ''}`}>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/easter-ministry" 
+                      className={`dropdown-link ${isActive('/easter-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Easter Ministry
+                    </Link>
+                  </li>
+                </ul>
               </li>
               
 

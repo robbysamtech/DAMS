@@ -200,7 +200,12 @@
       "children_ministry": "Children's Ministry",
       "bible_study": "Bible Study",
       "easter_committee": "Easter Committee",
-      "harvest_committee": "Harvest Committee"
+      "harvest_committee": "Harvest Committee",
+      "youth_ministry": "Youth Ministry",
+      "men_ministry": "Men's Ministry",
+      "women_ministry": "Women's Ministry",
+      "worship_ministry": "Worship Ministry",
+      "choir_ministry": "Choir Ministry"
     },
     "validation": {
       "first_name_required": "First name is required",

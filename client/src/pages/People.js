@@ -451,6 +451,56 @@ const People = () => {
                         />
                         Harvest Committee
                       </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Youth Ministry"
+                          checked={formData.churchMinistry.includes('Youth Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Youth Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Men's Ministry"
+                          checked={formData.churchMinistry.includes('Men\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Men's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Women's Ministry"
+                          checked={formData.churchMinistry.includes('Women\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Women's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Worship Ministry"
+                          checked={formData.churchMinistry.includes('Worship Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Worship Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Choir Ministry"
+                          checked={formData.churchMinistry.includes('Choir Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Choir Ministry
+                      </label>
                     </div>
                 </div>
 
@@ -612,6 +662,56 @@ const People = () => {
                           onChange={handleMinistryChange}
                         />
                         Harvest Committee
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Youth Ministry"
+                          checked={formData.churchMinistry.includes('Youth Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Youth Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Men's Ministry"
+                          checked={formData.churchMinistry.includes('Men\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Men's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Women's Ministry"
+                          checked={formData.churchMinistry.includes('Women\'s Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Women's Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Worship Ministry"
+                          checked={formData.churchMinistry.includes('Worship Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Worship Ministry
+                      </label>
+                      <label className="checkbox-item">
+                        <input
+                          type="checkbox"
+                          name="churchMinistry"
+                          value="Choir Ministry"
+                          checked={formData.churchMinistry.includes('Choir Ministry')}
+                          onChange={handleMinistryChange}
+                        />
+                        Choir Ministry
                       </label>
                     </div>
                 </div>
