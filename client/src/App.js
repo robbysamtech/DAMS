@@ -20,6 +20,16 @@ import Register from './pages/Register';
 import Events from './pages/Events';
 import People from './pages/People';
 import EasterMinistry from './pages/EasterMinistry';
+import YouthMinistry from './pages/YouthMinistry';
+import WorshipMinistry from './pages/WorshipMinistry';
+import ChildrenMinistry from './pages/ChildrenMinistry';
+import MensMinistry from './pages/MensMinistry';
+import WomensMinistry from './pages/WomensMinistry';
+import ChoirMinistry from './pages/ChoirMinistry';
+import BibleStudy from './pages/BibleStudy';
+import GospelMinistry from './pages/GospelMinistry';
+import EasterCommittee from './pages/EasterCommittee';
+import HarvestCommittee from './pages/HarvestCommittee';
 import EditHomePage from './pages/EditHomePage';
 
 import AdminDashboard from './pages/AdminDashboard';
@@ -64,6 +74,16 @@ const AppContent = () => {
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
             <Route path="/easter-ministry" element={<EasterMinistry />} />
+            <Route path="/youth-ministry" element={<YouthMinistry />} />
+            <Route path="/worship-ministry" element={<WorshipMinistry />} />
+            <Route path="/children-ministry" element={<ChildrenMinistry />} />
+            <Route path="/mens-ministry" element={<MensMinistry />} />
+            <Route path="/womens-ministry" element={<WomensMinistry />} />
+            <Route path="/choir-ministry" element={<ChoirMinistry />} />
+            <Route path="/bible-study" element={<BibleStudy />} />
+            <Route path="/gospel-ministry" element={<GospelMinistry />} />
+            <Route path="/easter-committee" element={<EasterCommittee />} />
+            <Route path="/harvest-committee" element={<HarvestCommittee />} />
             <Route path="/edit-home-page" element={<ProtectedRoute allowedRoles={['editor', 'admin', 'superadmin']}><EditHomePage /></ProtectedRoute>} />
 
             <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'superadmin']}><AdminDashboard /></ProtectedRoute>} />

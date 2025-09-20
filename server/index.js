@@ -29,6 +29,16 @@ const uploadRoutes = require('./routes/upload');
 const carouselRoutes = require('./routes/carousel');
 const homeSectionRoutes = require('./routes/homeSections');
 const easterMinistryRoutes = require('./routes/easterMinistry');
+const youthMinistryRoutes = require('./routes/youthMinistry');
+const worshipMinistryRoutes = require('./routes/worshipMinistry');
+const childrenMinistryRoutes = require('./routes/childrenMinistry');
+const mensMinistryRoutes = require('./routes/mens-ministry');
+const womensMinistryRoutes = require('./routes/womens-ministry');
+const choirMinistryRoutes = require('./routes/choir-ministry');
+const bibleStudyRoutes = require('./routes/bible-study');
+const gospelMinistryRoutes = require('./routes/gospel-ministry');
+const easterCommitteeRoutes = require('./routes/easter-committee');
+const harvestCommitteeRoutes = require('./routes/harvest-committee');
 
 // Security middleware
 app.use(helmet({
@@ -72,6 +82,16 @@ app.use('/api/upload', auth, uploadRoutes);
 app.use('/api/carousel', carouselRoutes);
 app.use('/api/home-sections', homeSectionRoutes);
 app.use('/api/easter-ministry', easterMinistryRoutes);
+app.use('/api/youth-ministry', youthMinistryRoutes);
+app.use('/api/worship-ministry', worshipMinistryRoutes);
+app.use('/api/children-ministry', childrenMinistryRoutes);
+app.use('/api/mens-ministry', mensMinistryRoutes);
+app.use('/api/womens-ministry', womensMinistryRoutes);
+app.use('/api/choir-ministry', choirMinistryRoutes);
+app.use('/api/bible-study', bibleStudyRoutes);
+app.use('/api/gospel-ministry', gospelMinistryRoutes);
+app.use('/api/easter-committee', easterCommitteeRoutes);
+app.use('/api/harvest-committee', harvestCommitteeRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

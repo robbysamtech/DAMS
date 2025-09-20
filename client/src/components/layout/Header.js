@@ -107,6 +107,126 @@ const Header = () => {
                       Easter Ministry
                     </Link>
                   </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/youth-ministry" 
+                      className={`dropdown-link ${isActive('/youth-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Youth Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/worship-ministry" 
+                      className={`dropdown-link ${isActive('/worship-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Worship Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/children-ministry" 
+                      className={`dropdown-link ${isActive('/children-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Children Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/mens-ministry" 
+                      className={`dropdown-link ${isActive('/mens-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Men's Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/womens-ministry" 
+                      className={`dropdown-link ${isActive('/womens-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Women's Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/choir-ministry" 
+                      className={`dropdown-link ${isActive('/choir-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Choir Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/bible-study" 
+                      className={`dropdown-link ${isActive('/bible-study') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Bible Study
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/gospel-ministry" 
+                      className={`dropdown-link ${isActive('/gospel-ministry') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Gospel Ministry
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/easter-committee" 
+                      className={`dropdown-link ${isActive('/easter-committee') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Easter Committee
+                    </Link>
+                  </li>
+                  <li className="dropdown-item">
+                    <Link 
+                      to="/harvest-committee" 
+                      className={`dropdown-link ${isActive('/harvest-committee') ? 'active' : ''}`}
+                      onClick={() => {
+                        closeMobileMenu();
+                        closeMinistryDropdown();
+                      }}
+                    >
+                      Harvest Committee
+                    </Link>
+                  </li>
                 </ul>
               </li>
               
