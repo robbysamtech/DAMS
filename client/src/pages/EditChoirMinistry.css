@@ -1,5 +1,7 @@
-/* Edit Choir Ministry Page Styles */
-.edit-choir-ministry-page {
+/* Ministry Edit Page Styles - Updated to match Easter Ministry layout */
+
+/* Edit Ministry Page Styles */
+[class^="edit-"][class$="-ministry-page"] {
   min-height: 100vh;
   background: #f8f9fa;
   padding: 2rem;
@@ -135,15 +137,36 @@
   gap: 2rem;
 }
 
-/* Section Editor */
-.section-editor {
+/* Section Tile - New layout matching Easter Ministry */
+.section-tile {
   background: white;
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 1px solid #e9ecef;
+  margin-bottom: 2rem;
 }
 
+/* Section Content Wrapper - Side by side layout */
+.section-content-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+.section-left {
+  flex: 1;
+}
+
+.section-right {
+  flex: 0 0 300px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Section Header */
 .section-header {
   display: flex;
   justify-content: space-between;
@@ -159,9 +182,12 @@
   font-size: 1.5rem;
 }
 
+/* Section Actions - Positioned above image, aligned right */
 .section-actions {
   display: flex;
   gap: 0.75rem;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 /* Section Form */
@@ -170,6 +196,24 @@
   gap: 1.5rem;
 }
 
+/* Section Preview */
+.section-preview {
+  display: grid;
+  gap: 1rem;
+}
+
+.section-preview p {
+  margin: 0;
+  color: #495057;
+  line-height: 1.5;
+}
+
+.section-preview strong {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+/* Form Groups */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -203,55 +247,49 @@
   min-height: 100px;
 }
 
-.form-group input[type="checkbox"] {
-  width: auto;
-  margin-right: 0.5rem;
-}
-
-.current-image {
-  margin-top: 0.5rem;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
-}
-
-.current-image p {
-  margin: 0 0 0.5rem 0;
-  font-weight: 600;
-  color: #495057;
-}
-
-
-/* Section Preview */
-.section-preview {
-  display: grid;
+/* Image Upload Section */
+.image-upload-section {
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-.section-preview p {
-  margin: 0;
-  color: #495057;
-  line-height: 1.5;
-}
-
-.section-preview strong {
-  color: #2c3e50;
-  font-weight: 600;
-}
-
-.preview-image {
-  margin-top: 1rem;
-  padding: 1rem;
+.image-preview {
+  width: 100%;
+  height: 200px;
+  border: 2px dashed #e9ecef;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #f8f9fa;
-  border-radius: 6px;
-  border: 1px solid #e9ecef;
+  overflow: hidden;
 }
 
-.preview-image p {
-  margin: 0 0 0.5rem 0;
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.upload-button {
+  padding: 0.75rem 1rem;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #495057;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: block;
+}
+
+.upload-button:hover {
+  background: #0056b3;
+  transform: translateY(-1px);
 }
 
 /* No Sections */
@@ -319,7 +357,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .edit-choir-ministry-page {
+  [class^="edit-"][class$="-ministry-page"] {
     padding: 1rem;
   }
 
@@ -338,17 +376,21 @@
     justify-content: center;
   }
 
-  .section-header {
+  .section-content-wrapper {
     flex-direction: column;
     gap: 1rem;
-    align-items: stretch;
+  }
+
+  .section-right {
+    flex: 1;
+    min-width: auto;
   }
 
   .section-actions {
-    justify-content: center;
+    justify-content: flex-end;
   }
 
-  .section-editor {
+  .section-tile {
     padding: 1.5rem;
   }
 }

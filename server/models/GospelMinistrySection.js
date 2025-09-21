@@ -6,7 +6,6 @@ const GospelMinistrySectionSchema = new mongoose.Schema({
   description: { type: String, trim: true, maxlength: 2000 },
   backgroundImage: { type: String, trim: true },
   tileImage: { type: String, trim: true },
-  isActive: { type: Boolean, default: true },
   creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   metadata: {
     createdAt: { type: Date, default: Date.now },
@@ -20,7 +19,7 @@ GospelMinistrySectionSchema.pre('save', function(next) {
 });
 
 GospelMinistrySectionSchema.statics.findActiveSections = function() {
-  return this.find({ isActive: true }).sort({ order: 1 });
+  return this.find({}).sort({ order: 1 });
 };
 
 GospelMinistrySectionSchema.statics.findAllSections = function() {

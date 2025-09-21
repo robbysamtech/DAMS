@@ -6,7 +6,6 @@ const HarvestCommitteeSectionSchema = new mongoose.Schema({
   description: { type: String, trim: true, maxlength: 2000 },
   backgroundImage: { type: String, trim: true },
   tileImage: { type: String, trim: true },
-  isActive: { type: Boolean, default: true },
   creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   metadata: {
     createdAt: { type: Date, default: Date.now },

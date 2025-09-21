@@ -10,7 +10,7 @@ const adminAuth = require('../middleware/adminAuth');
 // GET all home sections (public - no auth required)
 router.get('/', async (req, res) => {
   try {
-    const sections = await HomeSection.find({ isActive: true })
+    const sections = await HomeSection.find({})
       .sort({ order: 1 })
       .select('-__v');
     
@@ -62,7 +62,7 @@ router.post('/', auth, async (req, res) => {
       title,
       description,
       tileImage,
-      isActive: isActive !== undefined ? isActive : true
+      
     });
 
     const savedSection = await newSection.save();

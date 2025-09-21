@@ -37,7 +37,7 @@ const upload = multer({
 router.get('/', async (req, res) => {
   try {
     const sections = await EasterMinistrySection
-      .find({ isActive: true })
+      .find({})
       .sort({ order: 1 })
       .select('-creator -metadata.viewCount -__v');
     
@@ -79,14 +79,7 @@ router.post('/', auth, upload.fields([
       return res.status(403).json({ error: 'You do not have permission to create Easter Ministry sections.' });
     }
 
-    const {
-      order,
-      title,
-      description,
-      isActive
-    } = req.body;
-
-    // Check if order already exists
+    const { order, title, description } = req.body;// Check if order already exists
     const existingSection = await EasterMinistrySection.findOne({ order: parseInt(order) });
     if (existingSection) {
       return res.status(400).json({ error: 'A section with this order already exists.' });
@@ -96,7 +89,6 @@ router.post('/', auth, upload.fields([
       order: parseInt(order),
       title,
       description,
-      isActive: isActive === 'true' || isActive === true,
       creator: req.user._id
     };
 
@@ -133,14 +125,7 @@ router.put('/:id', auth, upload.fields([
   { name: 'tileImage', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    const {
-      order,
-      title,
-      description,
-      isActive
-    } = req.body;
-
-    const section = await EasterMinistrySection.findById(req.params.id);
+    const { order, title, description } = req.body;const section = await EasterMinistrySection.findById(req.params.id);
     if (!section) {
       return res.status(404).json({ error: 'Easter Ministry section not found.' });
     }
@@ -170,8 +155,6 @@ router.put('/:id', auth, upload.fields([
     }
     if (title !== undefined) updates.title = title;
     if (description !== undefined) updates.description = description;
-    if (isActive !== undefined) updates.isActive = isActive === 'true' || isActive === true;
-
     // Handle file uploads
     if (req.files) {
       if (req.files.backgroundImage && req.files.backgroundImage[0]) {

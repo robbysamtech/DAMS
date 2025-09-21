@@ -4,46 +4,42 @@ const WorshipMinistrySectionSchema = new mongoose.Schema({
   order: {
     type: Number,
     required: true,
-    unique: true,
+    unique: true
   },
   title: {
     type: String,
     required: true,
     trim: true,
-    maxlength: 200,
+    maxlength: 200
   },
   description: {
     type: String,
     trim: true,
-    maxlength: 2000,
+    maxlength: 2000
   },
   backgroundImage: {
     type: String, // URL or path to the image
-    trim: true,
+    trim: true
   },
   tileImage: {
     type: String, // URL or path to the image
-    trim: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
+    trim: true
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: true
   },
   metadata: {
     createdAt: {
       type: Date,
-      default: Date.now,
+      default: Date.now
     },
     updatedAt: {
       type: Date,
-      default: Date.now,
-    },
-  },
+      default: Date.now
+    }
+  }
 });
 
 // Update the `updatedAt` field on save
@@ -54,7 +50,7 @@ WorshipMinistrySectionSchema.pre('save', function(next) {
 
 // Static method to get active sections
 WorshipMinistrySectionSchema.statics.findActiveSections = function() {
-  return this.find({ isActive: true }).sort({ order: 1 });
+  return this.find({}).sort({ order: 1 });
 };
 
 // Static method to get all sections for admin

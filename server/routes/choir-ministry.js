@@ -19,6 +19,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Multer configuration for tile image uploads (with processing)
+const tileImageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadsDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, `choir-ministry-${uniqueSuffix}.${file.originalname.split('.').pop()}`);
+  }
+});
+
+const tileImageUpload = multer({ 
+  storage: tileImageStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
+
+const { processImage, generateThumbnail } = require('../utils/fileUpload');
+
 router.get('/', async (req, res) => {
   try {
     const sections = await ChoirMinistrySection.findActiveSections();
@@ -44,12 +69,11 @@ router.get('/admin', auth, async (req, res) => {
 });
 
 router.post('/', auth, adminAuth, upload.fields([{ name: 'backgroundImage', maxCount: 1 }, { name: 'tileImage', maxCount: 1 }]), async (req, res) => {
-  const { order, title, description, isActive } = req.body;
-  try {
+  const { order, title, description } = req.body;try {
     const newSection = new ChoirMinistrySection({
-      order, title, description, isActive: isActive === 'true', creator: req.user.id,
+      order, title, description, creator: req.user.id,
       backgroundImage: req.files && req.files['backgroundImage'] ? `/uploads/choirMinistry/${req.files['backgroundImage'][0].filename}` : undefined,
-      tileImage: req.files && req.files['tileImage'] ? `/uploads/choirMinistry/${req.files['tileImage'][0].filename}` : undefined,
+      tileImage: req.files && req.files['tileImage'] ? `/uploads/choirMinistry/${req.files['tileImage'][0].filename}` : undefined
     });
     const section = await newSection.save();
     res.json(section);
@@ -60,9 +84,7 @@ router.post('/', auth, adminAuth, upload.fields([{ name: 'backgroundImage', maxC
 });
 
 router.put('/:id', auth, upload.fields([{ name: 'backgroundImage', maxCount: 1 }, { name: 'tileImage', maxCount: 1 }]), async (req, res) => {
-  const { order, title, description, isActive } = req.body;
-
-  try {
+  const { order, title, description } = req.body;try {
     // Check if user can manage this section (editor/admin/superadmin can manage sections)
     if (!req.user.canCreateContent()) {
       return res.status(403).json({ error: 'You do not have permission to manage this section.' });
@@ -73,8 +95,6 @@ router.put('/:id', auth, upload.fields([{ name: 'backgroundImage', maxCount: 1 }
     section.order = order || section.order;
     section.title = title || section.title;
     section.description = description || section.description;
-    section.isActive = isActive !== undefined ? isActive === 'true' : section.isActive;
-
     if (req.files && req.files['backgroundImage']) {
       if (section.backgroundImage) {
         const oldImagePath = path.join(__dirname, '..', section.backgroundImage);
@@ -122,6 +142,117 @@ router.delete('/:id', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
+  }
+});
+
+// @route   PATCH /api/choir-ministry/:id/tile-image
+// @desc    Update tile image for a choir-ministry section
+// @access  Private (Admin/Editor)
+router.patch('/:id/tile-image', auth, (req, res, next) => {
+  console.log('PATCH tile-image middleware - before multer');
+  console.log('Request headers:', req.headers);
+  console.log('Content-Type:', req.get('content-type'));
+  next();
+}, tileImageUpload.single('tileImage'), async (req, res) => {
+  try {
+    console.log(`PATCH tile-image request received for section: ${req.params.id}`);
+    console.log('Request file:', req.file);
+
+    // Check if user can manage this section
+    if (!req.user.canCreateContent()) {
+      return res.status(403).json({ error: 'You do not have permission to manage this section.' });
+    }
+
+    const section = await ChoirMinistrySection.findById(req.params.id);
+    if (!section) {
+      return res.status(404).json({ error: 'Choir Ministry section not found' });
+    }
+
+    console.log('User role:', req.user.role);
+    console.log('Section found:', section);
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Delete old tile image if it exists
+    if (section.tileImage) {
+      const oldImagePath = path.join(__dirname, '..', section.tileImage);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Process the uploaded image
+    const processedImagePath = await processImage(req.file.path, uploadsDir, 'choir-ministry');
+    const thumbnailPath = await generateThumbnail(processedImagePath, uploadsDir, 'choir-ministry');
+
+    // Update section with new image paths
+    section.tileImage = processedImagePath.replace(path.join(__dirname, '..'), '');
+    section.metadata.lastUpdated = new Date();
+    await section.save();
+
+    console.log('Successfully uploaded tile image');
+    res.json(section);
+  } catch (err) {
+    console.error('Error uploading tile image:', err);
+    res.status(500).json({ error: 'File upload error', message: err.message });
+  }
+});
+
+
+// @route   PATCH /api/choirministry/:id/tile-image
+// @desc    Update tile image for a choirministry section
+// @access  Private (Admin/Editor)
+router.patch('/:id/tile-image', auth, (req, res, next) => {
+  console.log('PATCH tile-image middleware - before multer');
+  console.log('Request headers:', req.headers);
+  console.log('Content-Type:', req.get('content-type'));
+  next();
+}, tileImageUpload.single('tileImage'), async (req, res) => {
+  try {
+    console.log(`PATCH tile-image request received for section: ${req.params.id}`);
+    console.log('Request file:', req.file);
+
+    // Check if user can manage this section
+    if (!req.user.canCreateContent()) {
+      return res.status(403).json({ error: 'You do not have permission to manage this section.' });
+    }
+
+    const section = await ChoirministryMinistrySection.findById(req.params.id);
+    if (!section) {
+      return res.status(404).json({ error: 'choirministry section not found' });
+    }
+
+    console.log('User role:', req.user.role);
+    console.log('Section found:', section);
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    // Delete old tile image if it exists
+    if (section.tileImage) {
+      const oldImagePath = path.join(__dirname, '..', section.tileImage);
+      if (fs.existsSync(oldImagePath)) {
+        fs.unlinkSync(oldImagePath);
+      }
+    }
+
+    // Process the uploaded image
+    const processedImagePath = await processImage(req.file.path, uploadsDir, 'choirministry');
+    const thumbnailPath = await generateThumbnail(processedImagePath, uploadsDir, 'choirministry');
+
+    // Update section with new image paths
+    section.tileImage = processedImagePath.replace(path.join(__dirname, '..'), '');
+    section.metadata.lastUpdated = new Date();
+    await section.save();
+
+    console.log('Successfully uploaded tile image');
+    res.json(section);
+  } catch (err) {
+    console.error('Error uploading tile image:', err);
+    res.status(500).json({ error: 'File upload error', message: err.message });
   }
 });
 

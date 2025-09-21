@@ -30,10 +30,6 @@ const easterMinistrySectionSchema = new mongoose.Schema({
     required: true,
     trim: true
   },
-  isActive: {
-    type: Boolean,
-    default: true
-  },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
