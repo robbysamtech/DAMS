@@ -6,7 +6,7 @@ import './ChildrenMinistry.css';
 const ChildrenMinistry = () => {
   const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [childrenministrySections, setChildrenMinistrySections] = useState([]);
+  const [childrenSections, setChildrenMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -72,19 +72,19 @@ const ChildrenMinistry = () => {
   if (loading) {
     return (
       <div className="children-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="children-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-children-ministry');
-                }}
-                title="Edit Children Ministry"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="children-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-children-ministry');
+          }}
+          title="Edit Children Ministry"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Children Ministry...</p>
         </div>
@@ -94,7 +94,7 @@ const ChildrenMinistry = () => {
 
   if (error) {
     return (
-      <div className="childrenministry-page">
+      <div className="children-ministry-page">
         <div className="error-container">
           <h2>Error Loading Children Ministry</h2>
           <p>{error}</p>
@@ -107,11 +107,23 @@ const ChildrenMinistry = () => {
   }
 
   return (
-    <div className="childrenministry-page">
+    <div className="children-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="children-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-children-ministry');
+          }}
+          title="Edit Children Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
-        {childrenministrySections.length > 0 ? (
-          childrenministrySections.map((section, index) => (
+        {childrenSections.length > 0 ? (
+          childrenSections.map((section, index) => (
             <div 
               key={section._id}
               ref={(el) => (sectionRefs.current[index] = el)}
@@ -143,7 +155,7 @@ const ChildrenMinistry = () => {
         ) : (
           <div className="no-sections-message">
             <p>Loading Children Ministry sections...</p>
-            <p>Debug: childrenministrySections.length = {childrenministrySections.length}</p>
+            <p>Debug: childrenSections.length = {childrenSections.length}</p>
           </div>
         )}
       </section>

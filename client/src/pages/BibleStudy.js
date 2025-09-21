@@ -72,19 +72,19 @@ const BibleStudy = () => {
   if (loading) {
     return (
       <div className="bible-study-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="bible-study-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-bible-study');
-                }}
-                title="Edit Bible Study"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="bible-study-edit-btn" 
+          onClick={() => {
+            navigate('/edit-bible-study');
+          }}
+          title="Edit Bible Study"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Bible Study...</p>
         </div>
@@ -94,7 +94,19 @@ const BibleStudy = () => {
 
   if (error) {
     return (
-      <div className="biblestudy-page">
+      <div className="bible-study-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="bible-study-edit-btn" 
+          onClick={() => {
+            navigate('/edit-bible-study');
+          }}
+          title="Edit Bible Study"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Bible Study</h2>
           <p>{error}</p>
@@ -107,7 +119,19 @@ const BibleStudy = () => {
   }
 
   return (
-    <div className="biblestudy-page">
+    <div className="bible-study-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="bible-study-edit-btn" 
+          onClick={() => {
+            navigate('/edit-bible-study');
+          }}
+          title="Edit Bible Study"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
         {biblestudySections.length > 0 ? (

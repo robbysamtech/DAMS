@@ -72,19 +72,19 @@ const HarvestCommittee = () => {
   if (loading) {
     return (
       <div className="harvest-committee-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="harvest-committee-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-harvest-committee');
-                }}
-                title="Edit Harvest Committee"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="harvest-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-harvest-committee');
+          }}
+          title="Edit Harvest Committee"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Harvest Committee...</p>
         </div>
@@ -94,7 +94,19 @@ const HarvestCommittee = () => {
 
   if (error) {
     return (
-      <div className="harvestcommittee-page">
+      <div className="harvest-committee-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="harvest-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-harvest-committee');
+          }}
+          title="Edit Harvest Committee"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Harvest Committee</h2>
           <p>{error}</p>
@@ -107,7 +119,19 @@ const HarvestCommittee = () => {
   }
 
   return (
-    <div className="harvestcommittee-page">
+    <div className="harvest-committee-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="harvest-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-harvest-committee');
+          }}
+          title="Edit Harvest Committee"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
         {harvestcommitteeSections.length > 0 ? (

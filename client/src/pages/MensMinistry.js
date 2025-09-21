@@ -6,7 +6,7 @@ import './MensMinistry.css';
 const MensMinistry = () => {
   const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [mensministrySections, setMensMinistrySections] = useState([]);
+  const [mensSections, setMensMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -72,19 +72,19 @@ const MensMinistry = () => {
   if (loading) {
     return (
       <div className="mens-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="mens-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-mens-ministry');
-                }}
-                title="Edit Mens Ministry"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="mens-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-mens-ministry');
+          }}
+          title="Edit Men's Ministry"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Men's Ministry...</p>
         </div>
@@ -94,7 +94,19 @@ const MensMinistry = () => {
 
   if (error) {
     return (
-      <div className="mensministry-page">
+      <div className="mens-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="mens-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-mens-ministry');
+          }}
+          title="Edit Men's Ministry"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Men's Ministry</h2>
           <p>{error}</p>
@@ -107,11 +119,23 @@ const MensMinistry = () => {
   }
 
   return (
-    <div className="mensministry-page">
+    <div className="mens-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="mens-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-mens-ministry');
+          }}
+          title="Edit Men's Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
-        {mensministrySections.length > 0 ? (
-          mensministrySections.map((section, index) => (
+        {mensSections.length > 0 ? (
+          mensSections.map((section, index) => (
             <div 
               key={section._id}
               ref={(el) => (sectionRefs.current[index] = el)}
@@ -143,7 +167,7 @@ const MensMinistry = () => {
         ) : (
           <div className="no-sections-message">
             <p>Loading Men's Ministry sections...</p>
-            <p>Debug: mensministrySections.length = {mensministrySections.length}</p>
+            <p>Debug: mensSections.length = {mensSections.length}</p>
           </div>
         )}
       </section>

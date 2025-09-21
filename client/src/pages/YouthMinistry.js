@@ -72,18 +72,6 @@ const YouthMinistry = () => {
   if (loading) {
     return (
       <div className="youth-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="youth-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-youth-ministry');
-                }}
-                title="Edit Youth Ministry"
-              >
-                Edit
-              </button>
-            )}
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Youth Ministry...</p>
@@ -108,6 +96,18 @@ const YouthMinistry = () => {
 
   return (
     <div className="youth-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="youth-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-youth-ministry');
+          }}
+          title="Edit Youth Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
         {youthSections.length > 0 ? (

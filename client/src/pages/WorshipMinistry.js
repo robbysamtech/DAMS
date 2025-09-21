@@ -6,7 +6,7 @@ import './WorshipMinistry.css';
 const WorshipMinistry = () => {
   const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [worshipministrySections, setWorshipMinistrySections] = useState([]);
+  const [worshipSections, setWorshipMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -72,19 +72,7 @@ const WorshipMinistry = () => {
   if (loading) {
     return (
       <div className="worship-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="worship-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-worship-ministry');
-                }}
-                title="Edit Worship Ministry"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Worship Ministry...</p>
         </div>
@@ -94,7 +82,7 @@ const WorshipMinistry = () => {
 
   if (error) {
     return (
-      <div className="worshipministry-page">
+      <div className="worship-ministry-page">
         <div className="error-container">
           <h2>Error Loading Worship Ministry</h2>
           <p>{error}</p>
@@ -107,11 +95,23 @@ const WorshipMinistry = () => {
   }
 
   return (
-    <div className="worshipministry-page">
+    <div className="worship-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="worship-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-worship-ministry');
+          }}
+          title="Edit Worship Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
-        {worshipministrySections.length > 0 ? (
-          worshipministrySections.map((section, index) => (
+        {worshipSections.length > 0 ? (
+          worshipSections.map((section, index) => (
             <div 
               key={section._id}
               ref={(el) => (sectionRefs.current[index] = el)}
@@ -143,7 +143,7 @@ const WorshipMinistry = () => {
         ) : (
           <div className="no-sections-message">
             <p>Loading Worship Ministry sections...</p>
-            <p>Debug: worshipministrySections.length = {worshipministrySections.length}</p>
+            <p>Debug: worshipSections.length = {worshipSections.length}</p>
           </div>
         )}
       </section>

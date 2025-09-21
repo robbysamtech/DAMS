@@ -6,7 +6,7 @@ import './GospelMinistry.css';
 const GospelMinistry = () => {
   const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [gospelministrySections, setGospelMinistrySections] = useState([]);
+  const [gospelSections, setGospelMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -72,19 +72,19 @@ const GospelMinistry = () => {
   if (loading) {
     return (
       <div className="gospel-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="gospel-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-gospel-ministry');
-                }}
-                title="Edit Gospel Ministry"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="gospel-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-gospel-ministry');
+          }}
+          title="Edit Gospel Ministry"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Gospel Ministry...</p>
         </div>
@@ -94,7 +94,19 @@ const GospelMinistry = () => {
 
   if (error) {
     return (
-      <div className="gospelministry-page">
+      <div className="gospel-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="gospel-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-gospel-ministry');
+          }}
+          title="Edit Gospel Ministry"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Gospel Ministry</h2>
           <p>{error}</p>
@@ -107,11 +119,23 @@ const GospelMinistry = () => {
   }
 
   return (
-    <div className="gospelministry-page">
+    <div className="gospel-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="gospel-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-gospel-ministry');
+          }}
+          title="Edit Gospel Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
-        {gospelministrySections.length > 0 ? (
-          gospelministrySections.map((section, index) => (
+        {gospelSections.length > 0 ? (
+          gospelSections.map((section, index) => (
             <div 
               key={section._id}
               ref={(el) => (sectionRefs.current[index] = el)}
@@ -143,7 +167,7 @@ const GospelMinistry = () => {
         ) : (
           <div className="no-sections-message">
             <p>Loading Gospel Ministry sections...</p>
-            <p>Debug: gospelministrySections.length = {gospelministrySections.length}</p>
+            <p>Debug: gospelSections.length = {gospelSections.length}</p>
           </div>
         )}
       </section>

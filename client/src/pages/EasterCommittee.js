@@ -72,19 +72,19 @@ const EasterCommittee = () => {
   if (loading) {
     return (
       <div className="easter-committee-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="easter-committee-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-easter-committee');
-                }}
-                title="Edit Easter Committee"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="easter-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-easter-committee');
+          }}
+          title="Edit Easter Committee"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Easter Committee...</p>
         </div>
@@ -94,7 +94,19 @@ const EasterCommittee = () => {
 
   if (error) {
     return (
-      <div className="eastercommittee-page">
+      <div className="easter-committee-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="easter-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-easter-committee');
+          }}
+          title="Edit Easter Committee"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Easter Committee</h2>
           <p>{error}</p>
@@ -107,7 +119,19 @@ const EasterCommittee = () => {
   }
 
   return (
-    <div className="eastercommittee-page">
+    <div className="easter-committee-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="easter-committee-edit-btn" 
+          onClick={() => {
+            navigate('/edit-easter-committee');
+          }}
+          title="Edit Easter Committee"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
         {eastercommitteeSections.length > 0 ? (

@@ -6,7 +6,7 @@ import './ChoirMinistry.css';
 const ChoirMinistry = () => {
   const { isEditor, isAdmin, loading: authLoading } = useAuth();
   const navigate = useNavigate();
-  const [choirministrySections, setChoirMinistrySections] = useState([]);
+  const [choirSections, setChoirMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -72,19 +72,19 @@ const ChoirMinistry = () => {
   if (loading) {
     return (
       <div className="choir-ministry-page">
-                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
-            {!authLoading && (isEditor || isAdmin) && (
-              <button 
-                className="choir-ministry-edit-btn" 
-                onClick={() => {
-                  navigate('/edit-choir-ministry');
-                }}
-                title="Edit Choir Ministry"
-              >
-                Edit
-              </button>
-            )}
-        <div className="loading-container">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="choir-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-choir-ministry');
+          }}
+          title="Edit Choir Ministry"
+        >
+          Edit
+        </button>
+      )}
+      <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Choir Ministry...</p>
         </div>
@@ -94,7 +94,19 @@ const ChoirMinistry = () => {
 
   if (error) {
     return (
-      <div className="choirministry-page">
+      <div className="choir-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="choir-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-choir-ministry');
+          }}
+          title="Edit Choir Ministry"
+        >
+          Edit
+        </button>
+      )}
         <div className="error-container">
           <h2>Error Loading Choir Ministry</h2>
           <p>{error}</p>
@@ -107,11 +119,23 @@ const ChoirMinistry = () => {
   }
 
   return (
-    <div className="choirministry-page">
+    <div className="choir-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="choir-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-choir-ministry');
+          }}
+          title="Edit Choir Ministry"
+        >
+          Edit
+        </button>
+      )}
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
-        {choirministrySections.length > 0 ? (
-          choirministrySections.map((section, index) => (
+        {choirSections.length > 0 ? (
+          choirSections.map((section, index) => (
             <div 
               key={section._id}
               ref={(el) => (sectionRefs.current[index] = el)}
@@ -143,7 +167,7 @@ const ChoirMinistry = () => {
         ) : (
           <div className="no-sections-message">
             <p>Loading Choir Ministry sections...</p>
-            <p>Debug: choirministrySections.length = {choirministrySections.length}</p>
+            <p>Debug: choirSections.length = {choirSections.length}</p>
           </div>
         )}
       </section>
