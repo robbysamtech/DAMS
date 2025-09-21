@@ -31,7 +31,8 @@ const EditBibleStudy = () => {
         
         // Ensure data is an array
         if (Array.isArray(data)) {
-          setBibleStudySections(data);
+          const validSections = data.filter(section => section && section._id && section.title);
+          setBibleStudySections(validSections);
         } else {
           console.error('Expected array but got:', typeof data, data);
           setBibleStudySections([]);
@@ -88,13 +89,13 @@ const EditBibleStudy = () => {
       const result = await response.json();
       setBibleStudySections(prev => 
         prev.map(section => 
-          section._id === sectionId ? result.section : section
+          section._id === sectionId ? result : section
         )
       );
       showAlert('Section updated successfully!');
       
       // Return the updated section so the SectionEditor can update its form data
-      return result.section;
+      return result;
     } catch (err) {
       showAlert(`Error updating section: ${err.message}`, 'error');
       return null;
@@ -234,7 +235,7 @@ const EditBibleStudy = () => {
       <div className="sections-container">
         {bibleStudySections && bibleStudySections.length > 0 ? (
           bibleStudySections
-            .filter(section => section && section._id) // Filter out undefined/null sections
+            .filter(section => section && section._id && section.title) // Filter out undefined/null sections
             .sort((a, b) => a.order - b.order)
             .map((section, index) => (
               <SectionEditor

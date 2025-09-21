@@ -28,9 +28,10 @@ const EditYouthMinistry = () => {
           throw new Error(`Failed to fetch Youth Ministry sections: ${response.status} ${errorText}`);
         }
         const data = await response.json();
-        // Ensure data is an array
+        // Ensure data is an array and filter out invalid sections
         if (Array.isArray(data)) {
-          setYouthMinistrySections(data);
+          const validSections = data.filter(section => section && section._id && section.title);
+          setYouthMinistrySections(validSections);
         } else {
           console.error('Expected array but got:', typeof data, data);
           setYouthMinistrySections([]);
@@ -233,7 +234,7 @@ const EditYouthMinistry = () => {
       <div className="sections-container">
         {youthMinistrySections && Array.isArray(youthMinistrySections) && youthMinistrySections.length > 0 ? (
           youthMinistrySections
-            .filter(section => section && section._id) // Filter out undefined/null sections
+            .filter(section => section && section._id && section.title) // Filter out undefined/null sections
             .sort((a, b) => a.order - b.order)
             .map((section, index) => (
               <SectionEditor

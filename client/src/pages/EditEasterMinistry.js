@@ -81,13 +81,13 @@ const EditEasterMinistry = () => {
       const result = await response.json();
       setEasterSections(prev => 
         prev.map(section => 
-          section._id === sectionId ? result.section : section
+          section._id === sectionId ? result : section
         )
       );
       showAlert('Section updated successfully!');
       
       // Return the updated section so the SectionEditor can update its form data
-      return result.section;
+      return result;
     } catch (err) {
       showAlert(`Error updating section: ${err.message}`, 'error');
       return null;
