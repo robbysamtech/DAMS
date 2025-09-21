@@ -10,6 +10,11 @@ const WomensMinistry = () => {
   const sectionRefs = useRef([]);
   const [animatedSections, setAnimatedSections] = useState(new Set([0])); // Start with only first section visible
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch Women's Ministry sections from MongoDB
   useEffect(() => {
     const fetchWomensMinistrySections = async () => {
@@ -17,14 +22,14 @@ const WomensMinistry = () => {
         setLoading(true);
         const response = await fetch('http://localhost:5001/api/womens-ministry');
         if (!response.ok) {
-          throw new Error('Failed to fetch Women's Ministry sections');
+          throw new Error('Failed to fetch Women\'s Ministry sections');
         }
         const data = await response.json();
         setWomensMinistrySections(data);
         setError(null);
       } catch (err) {
-        setError('Failed to load Women's Ministry content');
-        console.error('Error fetching Women's Ministry sections:', err);
+        setError('Failed to load Women\'s Ministry content');
+        console.error('Error fetching Women\'s Ministry sections:', err);
       } finally {
         setLoading(false);
       }
@@ -101,40 +106,22 @@ const WomensMinistry = () => {
                 transition: 'all 0.8s ease'
               }}
             >
-              <div className="section-content">
-                {/* Alternate text and image positions (same as Home page) */}
-                {index % 2 === 0 ? (
-                  // Even sections: Text Left, Image Right
-                  <>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
-                    <div className="section-image">
-                      <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                        alt={section.title}
-                        className="section-photo"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  // Odd sections: Image Left, Text Right
-                  <>
-                    <div className="section-image">
-                      <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                        alt={section.title}
-                        className="section-photo"
-                      />
-                    </div>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
-                  </>
-                )}
-              </div>
+                                   <div className="section-content">
+                       {/* Title spans across both image and description */}
+                       <h2 className="section-title">{section.title}</h2>
+                       
+                       {/* Body with 3/4 description and 1/4 image */}
+                       <div className="section-body">
+                         <p className="section-description">{section.description}</p>
+                         <div className="section-image">
+                           <img 
+                             src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                             alt={section.title}
+                             className="section-photo"
+                           />
+                         </div>
+                       </div>
+                     </div>
             </div>
           ))
         ) : (

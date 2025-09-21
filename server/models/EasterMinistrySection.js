@@ -22,7 +22,7 @@ const easterMinistrySectionSchema = new mongoose.Schema({
   },
   backgroundImage: {
     type: String,
-    required: true,
+    required: false,
     trim: true
   },
   tileImage: {

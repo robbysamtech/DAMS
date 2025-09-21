@@ -18,21 +18,33 @@
   margin-bottom: 2rem; /* Added back to create consistent gaps between sections */
 }
 
-/* Dynamic Section Styling - Vibrant background colors */
+/* Dynamic Section Styling - Worship Ministry Vibrant Colors */
 .section-1 {
   background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
 }
 
 .section-2 {
-  background: linear-gradient(135deg, #ffeb3b 0%, #ffc107 100%);
+  background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
 }
 
 .section-3 {
-  background: linear-gradient(135deg, #ffd54f 0%, #ff8f00 100%);
+  background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
 }
 
 .section-4 {
-  background: linear-gradient(135deg, #fff176 0%, #ffa726 100%);
+  background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+}
+
+/* Alternate layout for sections 2 and 4 (image on left) */
+.section-2 .section-body,
+.section-4 .section-body {
+  flex-direction: row-reverse;
+}
+
+/* Alternate layout for sections 2 and 4 (image on left) */
+.section-2 .section-body,
+.section-4 .section-body {
+  flex-direction: row-reverse;
 }
 
 .section-content {
@@ -40,36 +52,40 @@
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
-  align-items: center;
-  gap: 4rem;
+  flex-direction: column;
+  gap: 2rem;
   min-height: 700px; /* Increased from 605px */
-}
-
-.section-text {
-  flex: 1;
-  max-width: 700px; /* Increased from 550px */
-  padding: 1rem 0;
 }
 
 .section-title {
   font-size: 3rem; /* Increased from 2.5rem */
   font-weight: 700;
-  margin-bottom: 2rem; /* Increased from 1.5rem */
-  line-height: 1.2;
+  margin-bottom: 0;
+  line-height: 1.1; /* Reduced for much thinner appearance */
   color: #2c3e50;
-  padding: 1.5rem 2rem; /* Increased padding */
+  padding: 0.4rem 2rem; /* Much reduced padding for thinner appearance */
   background: rgba(255, 255, 255, 0.95);
   border-radius: 16px; /* Increased from 12px */
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   text-shadow: none;
-  min-height: 120px; /* Added minimum height */
+  min-height: 45px; /* Much reduced height for thinner appearance */
   display: flex;
   align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.section-body {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
 }
 
 .section-description {
+  flex: 6; /* Takes up 60% of the space (6/10) */
   font-size: 1.3rem; /* Increased from 1.1rem */
   line-height: 1.7; /* Increased from 1.6 */
   color: #2c3e50;
@@ -80,14 +96,14 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   text-shadow: none;
-  min-height: 150px; /* Added minimum height */
+  min-height: 500px; /* Match image height */
   display: flex;
   align-items: center;
 }
 
 .section-image {
-  flex-shrink: 0;
-  max-width: 600px; /* Increased from 500px */
+  flex: 4; /* Takes up 40% of the space (4/10) */
+  max-width: 350px; /* Reduced from 600px */
   width: 100%;
 }
 
@@ -193,8 +209,8 @@
   }
 
   .section-title {
-    font-size: 2.5rem; /* Increased from 2rem */
-    min-height: 100px; /* Added for mobile */
+    font-size: 2rem; /* Increased from 1.75rem */
+    min-height: 35px; /* Much reduced for small mobile */
   }
 
   .section-description {
@@ -205,7 +221,8 @@
     backdrop-filter: blur(10px) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
-    min-height: 120px; /* Added minimum height */
+    min-height: 300px; /* Match mobile image height */
+    flex: none;
   }
 
   .section-photo {
@@ -221,7 +238,7 @@
 @media (max-width: 480px) {
   .section-title {
     font-size: 2rem; /* Increased from 1.75rem */
-    min-height: 80px; /* Added for small mobile */
+    min-height: 35px; /* Much reduced for small mobile */
   }
   
   .section-photo {

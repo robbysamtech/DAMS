@@ -10,6 +10,11 @@ const WorshipMinistry = () => {
   const sectionRefs = useRef([]);
   const [animatedSections, setAnimatedSections] = useState(new Set([0])); // Start with only first section visible
 
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch Worship Ministry sections from MongoDB
   useEffect(() => {
     const fetchWorshipMinistrySections = async () => {
@@ -101,40 +106,22 @@ const WorshipMinistry = () => {
                 transition: 'all 0.8s ease'
               }}
             >
-              <div className="section-content">
-                {/* Alternate text and image positions (same as Home page) */}
-                {index % 2 === 0 ? (
-                  // Even sections: Text Left, Image Right
-                  <>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
-                    <div className="section-image">
-                      <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                        alt={section.title}
-                        className="section-photo"
-                      />
-                    </div>
-                  </>
-                ) : (
-                  // Odd sections: Image Left, Text Right
-                  <>
-                    <div className="section-image">
-                      <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                        alt={section.title}
-                        className="section-photo"
-                      />
-                    </div>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
-                  </>
-                )}
-              </div>
+                                   <div className="section-content">
+                       {/* Title spans across both image and description */}
+                       <h2 className="section-title">{section.title}</h2>
+                       
+                       {/* Body with 3/4 description and 1/4 image */}
+                       <div className="section-body">
+                         <p className="section-description">{section.description}</p>
+                         <div className="section-image">
+                           <img 
+                             src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                             alt={section.title}
+                             className="section-photo"
+                           />
+                         </div>
+                       </div>
+                     </div>
             </div>
           ))
         ) : (
