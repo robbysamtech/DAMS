@@ -12,6 +12,146 @@ const EditHomePage = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState(0);
   const [alert, setAlert] = useState({ show: false, message: '', type: 'success' });
+  // Add editing state for each section
+  const [editingSections, setEditingSections] = useState({});
+  const [sectionFormData, setSectionFormData] = useState({});
+  
+  // Initialize form data for a section
+  const initializeSectionFormData = (section) => {
+    return {
+      order: section.order,
+      title: section.title,
+      description: section.description,
+      tileImage: null
+    };
+  };
+  
+  // Handle edit button click
+  const handleEditSection = (sectionId) => {
+    const section = homeSections.find(s => s._id === sectionId);
+    if (section) {
+      setEditingSections(prev => ({ ...prev, [sectionId]: true }));
+      setSectionFormData(prev => ({ 
+        ...prev, 
+        [sectionId]: initializeSectionFormData(section) 
+      }));
+    }
+  };
+  
+  // Handle cancel button click
+  const handleCancelEdit = (sectionId) => {
+    setEditingSections(prev => ({ ...prev, [sectionId]: false }));
+    setSectionFormData(prev => {
+      const newData = { ...prev };
+      delete newData[sectionId];
+      return newData;
+    });
+  };
+  
+  // Handle form input changes
+  const handleSectionInputChange = (sectionId, field, value) => {
+    setSectionFormData(prev => ({
+      ...prev,
+      [sectionId]: {
+        ...prev[sectionId],
+        [field]: value
+      }
+    }));
+  };
+  
+  // Handle save button click
+  const handleSaveSection = async (sectionId) => {
+    const formData = sectionFormData[sectionId];
+    if (!formData) return;
+    
+    console.log('Saving section:', sectionId, formData);
+    
+    try {
+      // First update the text fields
+      const response = await fetch(`http://localhost:5001/api/home-sections/${sectionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          order: formData.order,
+          title: formData.title,
+          description: formData.description
+        })
+      });
+      
+      console.log('Response status:', response.status);
+      
+      if (response.ok) {
+        const updatedSection = await response.json();
+        
+        // Find the section index for image upload
+        const sectionIndex = homeSections.findIndex(s => s._id === sectionId);
+        const section = homeSections[sectionIndex];
+        
+        console.log('Section found:', section);
+        console.log('Has tempTileFile:', !!section?.tempTileFile);
+        
+        // Upload tile image if a new one was selected
+        if (section?.tempTileFile) {
+          console.log('Uploading tile image:', section.tempTileFile);
+          const imageFormData = new FormData();
+          imageFormData.append('tileImage', section.tempTileFile);
+          
+          const tileResponse = await fetch(`http://localhost:5001/api/home-sections/${sectionId}/tile-image`, {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
+            body: imageFormData
+          });
+          
+          console.log('Tile image response status:', tileResponse.status);
+          
+          if (tileResponse.ok) {
+            const updatedSectionWithImage = await tileResponse.json();
+            setHomeSections(prev => 
+              prev.map(section => 
+                section._id === sectionId ? {
+                  ...updatedSectionWithImage,
+                  tempTileFile: null,
+                  tileImagePreview: null
+                } : section
+              )
+            );
+          } else {
+            const errorText = await tileResponse.text();
+            console.error('Error uploading tile image:', errorText);
+          }
+        } else {
+          console.log('No tile image to upload');
+          // No image to upload, just update with text changes
+          setHomeSections(prev => 
+            prev.map(section => 
+              section._id === sectionId ? updatedSection : section
+            )
+          );
+        }
+        
+        setEditingSections(prev => ({ ...prev, [sectionId]: false }));
+        setSectionFormData(prev => {
+          const newData = { ...prev };
+          delete newData[sectionId];
+          return newData;
+        });
+        
+        showAlert('Section updated successfully!', 'success');
+      } else {
+        const errorText = await response.text();
+        console.error('Error response:', errorText);
+        showAlert(`Failed to update section: ${errorText}`, 'error');
+      }
+    } catch (err) {
+      console.error('Error updating section:', err);
+      showAlert('Error updating section', 'error');
+    }
+  };
 
   // Fetch existing carousel items
   useEffect(() => {
@@ -116,11 +256,6 @@ const EditHomePage = () => {
     setTiles(updatedTiles);
   };
 
-  const handleSectionInputChange = (sectionIndex, field, value) => {
-    const updatedSections = [...homeSections];
-    updatedSections[sectionIndex][field] = value;
-    setHomeSections(updatedSections);
-  };
 
   const showAlert = (message, type = 'success') => {
     setAlert({ show: true, message, type });
@@ -653,92 +788,126 @@ const EditHomePage = () => {
         </div>
         
         <div className="sections-grid">
-          {homeSections.map((section, index) => (
-            <div key={section._id} className="section-tile">
-              <div className="section-tile-header">
-                <h3>Section {section.order}</h3>
-                <div className="section-status">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={section.isActive}
-                      onChange={(e) => handleSectionInputChange(index, 'isActive', e.target.checked)}
-                    />
-                    Active
-                  </label>
-                </div>
-              </div>
+          
+          {homeSections.map((section, index) => {
+            const isEditing = editingSections[section._id];
+            const formData = sectionFormData[section._id] || {};
+            
+            return (
+              <div key={section._id} className="section-tile">
+                <div className="section-content-wrapper">
+                  {/* Left Section - Content */}
+                  <div className="section-left">
+                    <div className="section-header">
+                      <h3>Section {index + 1}: {section.title}</h3>
+                    </div>
 
-              <div className="section-tile-content">
-                {/* Left Section - Title, Description, Update Button */}
-                <div className="section-left">
-                  <div className="form-group">
-                    <label>Title:</label>
-                    <input
-                      type="text"
-                      value={section.title}
-                      onChange={(e) => handleSectionInputChange(index, 'title', e.target.value)}
-                      placeholder="Enter section title"
-                      maxLength="100"
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Description:</label>
-                    <textarea
-                      value={section.description}
-                      onChange={(e) => handleSectionInputChange(index, 'description', e.target.value)}
-                      placeholder="Enter section description"
-                      maxLength="500"
-                      rows="4"
-                    />
-                  </div>
-
-                  <div className="section-tile-actions">
-                    <button 
-                      className="save-btn"
-                      onClick={() => handleSectionUpdate(section._id, section)}
-                    >
-                      Update Section
-                    </button>
-                    {section.tempTileFile && (
-                      <small className="upload-note">
-                        📁 Tile file selected - will be uploaded when you click Update Section
-                      </small>
-                    )}
-                  </div>
-                </div>
-
-                {/* Right Section - Image Uploads */}
-                <div className="section-right">
-                  
-
-                  <div className="form-group">
-                    <label>Tile Image:</label>
-                    <div className="image-upload-section">
-                      {(section.tileImagePreview || section.tileImage) && (
-                        <div className="image-preview">
-                          <img 
-                            src={section.tileImagePreview || section.tileImage} 
-                            alt="Tile Preview" 
+                    {isEditing ? (
+                      <div className="section-form">
+                        <div className="form-group">
+                          <label>Order:</label>
+                          <input
+                            type="number"
+                            value={formData.order || section.order}
+                            onChange={(e) => handleSectionInputChange(section._id, 'order', parseInt(e.target.value))}
                           />
                         </div>
+                        
+                        <div className="form-group">
+                          <label>Title:</label>
+                          <input
+                            type="text"
+                            value={formData.title || section.title}
+                            onChange={(e) => handleSectionInputChange(section._id, 'title', e.target.value)}
+                          />
+                        </div>
+                        
+                        {/* Description and Image side by side */}
+                        <div className="description-image-row">
+                          <div className="form-group description-group">
+                            <label>Description:</label>
+                            <textarea
+                              value={formData.description || section.description}
+                              onChange={(e) => handleSectionInputChange(section._id, 'description', e.target.value)}
+                              rows="6"
+                            />
+                          </div>
+                          
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="section-preview">
+                        <p><strong>Order:</strong> {section.order}</p>
+                        <p><strong>Title:</strong> {section.title}</p>
+                        <p><strong>Description:</strong> {section.description}</p>
+                      </div>
+                    )}
+
+                  </div>
+
+                  {/* Right Section - Image Upload and Actions */}
+                  <div className="section-right">
+                    <div className="section-actions">
+                      {isEditing ? (
+                        <>
+                          <button 
+                            key="save" 
+                            onClick={() => handleSaveSection(section._id)} 
+                            className="btn-save"
+                          >
+                            Save
+                          </button>
+                          <button 
+                            key="cancel" 
+                            onClick={() => handleCancelEdit(section._id)} 
+                            className="btn-cancel"
+                          >
+                            Cancel
+                          </button>
+                        </>
+                      ) : (
+                        <button 
+                          key="edit" 
+                          onClick={() => handleEditSection(section._id)} 
+                          className="btn-edit"
+                        >
+                          Edit
+                        </button>
                       )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleTileImageUpload(index, e.target.files[0])}
-                        id={`tile-upload-${index}`}
-                      />
-                      <label htmlFor={`tile-upload-${index}`} className="upload-button">
-                        {section.tempTileFile ? 'Tile Selected ✓' : (section.tileImage ? 'Change Tile' : 'Upload Tile')}
-                      </label>
+                    </div>
+                    
+                    {/* Image upload section - always visible */}
+                    <div className="form-group">
+                      <div className="image-upload-section">
+                        {(section.tileImagePreview || section.tileImage) && (
+                          <div className="image-preview">
+                            <img 
+                              src={section.tileImagePreview || section.tileImage} 
+                              alt="Tile Preview" 
+                            />
+                          </div>
+                        )}
+                        {/* Only show upload controls when editing or when no image exists */}
+                        {(isEditing || !section.tileImage) && (
+                          <>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleTileImageUpload(index, e.target.files[0])}
+                              id={`tile-upload-${index}`}
+                            />
+                            <label htmlFor={`tile-upload-${index}`} className="upload-button">
+                              {section.tempTileFile ? 'Tile Selected ✓' : (section.tileImage ? 'Change Tile' : 'Upload Tile')}
+                            </label>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

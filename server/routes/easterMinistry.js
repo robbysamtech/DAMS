@@ -5,6 +5,8 @@ const auth = require('../middleware/auth');
 const adminAuth = require('../middleware/adminAuth');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
+const { processImage, generateThumbnail } = require('../utils/fileUpload');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -222,6 +224,89 @@ router.delete('/:id', auth, async (req, res) => {
   } catch (error) {
     console.error('Error deleting Easter Ministry section:', error);
     res.status(500).json({ error: 'Failed to delete Easter Ministry section.' });
+  }
+});
+
+// PATCH upload tile image (admin/editor only)
+router.patch('/:id/tile-image', auth, (req, res, next) => {
+  console.log('PATCH tile-image middleware - before multer');
+  console.log('Request headers:', req.headers);
+  console.log('Content-Type:', req.get('Content-Type'));
+  next();
+}, upload.single('tileImage'), (err, req, res, next) => {
+  if (err) {
+    console.error('Multer error:', err);
+    return res.status(400).json({ 
+      error: 'File upload error',
+      message: err.message 
+    });
+  }
+  next();
+}, async (req, res) => {
+  try {
+    console.log('PATCH tile-image request received for section:', req.params.id);
+    console.log('Request file:', req.file);
+    console.log('User role:', req.user.role);
+    
+    if (!req.user.canCreateContent()) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    if (!req.file) {
+      console.log('No file provided in request');
+      return res.status(400).json({ message: 'No image file provided' });
+    }
+
+    const sectionId = req.params.id;
+    const section = await EasterMinistrySection.findById(sectionId);
+    console.log('Section found:', section);
+    
+    if (!section) {
+      return res.status(404).json({ message: 'Easter Ministry section not found' });
+    }
+
+    // Delete old image if it exists
+    if (section.tileImageFile && fs.existsSync(section.tileImageFile)) {
+      fs.unlinkSync(section.tileImageFile);
+    }
+
+    // Process the uploaded image
+    const processedImagePath = await processImage(req.file.path, {
+      width: 400,
+      height: 300,
+      quality: 80,
+      fit: 'cover'
+    });
+
+    // Generate thumbnail
+    const thumbnailPath = await generateThumbnail(processedImagePath, {
+      width: 200,
+      height: 150,
+      quality: 70
+    });
+
+    // Convert paths to URLs
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+    const imageUrl = `${baseUrl}/uploads/easter-ministry/${path.basename(processedImagePath)}`;
+    const thumbnailUrl = `${baseUrl}/uploads/easter-ministry/${path.basename(thumbnailPath)}`;
+
+    // Update section with new image paths
+    section.tileImage = imageUrl;
+    section.tileImageFile = processedImagePath;
+    const updatedSection = await section.save();
+
+    console.log('Successfully uploaded tile image');
+    res.json({
+      ...updatedSection.toObject(),
+      thumbnailUrl
+    });
+  } catch (error) {
+    console.error('Error in tile-image upload:', error);
+    res.status(500).json({ 
+      error: 'Something went wrong!',
+      message: 'Internal server error',
+      details: error.message 
+    });
   }
 });
 

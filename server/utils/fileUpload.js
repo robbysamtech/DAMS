@@ -6,7 +6,7 @@ const fs = require('fs').promises;
 // Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'server/uploads/');
+    cb(null, path.join(__dirname, '../uploads/'));
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

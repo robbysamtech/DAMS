@@ -1,7 +1,7 @@
 /* Edit Home Page Styles */
 .edit-home-page {
   padding: 2rem;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
   background: var(--color-background);
   min-height: 100vh;
@@ -262,12 +262,15 @@
 
 .form-group input[type="text"],
 .form-group textarea {
-  padding: 0.75rem;
+  padding: 0.5rem 0.75rem;
   border: 2px solid #e5e7eb;
   border-radius: 6px;
   font-size: 0.9rem;
   transition: border-color 0.3s ease;
   font-family: inherit;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .form-group input[type="text"]:focus,
@@ -636,6 +639,115 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/* Description and Image side by side layout - for preview mode */
+.description-image-row {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.description-group {
+  flex: 1;
+  min-width: 0; /* Allow flex item to shrink */
+}
+
+.image-group {
+  flex: 0 0 300px; /* Fixed width for image section */
+  min-width: 300px;
+}
+
+.image-group .image-upload-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.image-group .image-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  max-height: 300px;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.image-group .image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* Section right - Image upload area and actions */
+.section-right {
+  flex: 0 0 300px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.section-right .section-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+/* When in edit mode, the right section only shows actions */
+.section-right:has(.section-actions:only-child) {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.section-right .image-upload-section {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.section-right .image-preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  max-height: 300px;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.section-right .image-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+/* Responsive design for side-by-side layout */
+@media (max-width: 768px) {
+  .description-image-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .image-group {
+    flex: 1;
+    min-width: auto;
+  }
+  
+  .section-right {
+    flex: 1;
+    min-width: auto;
+  }
+}
+
 .section-tile-header {
   display: flex;
   justify-content: space-between;
@@ -679,6 +791,12 @@
   align-items: flex-start; /* Align items to top */
 }
 
+.section-content-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
 .section-left {
   flex: 1;
   display: flex;
@@ -689,9 +807,9 @@
 
 .section-right {
   flex: 0 0 auto; /* Don't grow or shrink - maintain fixed size */
-  width: 400px; /* Fixed width for consistency */
-  max-width: 400px;
-  min-width: 400px; /* Ensure minimum width is maintained */
+  width: 300px; /* Reduced width for better balance */
+  max-width: 300px;
+  min-width: 300px; /* Ensure minimum width is maintained */
   display: flex;
   flex-direction: column;
   gap: 1rem;

@@ -80,6 +80,13 @@ app.use('/api/people', peopleRoutes);
 app.use('/api/events', eventsRoutes);
 app.use('/api/upload', auth, uploadRoutes);
 app.use('/api/carousel', carouselRoutes);
+
+// Debug middleware for home-sections
+app.use('/api/home-sections', (req, res, next) => {
+  console.log(`${req.method} ${req.path} - Request received`);
+  next();
+});
+
 app.use('/api/home-sections', homeSectionRoutes);
 app.use('/api/easter-ministry', easterMinistryRoutes);
 app.use('/api/youth-ministry', youthMinistryRoutes);
