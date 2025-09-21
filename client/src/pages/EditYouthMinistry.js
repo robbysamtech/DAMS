@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditYouthMinistry.css';
 
 const EditYouthMinistry = () => {
-  const { isEditor, isAdmin, loading: authLoading, token } = useAuth();
+  const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [youthMinistrySections, setEasterSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +16,11 @@ const EditYouthMinistry = () => {
     const fetchEasterSections = async () => {
       try {
         setLoading(true);
+        
+        console.log('Token:', token);
+        console.log('User:', user);
+        console.log('isEditor:', isEditor);
+        console.log('isAdmin:', isAdmin);
         
         const response = await fetch('http://localhost:5001/api/youth-ministry/admin', {
           headers: {
@@ -40,7 +45,7 @@ const EditYouthMinistry = () => {
     if (token) {
       fetchEasterSections();
     }
-  }, [token]);
+  }, [token, user, isEditor, isAdmin]);
 
   // Show alert and hide after 3 seconds
   const showAlert = (message, type = 'success') => {

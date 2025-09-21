@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditChildrenMinistry.css';
 
 const EditChildrenMinistry = () => {
-  const { isEditor, isAdmin, loading: authLoading, token } = useAuth();
+  const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [childrenMinistrySections, setEasterSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ const EditChildrenMinistry = () => {
     if (token) {
       fetchEasterSections();
     }
-  }, [token]);
+  }, [token, isEditor, isAdmin]);
 
   // Show alert and hide after 3 seconds
   const showAlert = (message, type = 'success') => {

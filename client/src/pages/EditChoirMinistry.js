@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditChoirMinistry.css';
 
 const EditChoirMinistry = () => {
-  const { isEditor, isAdmin, loading: authLoading, token } = useAuth();
+  const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [choirMinistrySections, setEasterSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ const EditChoirMinistry = () => {
     if (token) {
       fetchEasterSections();
     }
-  }, [token]);
+  }, [token, isEditor, isAdmin]);
 
   // Show alert and hide after 3 seconds
   const showAlert = (message, type = 'success') => {

@@ -43,6 +43,11 @@ router.get('/', async (req, res) => {
 // @access  Private (Admin/Editor)
 router.get('/admin', auth, async (req, res) => {
     try {
+      console.log('User:', req.user);
+      console.log('User role:', req.user.role);
+      console.log('User status:', req.user.status);
+      console.log('canCreateContent():', req.user.canCreateContent());
+      
       // Check if user has admin privileges
       if (!req.user.canCreateContent()) {
         return res.status(403).json({ error: 'You do not have permission to view admin data.' });

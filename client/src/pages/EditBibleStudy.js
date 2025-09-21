@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './EditBibleStudy.css';
 
 const EditBibleStudy = () => {
-  const { isEditor, isAdmin, loading: authLoading, token } = useAuth();
+  const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
   const [bibleStudySections, setEasterSections] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +40,7 @@ const EditBibleStudy = () => {
     if (token) {
       fetchEasterSections();
     }
-  }, [token]);
+  }, [token, isEditor, isAdmin]);
 
   // Show alert and hide after 3 seconds
   const showAlert = (message, type = 'success') => {
