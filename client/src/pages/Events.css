@@ -701,6 +701,29 @@
   border: 1px solid #e2e8f0;
 }
 
+/* Event Card Styles */
+.event-card {
+  transition: all 0.3s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.event-image {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.event-image-preview {
+  transition: transform 0.3s ease;
+}
+
+.event-card:hover .event-image-preview {
+  transform: scale(1.05);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .events-page {

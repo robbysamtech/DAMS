@@ -525,9 +525,13 @@ const Events = () => {
               )}
             </div>
           ) : (
-            <div className="events-grid">
-              {filteredUpcomingEvents.map(event => (
-                <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
+                 <div className="events-grid">
+                   {filteredUpcomingEvents.map((event, index) => (
+                     <div 
+                       key={event._id} 
+                       className="event-card"
+                       onClick={() => handleEventClick(event)}
+                     >
                   {event.eventImage && (
                     <div className="event-image">
                       <img 
@@ -611,9 +615,13 @@ const Events = () => {
               )}
             </div>
           ) : (
-            <div className="events-grid">
-              {filteredPastEvents.map(event => (
-                <div key={event._id} className="event-card" onClick={() => handleEventClick(event)}>
+                 <div className="events-grid">
+                   {filteredPastEvents.map((event, index) => (
+                     <div 
+                       key={event._id} 
+                       className="event-card"
+                       onClick={() => handleEventClick(event)}
+                     >
                   {event.eventImage && (
                     <div className="event-image">
                       <img 
