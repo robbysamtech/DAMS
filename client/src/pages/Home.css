@@ -553,80 +553,133 @@
   margin-bottom: 2rem; /* Added back to create consistent gaps between sections */
 }
 
-/* Dynamic Section Styling - Background images are now set via inline styles */
-.section-1,
-.section-2,
-.section-3,
+/* Dynamic Section Styling - Home Page Vibrant Colors */
+.section-1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.section-2 {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.section-3 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
 .section-4 {
-  background-size: cover !important;
-  background-position: center !important;
-  color: #2c3e50;
-  transition: background 0.3s ease;
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.section-5 {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+}
+
+.section-6 {
+  background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
 }
 
 .section-content {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased from 1200px */
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
-  align-items: center;
-  gap: 4rem;
-  min-height: 550px;
-}
-
-.section-text {
-  flex: 1;
-  max-width: 550px;
-  padding: 1rem 0;
+  flex-direction: column;
+  gap: 2rem;
+  min-height: 700px; /* Increased from 550px */
 }
 
 .section-title {
-  font-size: 2.5rem;
+  font-size: 3rem; /* Increased from 2.5rem */
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
+  margin-bottom: 0;
+  line-height: 1.1; /* Reduced for much thinner appearance */
   color: #2c3e50;
-  padding: 1rem 1.5rem;
+  padding: 0.4rem 2rem; /* Much reduced padding for thinner appearance */
   background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
+  border-radius: 16px; /* Increased from 12px */
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   text-shadow: none;
+  min-height: 45px; /* Much reduced height for thinner appearance */
+  display: flex;
+  align-items: center;
+  text-align: center;
+  width: 100%;
 }
 
+.section-body {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex: 1;
+}
+
+/* Force override for section descriptions - white background */
+.content-section .section-description,
+.home .section-description,
 .section-description {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  flex: 6; /* Takes up 60% of the space (6/10) */
+  font-size: 1.3rem; /* Increased from 1.1rem */
+  line-height: 1.7; /* Increased from 1.6 */
   color: #2c3e50;
-  margin-bottom: 1rem;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.9) !important;
-  border-radius: 12px !important;
-  backdrop-filter: blur(10px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.3) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15) !important;
-  text-shadow: none;
+  padding: 1.5rem 2rem; /* Increased padding */
+  min-height: 500px; /* Match image height */
+  display: flex;
+  align-items: center;
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* Additional force override - should definitely work */
+.home .content-sections .content-section .section-content .section-body .section-description {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+}
+
+/* Ultra-specific override for home page descriptions */
+.home .content-sections .content-section .section-content .section-body p.section-description {
+  background: white !important;
+  background-color: white !important;
+  background-image: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  backdrop-filter: none !important;
+  background-clip: unset !important;
+  background-origin: unset !important;
+  background-size: unset !important;
+  background-position: unset !important;
+  background-repeat: unset !important;
 }
 
 .section-image {
-  flex: 1;
-  max-width: 500px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  flex: 4; /* Takes up 40% of the space (4/10) */
+  max-width: 350px; /* Reduced from 500px */
+  width: 100%;
 }
 
 .section-photo {
   width: 100%;
-  max-width: 600px;
-  height: 400px;
+  height: 500px; /* Increased from 400px */
   object-fit: cover;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  filter: brightness(1.1) contrast(1.1);
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px; /* Increased from 12px */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+  transition: transform 0.3s ease;
+}
+
+.section-photo:hover {
+  transform: scale(1.02);
 }
 
 /* Removed hover effects */
@@ -662,61 +715,75 @@
   animation-delay: 0.6s;
 }
 
-/* Alternate layout for sections 2 and 4 (image on left) */
-.section-community .section-content,
-.section-involved .section-content {
+/* Alternate layout for sections 2, 4, and 6 (image on left) */
+.section-2 .section-body,
+.section-4 .section-body,
+.section-6 .section-body {
   flex-direction: row-reverse;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .section-content {
-    flex-direction: column;
-    gap: 2rem;
-    text-align: center;
+    gap: 1.5rem;
     padding: 0 1rem;
   }
 
-  .section-community .section-content,
-  .section-involved .section-content {
+  .section-title {
+    font-size: 2.5rem; /* Increased from 2rem */
+    min-height: 40px; /* Much reduced for mobile */
+    padding: 0.4rem 1.5rem; /* Much reduced padding */
+  }
+
+  .section-body {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .section-2 .section-body,
+  .section-4 .section-body,
+  .section-6 .section-body {
     flex-direction: column;
   }
 
-  .section-title {
-    font-size: 2rem;
+  .content-section .section-description,
+  .home .section-description,
+  .section-description {
+    font-size: 1.2rem; /* Increased from 1rem */
+    padding: 1.5rem; /* Increased padding */
+    min-height: 300px; /* Match mobile image height */
+    flex: none;
+    background: white !important;
+    background-color: white !important;
+    background-image: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    backdrop-filter: none !important;
   }
 
-  .section-description {
-    font-size: 1rem;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.9) !important;
-    border-radius: 8px !important;
-    backdrop-filter: blur(10px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+  .section-image {
+    flex: none;
+    max-width: 100%;
   }
 
   .section-photo {
-    height: 350px;
-    max-width: 500px;
+    height: 300px; /* Reduced for mobile */
+    max-width: 100%;
   }
 
   .content-section {
-    padding: 3rem 0;
+    padding: 3.3rem 0; /* Increased by 10% from 3rem */
   }
 }
 
 @media (max-width: 480px) {
   .section-title {
-    font-size: 1.75rem;
+    font-size: 2rem; /* Increased from 1.75rem */
+    min-height: 35px; /* Much reduced for small mobile */
   }
-
+  
   .section-photo {
-    height: 300px;
-    max-width: 400px;
-  }
-
-  .content-section {
-    padding: 2rem 0;
+    height: 380px; /* Increased from 300px */
   }
 }

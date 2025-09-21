@@ -278,43 +278,26 @@ const Home = () => {
               style={{ 
                 opacity: animatedSections.has(index) ? 1 : 0,
                 transform: animatedSections.has(index) ? 'translateY(0)' : 'translateY(100px)',
-                transition: 'all 0.8s ease',
-                backgroundImage: `url(${section.backgroundImage.startsWith('http') ? section.backgroundImage : `http://localhost:5001${section.backgroundImage}`})`
+                transition: 'all 0.8s ease'
               }}
             >
               <div className="section-content">
-                {/* Alternate text and image positions */}
-                {index % 2 === 0 ? (
-                  // Even sections: Text Left, Image Right
-                  <>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
+                {/* Title spans across both image and description */}
+                <h2 className="section-title">{section.title}</h2>
+                
+                {/* Body with 3/4 description and 1/4 image */}
+                <div className="section-body">
+                  <p className="section-description">{section.description}</p>
+                  {section.tileImage && (
                     <div className="section-image">
                       <img 
-                        src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                         alt={section.title}
                         className="section-photo"
                       />
                     </div>
-                  </>
-                ) : (
-                  // Odd sections: Image Left, Text Right
-                  <>
-                    <div className="section-image">
-                      <img 
-                        src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                        alt={section.title}
-                        className="section-photo"
-                      />
-                    </div>
-                    <div className="section-text">
-                      <h2 className="section-title">{section.title}</h2>
-                      <p className="section-description">{section.description}</p>
-                    </div>
-                  </>
-                )}
+                  )}
+                </div>
               </div>
             </div>
           ))

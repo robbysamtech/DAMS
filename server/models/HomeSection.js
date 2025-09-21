@@ -18,17 +18,9 @@ const homeSectionSchema = new mongoose.Schema({
     required: true,
     maxlength: 500
   },
-  backgroundImage: {
-    type: String,
-    required: false
-  },
   tileImage: {
     type: String,
     required: false
-  },
-  backgroundImageFile: {
-    type: String,
-    default: null
   },
   tileImageFile: {
     type: String,

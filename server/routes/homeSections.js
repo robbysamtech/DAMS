@@ -44,10 +44,10 @@ router.post('/', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    const { order, title, description, backgroundImage, tileImage, isActive } = req.body;
+    const { order, title, description, tileImage, isActive } = req.body;
 
     // Validate required fields
-    if (!order || !title || !description || !backgroundImage || !tileImage) {
+    if (!order || !title || !description || !tileImage) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
@@ -61,7 +61,6 @@ router.post('/', auth, async (req, res) => {
       order,
       title,
       description,
-      backgroundImage,
       tileImage,
       isActive: isActive !== undefined ? isActive : true
     });
@@ -80,7 +79,7 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    const { order, title, description, backgroundImage, tileImage, isActive } = req.body;
+    const { order, title, description, tileImage, isActive } = req.body;
     const sectionId = req.params.id;
 
     // Check if section exists
@@ -103,7 +102,6 @@ router.put('/:id', auth, async (req, res) => {
         order,
         title,
         description,
-        backgroundImage,
         tileImage,
         isActive
       },
@@ -133,64 +131,6 @@ router.delete('/:id', auth, async (req, res) => {
     res.json({ message: 'Home section deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Failed to delete home section' });
-  }
-});
-
-// PATCH upload background image (admin/editor only)
-router.patch('/:id/background-image', auth, upload.single('backgroundImage'), async (req, res) => {
-  try {
-    if (!req.user.isAdmin && !req.user.isEditor) {
-      return res.status(403).json({ message: 'Access denied' });
-    }
-
-    if (!req.file) {
-      return res.status(400).json({ message: 'No image file provided' });
-    }
-
-    const sectionId = req.params.id;
-    const section = await HomeSection.findById(sectionId);
-    
-    if (!section) {
-      return res.status(404).json({ message: 'Home section not found' });
-    }
-
-    // Delete old image if it exists
-    if (section.backgroundImageFile && fs.existsSync(section.backgroundImageFile)) {
-      fs.unlinkSync(section.backgroundImageFile);
-    }
-
-    // Process the uploaded image
-    const processedImagePath = await processImage(req.file.path, {
-      width: 1920,
-      height: 1080,
-      quality: 80,
-      format: 'jpeg'
-    });
-
-    // Generate thumbnail
-    const thumbnailPath = await generateThumbnail(processedImagePath, {
-      width: 400,
-      height: 300,
-      quality: 80,
-      format: 'jpeg'
-    });
-
-    // Convert paths to URLs
-    const baseUrl = `${req.protocol}://${req.get('host')}`;
-    const imageUrl = `${baseUrl}/uploads/${path.basename(processedImagePath)}`;
-    const thumbnailUrl = `${baseUrl}/uploads/${path.basename(thumbnailPath)}`;
-
-    // Update section with new image paths
-    section.backgroundImage = imageUrl;
-    section.backgroundImageFile = processedImagePath;
-    const updatedSection = await section.save();
-
-    res.json({
-      ...updatedSection.toObject(),
-      thumbnailUrl
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Failed to upload background image' });
   }
 });
 
