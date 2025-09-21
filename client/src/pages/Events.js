@@ -58,7 +58,7 @@ const Events = () => {
     }, 10000); // 10 second timeout
     
     try {
-      const response = await fetch('http://localhost:5001/api/events', {
+      const response = await fetch('http://localhost:5001/api/events?status=published', {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -86,6 +86,43 @@ const Events = () => {
     fetchEvents();
   }, [fetchEvents]);
 
+  // Helper function to check if event matches date search
+  const matchesDateSearch = (event, query) => {
+    if (!event.date) return false;
+    
+    const eventDate = new Date(event.date);
+    const queryLower = query.toLowerCase();
+    
+    // Extract date components
+    const day = eventDate.getDate().toString();
+    const month = eventDate.getMonth() + 1; // 0-indexed
+    const monthName = eventDate.toLocaleString('default', { month: 'long' });
+    const monthShort = eventDate.toLocaleString('default', { month: 'short' });
+    const year = eventDate.getFullYear().toString();
+    const dayName = eventDate.toLocaleString('default', { weekday: 'long' });
+    const dayShort = eventDate.toLocaleString('default', { weekday: 'short' });
+    
+    // Format date strings for matching
+    const isoDate = eventDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const usDate = `${month.toString().padStart(2, '0')}/${day.padStart(2, '0')}/${year}`; // MM/DD/YYYY
+    const euDate = `${day.padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`; // DD/MM/YYYY
+    const readableDate = `${monthName} ${day}, ${year}`; // September 15, 2025
+    
+    return (
+      day.includes(query) ||
+      month.toString().includes(query) ||
+      monthName.toLowerCase().includes(queryLower) ||
+      monthShort.toLowerCase().includes(queryLower) ||
+      year.includes(query) ||
+      dayName.toLowerCase().includes(queryLower) ||
+      dayShort.toLowerCase().includes(queryLower) ||
+      isoDate.includes(query) ||
+      usDate.includes(query) ||
+      euDate.includes(query) ||
+      readableDate.toLowerCase().includes(queryLower)
+    );
+  };
+
   // Real-time search filtering for both upcoming and past events
   useEffect(() => {
     if (!searchQuery.trim()) {
@@ -102,7 +139,8 @@ const Events = () => {
           event.description?.toLowerCase().includes(query) ||
           getAddressDisplay(event).toLowerCase().includes(query) ||
           event.category?.toLowerCase().includes(query) ||
-          event.tags?.some(tag => tag.toLowerCase().includes(query))
+          event.tags?.some(tag => tag.toLowerCase().includes(query)) ||
+          matchesDateSearch(event, searchQuery)
         );
       });
     };
@@ -434,7 +472,7 @@ const Events = () => {
             <div className="search-input-container">
               <input
                 type="text"
-                placeholder="Search events by title, description, address, or tags..."
+                placeholder="Search events by title, description, address, tags, or date (day, month, year)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="search-input"
@@ -493,7 +531,7 @@ const Events = () => {
                   {event.eventImage && (
                     <div className="event-image">
                       <img 
-                        src={event.eventImage} 
+                        src={event.eventImage.startsWith('http') ? event.eventImage : `http://localhost:5001${event.eventImage}`} 
                         alt={event.title}
                         className="event-image-preview"
                       />
@@ -579,7 +617,7 @@ const Events = () => {
                   {event.eventImage && (
                     <div className="event-image">
                       <img 
-                        src={event.eventImage} 
+                        src={event.eventImage.startsWith('http') ? event.eventImage : `http://localhost:5001${event.eventImage}`} 
                         alt={event.title}
                         className="event-image-preview"
                       />
@@ -665,7 +703,7 @@ const Events = () => {
                   {selectedEvent.eventImage ? (
                     <div className="hero-image-wrapper">
                       <img 
-                        src={selectedEvent.eventImage} 
+                        src={selectedEvent.eventImage.startsWith('http') ? selectedEvent.eventImage : `http://localhost:5001${selectedEvent.eventImage}`} 
                         alt={selectedEvent.title}
                         className="hero-image"
                       />
@@ -901,7 +939,7 @@ const Events = () => {
                   <div className="current-image">
                     <p>Current image:</p>
                     <img 
-                      src={editingEvent.eventImage} 
+                      src={editingEvent.eventImage.startsWith('http') ? editingEvent.eventImage : `http://localhost:5001${editingEvent.eventImage}`} 
                       alt="Current event" 
                       className="current-image-preview"
                     />
