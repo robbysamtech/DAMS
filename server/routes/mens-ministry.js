@@ -29,8 +29,12 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/admin', auth, adminAuth, async (req, res) => {
-  try {
+router.get('/admin', auth, async (req, res) => {
+    try {
+      // Check if user has admin privileges
+      if (!req.user.canCreateContent()) {
+        return res.status(403).json({ error: 'You do not have permission to view admin data.' });
+      }
     const sections = await MensMinistrySection.findAllSections();
     res.json(sections);
   } catch (err) {
@@ -90,8 +94,12 @@ router.put('/:id', auth, adminAuth, upload.fields([{ name: 'backgroundImage', ma
   }
 });
 
-router.delete('/:id', auth, adminAuth, async (req, res) => {
-  try {
+router.delete('/:id', auth, async (req, res) => {
+    try {
+      // Check if user can manage this section (editor/admin/superadmin can manage sections)
+      if (!req.user.canCreateContent()) {
+        return res.status(403).json({ error: 'You do not have permission to manage this section.' });
+      }
     const section = await MensMinistrySection.findById(req.params.id);
     if (!section) return res.status(404).json({ msg: 'MensMinistry section not found' });
 

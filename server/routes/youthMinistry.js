@@ -41,8 +41,12 @@ router.get('/', async (req, res) => {
 // @route   GET /api/youth-ministry/admin
 // @desc    Get all Youth Ministry sections (for admin)
 // @access  Private (Admin/Editor)
-router.get('/admin', auth, adminAuth, async (req, res) => {
-  try {
+router.get('/admin', auth, async (req, res) => {
+    try {
+      // Check if user has admin privileges
+      if (!req.user.canCreateContent()) {
+        return res.status(403).json({ error: 'You do not have permission to view admin data.' });
+      }
     const sections = await YouthMinistrySection.findAllSections();
     res.json(sections);
   } catch (err) {
@@ -127,8 +131,12 @@ router.put('/:id', auth, adminAuth, upload.fields([{ name: 'backgroundImage', ma
 // @route   DELETE /api/youth-ministry/:id
 // @desc    Delete a Youth Ministry section
 // @access  Private (Admin/Editor)
-router.delete('/:id', auth, adminAuth, async (req, res) => {
-  try {
+router.delete('/:id', auth, async (req, res) => {
+    try {
+      // Check if user can manage this section (editor/admin/superadmin can manage sections)
+      if (!req.user.canCreateContent()) {
+        return res.status(403).json({ error: 'You do not have permission to manage this section.' });
+      }
     const section = await YouthMinistrySection.findById(req.params.id);
 
     if (!section) {
