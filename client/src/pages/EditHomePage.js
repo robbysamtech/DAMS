@@ -139,28 +139,6 @@ const EditHomePage = () => {
       const section = homeSections[sectionIndex];
       
       
-      // Upload background image if a new one was selected
-      if (section?.tempBackgroundFile) {
-        const formData = new FormData();
-        formData.append('backgroundImage', section.tempBackgroundFile);
-        
-        const backgroundResponse = await fetch(`http://localhost:5001/api/home-sections/${sectionId}/background-image`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: formData
-        });
-        
-        if (backgroundResponse.ok) {
-          const backgroundResult = await backgroundResponse.json();
-          sectionData.backgroundImage = backgroundResult.backgroundImage;
-        } else {
-          const errorText = await backgroundResponse.text();
-          showAlert('Failed to upload background image', 'error');
-          return;
-        }
-      }
       
       // Upload tile image if a new one was selected
       if (section?.tempTileFile) {
@@ -208,9 +186,7 @@ const EditHomePage = () => {
         // Clear temporary files and previews
         const updatedSections = [...homeSections];
         if (updatedSections[sectionIndex]) {
-          updatedSections[sectionIndex].tempBackgroundFile = null;
           updatedSections[sectionIndex].tempTileFile = null;
-          updatedSections[sectionIndex].backgroundImagePreview = null;
           updatedSections[sectionIndex].tileImagePreview = null;
           setHomeSections(updatedSections);
         }
@@ -432,17 +408,7 @@ const EditHomePage = () => {
     }
   };
 
-  const handleBackgroundImageUpload = async (sectionIndex, file) => {
-    if (!file) return;
-    
-    // Store the file temporarily for later upload
-    const updatedSections = [...homeSections];
-    updatedSections[sectionIndex].tempBackgroundFile = file;
-    updatedSections[sectionIndex].backgroundImagePreview = URL.createObjectURL(file);
-    setHomeSections(updatedSections);
-    
-    showAlert('Background image selected! Click "Update Section" to upload and save.', 'info');
-  };
+  
 
   const handleTileImageUpload = async (sectionIndex, file) => {
     if (!file) return;
@@ -735,9 +701,9 @@ const EditHomePage = () => {
                     >
                       Update Section
                     </button>
-                    {(section.tempBackgroundFile || section.tempTileFile) && (
+                    {section.tempTileFile && (
                       <small className="upload-note">
-                        📁 Files selected - will be uploaded when you click Update Section
+                        📁 Tile file selected - will be uploaded when you click Update Section
                       </small>
                     )}
                   </div>
@@ -745,28 +711,7 @@ const EditHomePage = () => {
 
                 {/* Right Section - Image Uploads */}
                 <div className="section-right">
-                  <div className="form-group">
-                    <label>Background Image:</label>
-                    <div className="image-upload-section">
-                      {(section.backgroundImagePreview || section.backgroundImage) && (
-                        <div className="image-preview">
-                          <img 
-                            src={section.backgroundImagePreview || section.backgroundImage} 
-                            alt="Background Preview" 
-                          />
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleBackgroundImageUpload(index, e.target.files[0])}
-                        id={`background-upload-${index}`}
-                      />
-                      <label htmlFor={`background-upload-${index}`} className="upload-button">
-                        {section.tempBackgroundFile ? 'Background Selected ✓' : (section.backgroundImage ? 'Change Background' : 'Upload Background')}
-                      </label>
-                    </div>
-                  </div>
+                  
 
                   <div className="form-group">
                     <label>Tile Image:</label>

@@ -67,7 +67,7 @@ const EditChildrenMinistry = () => {
       formData.append('order', updatedData.order);
       formData.append('title', updatedData.title);
       formData.append('description', updatedData.description);
-      formData.append('isActive', updatedData.isActive);
+      formData.append('isActive', 'true');
 
       // Add images if they exist
       if (updatedData.tileImage && updatedData.tileImage instanceof File) {
@@ -266,7 +266,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
     order: section.order,
     title: section.title,
     description: section.description,
-    isActive: section.isActive,
+    isActive: true,
     tileImage: null
   });
 
@@ -276,7 +276,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
       order: section.order,
       title: section.title,
       description: section.description,
-      isActive: section.isActive,
+      isActive: true,
       tileImage: null
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -287,7 +287,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
     const { name, value, type, checked, files } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : (type === 'file' ? files[0] : value)
+      [name]: type === 'file' ? files[0] : value
     }));
   };
 
@@ -301,7 +301,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
           order: result.order,
           title: result.title,
           description: result.description,
-          isActive: result.isActive,
+          isActive: true,
           tileImage: null
         });
       }
@@ -318,7 +318,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
       order: section.order,
       title: section.title,
       description: section.description,
-      isActive: section.isActive,
+      isActive: true,
       tileImage: null
     });
     setIsEditing(false);
@@ -337,7 +337,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
           ) : (
             <>
               <button key="edit" onClick={() => setIsEditing(true)} className="btn-edit">Edit</button>
-              <button key="delete" onClick={() => onDelete(section._id)} className="btn-delete">Delete</button>
+              
             </>
           )}
         </div>
@@ -395,24 +395,14 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
             )}
           </div>
           
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                name="isActive"
-                checked={formData.isActive}
-                onChange={handleInputChange}
-              />
-              Active
-            </label>
-          </div>
+          
         </div>
       ) : (
         <div className="section-preview">
           <p><strong>Order:</strong> {section.order}</p>
           <p><strong>Title:</strong> {section.title}</p>
           <p><strong>Description:</strong> {section.description}</p>
-          <p><strong>Active:</strong> {section.isActive ? 'Yes' : 'No'}</p>
+          
           {section.tileImage && (
             <div className="preview-image">
               <p><strong>Tile Image:</strong></p>
