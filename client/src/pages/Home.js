@@ -293,7 +293,7 @@ const Home = () => {
                     </div>
                     <div className="section-image">
                       <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                        src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                         alt={section.title}
                         className="section-photo"
                       />
@@ -304,7 +304,7 @@ const Home = () => {
                   <>
                     <div className="section-image">
                       <img 
-                        src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                        src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                         alt={section.title}
                         className="section-photo"
                       />

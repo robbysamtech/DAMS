@@ -6,14 +6,14 @@ import './EditYouthMinistry.css';
 const EditYouthMinistry = () => {
   const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
-  const [youthMinistrySections, setEasterSections] = useState([]);
+  const [youthMinistrySections, setYouthMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', type: 'success' });
 
   // Fetch existing Youth Ministry sections
   useEffect(() => {
-    const fetchEasterSections = async () => {
+    const fetchYouthMinistrySections = async () => {
       try {
         setLoading(true);
         
@@ -28,7 +28,13 @@ const EditYouthMinistry = () => {
           throw new Error(`Failed to fetch Youth Ministry sections: ${response.status} ${errorText}`);
         }
         const data = await response.json();
-        setEasterSections(data);
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setYouthMinistrySections(data);
+        } else {
+          console.error('Expected array but got:', typeof data, data);
+          setYouthMinistrySections([]);
+        }
         setError(null);
       } catch (err) {
         setError(`Failed to load Youth Ministry content: ${err.message}`);
@@ -38,7 +44,7 @@ const EditYouthMinistry = () => {
     };
 
     if (token) {
-      fetchEasterSections();
+      fetchYouthMinistrySections();
     }
   }, [token, user, isEditor, isAdmin]);
 
@@ -79,15 +85,15 @@ const EditYouthMinistry = () => {
       }
 
       const result = await response.json();
-      setEasterSections(prev => 
+      setYouthMinistrySections(prev => 
         prev.map(section => 
-          section._id === sectionId ? result.section : section
+          section._id === sectionId ? result : section
         )
       );
       showAlert('Section updated successfully!');
       
       // Return the updated section so the SectionEditor can update its form data
-      return result.section;
+      return result;
     } catch (err) {
       showAlert(`Error updating section: ${err.message}`, 'error');
       return null;
@@ -112,7 +118,7 @@ const EditYouthMinistry = () => {
         throw new Error('Failed to delete section');
       }
 
-      setEasterSections(prev => prev.filter(section => section._id !== sectionId));
+      setYouthMinistrySections(prev => prev.filter(section => section._id !== sectionId));
       showAlert('Section deleted successfully!');
     } catch (err) {
       showAlert(`Error deleting section: ${err.message}`, 'error');
@@ -143,7 +149,7 @@ const EditYouthMinistry = () => {
       }
 
       const newSection = await response.json();
-      setEasterSections(prev => [...prev, newSection]);
+      setYouthMinistrySections(prev => [...prev, newSection]);
       showAlert('New section created successfully!');
     } catch (err) {
       showAlert(`Error creating section: ${err.message}`, 'error');
@@ -225,8 +231,9 @@ const EditYouthMinistry = () => {
 
       {/* Sections List */}
       <div className="sections-container">
-        {youthMinistrySections.length > 0 ? (
+        {youthMinistrySections && Array.isArray(youthMinistrySections) && youthMinistrySections.length > 0 ? (
           youthMinistrySections
+            .filter(section => section && section._id) // Filter out undefined/null sections
             .sort((a, b) => a.order - b.order)
             .map((section, index) => (
               <SectionEditor
@@ -378,7 +385,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
               <div className="current-image">
                 <p>Image preview:</p>
                 <img 
-                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
+                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
                   alt="Tile preview"
                   style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                 />
@@ -408,7 +415,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
             <div className="preview-image">
               <p><strong>Tile Image:</strong></p>
               <img 
-                src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                 alt="Tile preview"
                 style={{ width: '150px', height: '150px', objectFit: 'cover' }}
               />

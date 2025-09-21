@@ -6,14 +6,14 @@ import './EditBibleStudy.css';
 const EditBibleStudy = () => {
   const { user, isEditor, isAdmin, loading: authLoading, token } = useAuth();
   const navigate = useNavigate();
-  const [bibleStudySections, setEasterSections] = useState([]);
+  const [bibleStudySections, setBibleStudySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState({ show: false, message: '', type: 'success' });
 
   // Fetch existing Bible Study sections
   useEffect(() => {
-    const fetchEasterSections = async () => {
+    const fetchBibleStudySections = async () => {
       try {
         setLoading(true);
         
@@ -28,7 +28,14 @@ const EditBibleStudy = () => {
           throw new Error(`Failed to fetch Bible Study sections: ${response.status} ${errorText}`);
         }
         const data = await response.json();
-        setEasterSections(data);
+        
+        // Ensure data is an array
+        if (Array.isArray(data)) {
+          setBibleStudySections(data);
+        } else {
+          console.error('Expected array but got:', typeof data, data);
+          setBibleStudySections([]);
+        }
         setError(null);
       } catch (err) {
         setError(`Failed to load Bible Study content: ${err.message}`);
@@ -38,7 +45,7 @@ const EditBibleStudy = () => {
     };
 
     if (token) {
-      fetchEasterSections();
+      fetchBibleStudySections();
     }
   }, [token, isEditor, isAdmin]);
 
@@ -79,7 +86,7 @@ const EditBibleStudy = () => {
       }
 
       const result = await response.json();
-      setEasterSections(prev => 
+      setBibleStudySections(prev => 
         prev.map(section => 
           section._id === sectionId ? result.section : section
         )
@@ -112,7 +119,7 @@ const EditBibleStudy = () => {
         throw new Error('Failed to delete section');
       }
 
-      setEasterSections(prev => prev.filter(section => section._id !== sectionId));
+      setBibleStudySections(prev => prev.filter(section => section._id !== sectionId));
       showAlert('Section deleted successfully!');
     } catch (err) {
       showAlert(`Error deleting section: ${err.message}`, 'error');
@@ -143,7 +150,7 @@ const EditBibleStudy = () => {
       }
 
       const newSection = await response.json();
-      setEasterSections(prev => [...prev, newSection]);
+      setBibleStudySections(prev => [...prev, newSection]);
       showAlert('New section created successfully!');
     } catch (err) {
       showAlert(`Error creating section: ${err.message}`, 'error');
@@ -225,8 +232,9 @@ const EditBibleStudy = () => {
 
       {/* Sections List */}
       <div className="sections-container">
-        {bibleStudySections.length > 0 ? (
+        {bibleStudySections && bibleStudySections.length > 0 ? (
           bibleStudySections
+            .filter(section => section && section._id) // Filter out undefined/null sections
             .sort((a, b) => a.order - b.order)
             .map((section, index) => (
               <SectionEditor
@@ -378,7 +386,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
               <div className="current-image">
                 <p>Image preview:</p>
                 <img 
-                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
+                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
                   alt="Tile preview"
                   style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                 />
@@ -408,7 +416,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
             <div className="preview-image">
               <p><strong>Tile Image:</strong></p>
               <img 
-                src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                 alt="Tile preview"
                 style={{ width: '150px', height: '150px', objectFit: 'cover' }}
               />

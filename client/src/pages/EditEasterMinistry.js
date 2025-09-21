@@ -378,7 +378,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
               <div className="current-image">
                 <p>Image preview:</p>
                 <img 
-                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
+                  src={formData.tileImage ? URL.createObjectURL(formData.tileImage) : (section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`)}
                   alt="Tile preview"
                   style={{ width: '100px', height: '100px', objectFit: 'cover' }}
                 />
@@ -408,7 +408,7 @@ const SectionEditor = ({ section, index, onUpdate, onDelete }) => {
             <div className="preview-image">
               <p><strong>Tile Image:</strong></p>
               <img 
-                src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+                src={section.tileImage && section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                 alt="Tile preview"
                 style={{ width: '150px', height: '150px', objectFit: 'cover' }}
               />

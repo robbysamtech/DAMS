@@ -153,13 +153,15 @@ const ChoirMinistry = () => {
                        {/* Body with 3/4 description and 1/4 image */}
                        <div className="section-body">
                          <p className="section-description">{section.description}</p>
-                         <div className="section-image">
-                           <img 
-                             src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
-                             alt={section.title}
-                             className="section-photo"
-                           />
-                         </div>
+                         {section.tileImage && (
+        <div className="section-image">
+          <img 
+            src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
+            alt={section.title}
+            className="section-photo"
+          />
+        </div>
+      )}
                        </div>
                      </div>
             </div>
