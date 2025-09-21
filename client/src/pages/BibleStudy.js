@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './BibleStudy.css';
 
 const BibleStudy = () => {
+  const { isEditor, isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [biblestudySections, setBibleStudySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +71,19 @@ const BibleStudy = () => {
 
   if (loading) {
     return (
-      <div className="biblestudy-page">
+      <div className="bible-study-page">
+                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+            {!authLoading && (isEditor || isAdmin) && (
+              <button 
+                className="bible-study-edit-btn" 
+                onClick={() => {
+                  navigate('/edit-bible-study');
+                }}
+                title="Edit Bible Study"
+              >
+                Edit
+              </button>
+            )}
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Bible Study...</p>

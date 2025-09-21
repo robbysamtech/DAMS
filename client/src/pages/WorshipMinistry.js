@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './WorshipMinistry.css';
 
 const WorshipMinistry = () => {
+  const { isEditor, isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [worshipministrySections, setWorshipMinistrySections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +71,19 @@ const WorshipMinistry = () => {
 
   if (loading) {
     return (
-      <div className="worshipministry-page">
+      <div className="worship-ministry-page">
+                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+            {!authLoading && (isEditor || isAdmin) && (
+              <button 
+                className="worship-ministry-edit-btn" 
+                onClick={() => {
+                  navigate('/edit-worship-ministry');
+                }}
+                title="Edit Worship Ministry"
+              >
+                Edit
+              </button>
+            )}
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Worship Ministry...</p>

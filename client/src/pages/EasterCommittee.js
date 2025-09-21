@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './EasterCommittee.css';
 
 const EasterCommittee = () => {
+  const { isEditor, isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [eastercommitteeSections, setEasterCommitteeSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,7 +71,19 @@ const EasterCommittee = () => {
 
   if (loading) {
     return (
-      <div className="eastercommittee-page">
+      <div className="easter-committee-page">
+                        {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+            {!authLoading && (isEditor || isAdmin) && (
+              <button 
+                className="easter-committee-edit-btn" 
+                onClick={() => {
+                  navigate('/edit-easter-committee');
+                }}
+                title="Edit Easter Committee"
+              >
+                Edit
+              </button>
+            )}
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Loading Easter Committee...</p>
