@@ -26,9 +26,25 @@ const MinistrySectionDisplay = ({
         
         {/* Body with 3/4 description and 1/4 image */}
         <div className="section-body">
-          <p className="section-description">{section.description}</p>
+          <p 
+            className="section-description"
+            style={{
+              opacity: isAnimated ? 1 : 0,
+              transform: isAnimated ? 'translateX(0)' : 'translateX(-100px)',
+              transition: 'all 0.8s ease 0.2s' // 0.2s delay for staggered effect
+            }}
+          >
+            {section.description}
+          </p>
           {section.tileImage && (
-            <div className="section-image">
+            <div 
+              className="section-image"
+              style={{
+                opacity: isAnimated ? 1 : 0,
+                transform: isAnimated ? 'translateX(0)' : 'translateX(100px)',
+                transition: 'all 0.8s ease 0.4s' // 0.4s delay for staggered effect
+              }}
+            >
               <img 
                 src={section.tileImage.startsWith('http') ? section.tileImage : `http://localhost:5001${section.tileImage}`}
                 alt={section.title}
