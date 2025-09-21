@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import './EasterMinistry.css';
 
 const EasterMinistry = () => {
+  const { isEditor, isAdmin, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const [easterSections, setEasterSections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,26 +20,38 @@ const EasterMinistry = () => {
   }, []);
 
   // Fetch Easter Ministry sections from MongoDB
+  const fetchEasterSections = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('http://localhost:5001/api/easter-ministry');
+      if (!response.ok) {
+        throw new Error('Failed to fetch Easter Ministry sections');
+      }
+      const data = await response.json();
+      setEasterSections(data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to load Easter Ministry content');
+      console.error('Error fetching Easter Ministry sections:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchEasterSections = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch('http://localhost:5001/api/easter-ministry');
-        if (!response.ok) {
-          throw new Error('Failed to fetch Easter Ministry sections');
-        }
-        const data = await response.json();
-        setEasterSections(data);
-        setError(null);
-      } catch (err) {
-        setError('Failed to load Easter Ministry content');
-        console.error('Error fetching Easter Ministry sections:', err);
-      } finally {
-        setLoading(false);
+    fetchEasterSections();
+  }, []);
+
+  // Refresh data when page becomes visible (returning from edit page)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        fetchEasterSections();
       }
     };
 
-    fetchEasterSections();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   // Simple scroll-based animation (same as Home page)
@@ -92,6 +108,19 @@ const EasterMinistry = () => {
 
   return (
     <div className="easter-ministry-page">
+      {/* Edit Button - Top Right Corner (Editors Only) - Always Visible */}
+      {!authLoading && (isEditor || isAdmin) && (
+        <button 
+          className="easter-ministry-edit-btn" 
+          onClick={() => {
+            navigate('/edit-easter-ministry');
+          }}
+          title="Edit Easter Ministry"
+        >
+          Edit
+        </button>
+      )}
+
       {/* Content Sections (same structure as Home page) */}
       <section className="content-sections">
         {easterSections.length > 0 ? (

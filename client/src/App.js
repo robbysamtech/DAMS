@@ -20,6 +20,7 @@ import Register from './pages/Register';
 import Events from './pages/Events';
 import People from './pages/People';
 import EasterMinistry from './pages/EasterMinistry';
+import EditEasterMinistry from './pages/EditEasterMinistry';
 import YouthMinistry from './pages/YouthMinistry';
 import WorshipMinistry from './pages/WorshipMinistry';
 import ChildrenMinistry from './pages/ChildrenMinistry';
@@ -74,6 +75,7 @@ const AppContent = () => {
             <Route path="/events" element={<Events />} />
             <Route path="/people" element={<People />} />
             <Route path="/easter-ministry" element={<EasterMinistry />} />
+            <Route path="/edit-easter-ministry" element={<EditEasterMinistry />} />
             <Route path="/youth-ministry" element={<YouthMinistry />} />
             <Route path="/worship-ministry" element={<WorshipMinistry />} />
             <Route path="/children-ministry" element={<ChildrenMinistry />} />

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const EasterMinistrySection = require('../models/EasterMinistrySection');
 const auth = require('../middleware/auth');
+const adminAuth = require('../middleware/adminAuth');
 const multer = require('multer');
 const path = require('path');
 
@@ -142,8 +143,11 @@ router.put('/:id', auth, upload.fields([
       return res.status(404).json({ error: 'Easter Ministry section not found.' });
     }
 
-    // Check if user can manage this section
-    if (!(await section.canManage(req.user._id)) && !req.user.isAdmin()) {
+    // Check if user can manage this section (editor/admin/superadmin can manage sections)
+    const canManage = await section.canManage(req.user._id);
+    const isEditorOrAdmin = req.user.role === 'editor' || req.user.role === 'admin' || req.user.role === 'superadmin';
+    
+    if (!canManage && !isEditorOrAdmin) {
       return res.status(403).json({ error: 'You do not have permission to edit this Easter Ministry section.' });
     }
 
@@ -170,11 +174,11 @@ router.put('/:id', auth, upload.fields([
     if (req.files) {
       if (req.files.backgroundImage && req.files.backgroundImage[0]) {
         const relativePath = path.relative(path.join(__dirname, '..'), req.files.backgroundImage[0].path);
-        updates.backgroundImage = relativePath;
+        updates.backgroundImage = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
       }
       if (req.files.tileImage && req.files.tileImage[0]) {
         const relativePath = path.relative(path.join(__dirname, '..'), req.files.tileImage[0].path);
-        updates.tileImage = relativePath;
+        updates.tileImage = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
       }
     }
 
@@ -204,8 +208,11 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ error: 'Easter Ministry section not found.' });
     }
 
-    // Check if user can manage this section
-    if (!(await section.canManage(req.user._id)) && !req.user.isAdmin()) {
+    // Check if user can manage this section (editor/admin/superadmin can manage sections)
+    const canManage = await section.canManage(req.user._id);
+    const isEditorOrAdmin = req.user.role === 'editor' || req.user.role === 'admin' || req.user.role === 'superadmin';
+    
+    if (!canManage && !isEditorOrAdmin) {
       return res.status(403).json({ error: 'You do not have permission to delete this Easter Ministry section.' });
     }
 

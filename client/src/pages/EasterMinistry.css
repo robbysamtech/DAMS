@@ -1,3 +1,36 @@
+/* Easter Ministry Edit Button - Top Right Corner */
+.easter-ministry-edit-btn {
+  position: fixed;
+  top: 170px; /* Positioned well below the header with comfortable spacing */
+  right: 20px;
+  z-index: 999; /* Lower than header (1000) so it stays under the header */
+  background: #1e40af; /* Blue color matching home page */
+  border: 2px solid #ffffff; /* White border for visibility */
+  border-radius: 6px;
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: white;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  pointer-events: auto; /* Ensure button is clickable */
+}
+
+.easter-ministry-edit-btn:hover {
+  background: #1d4ed8;
+  transform: scale(1.1);
+}
+
+.easter-ministry-edit-btn:active {
+  transform: scale(1.05);
+}
+
 /* Easter Ministry Page Styles */
 .easter-ministry-page {
   min-height: 100vh;
