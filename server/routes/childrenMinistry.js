@@ -69,10 +69,14 @@ router.post('/', auth, adminAuth, upload.fields([{ name: 'backgroundImage', maxC
   }
 });
 
-router.put('/:id', auth, adminAuth, upload.fields([{ name: 'backgroundImage', maxCount: 1 }, { name: 'tileImage', maxCount: 1 }]), async (req, res) => {
+router.put('/:id', auth, upload.fields([{ name: 'backgroundImage', maxCount: 1 }, { name: 'tileImage', maxCount: 1 }]), async (req, res) => {
   const { order, title, description, isActive } = req.body;
 
   try {
+    // Check if user can manage this section (editor/admin/superadmin can manage sections)
+    if (!req.user.canCreateContent()) {
+      return res.status(403).json({ error: 'You do not have permission to manage this section.' });
+    }
     let section = await ChildrenMinistrySection.findById(req.params.id);
 
     if (!section) {

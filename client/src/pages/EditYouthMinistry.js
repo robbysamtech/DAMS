@@ -17,11 +17,6 @@ const EditYouthMinistry = () => {
       try {
         setLoading(true);
         
-        console.log('Token:', token);
-        console.log('User:', user);
-        console.log('isEditor:', isEditor);
-        console.log('isAdmin:', isAdmin);
-        
         const response = await fetch('http://localhost:5001/api/youth-ministry/admin', {
           headers: {
             'Authorization': `Bearer ${token}`
