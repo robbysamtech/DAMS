@@ -1,0 +1,98 @@
+/* Admin Section Component */
+.admin-section {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid;
+  border-radius: 4px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  position: relative;
+  overflow: hidden;
+  min-height: auto;
+}
+
+.admin-section h2 {
+  color: #1e293b;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  padding-bottom: 0;
+  position: relative;
+}
+
+.section-description {
+  color: #64748b;
+  font-size: 0.6rem;
+  line-height: 1;
+  margin-bottom: 0;
+  padding: 0;
+  background: rgba(59, 130, 246, 0.02);
+  border-radius: 1px;
+  border-left: 1px solid #3b82f6;
+}
+
+/* Pending Users Section */
+.pending-users-section {
+  border-color: #f59e0b !important;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+}
+
+/* Approved Users Section */
+.approved-users-section {
+  border-color: #3b82f6 !important;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
+}
+
+/* Empty state - make it slightly bigger */
+.admin-section.empty-state {
+  padding: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+  min-height: 160px !important;
+  height: 160px !important;
+}
+
+.admin-section.empty-state h2 {
+  font-size: 1.2rem !important;
+  margin-bottom: 0 !important;
+  line-height: 1.2 !important;
+}
+
+.admin-section.empty-state .section-description {
+  display: none;
+}
+
+.admin-section.empty-state .no-items {
+  display: none;
+}
+
+/* Populated state - normal size */
+.admin-section.populated-state {
+  padding: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.admin-section.populated-state h2 {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.admin-section.populated-state .section-description {
+  display: block !important;
+  font-size: 0.6rem !important;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+/* Items container */
+.items-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* No items message */
+.no-items {
+  text-align: center;
+  padding: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import AdminSection from '../components/admin/AdminSection';
 import './AdminDashboard.css';
 
 // Approved Users List Component
-const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
+const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage, sortConfig, onSort }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -89,6 +90,31 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
     fetchActiveUsers();
   }, [fetchActiveUsers]);
 
+  // Sort users based on sortConfig
+  const sortedUsers = [...activeUsers].sort((a, b) => {
+    if (!sortConfig.key) return 0;
+    
+    let aValue, bValue;
+    
+    if (sortConfig.key === 'firstName') {
+      // For name sorting, combine firstName and lastName, case-insensitive
+      aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
+      bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+    } else {
+      // For other fields, use the original value
+      aValue = a[sortConfig.key];
+      bValue = b[sortConfig.key];
+    }
+    
+    if (aValue < bValue) {
+      return sortConfig.direction === 'asc' ? -1 : 1;
+    }
+    if (aValue > bValue) {
+      return sortConfig.direction === 'asc' ? 1 : -1;
+    }
+    return 0;
+  });
+
   if (loading) {
     return <div className="loading">Loading approved users...</div>;
   }
@@ -102,45 +128,66 @@ const ApprovedUsersList = ({ token, onUserUpdate, setSuccessMessage }) => {
   }
 
   return (
-    <div className="active-users">
-      {activeUsers.map(user => (
-        <div key={user._id} className="active-user-card">
-          <div className="user-info">
-            <div className="user-name-container">
-              <span className="user-name">{user.firstName} {user.lastName}</span>
-              <span className={`role-badge role-${user.role}`}>
-                {user.role === 'superadmin' ? 'Super Admin' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-              </span>
-            </div>
-            <p className="user-id">User ID: {user.userId}</p>
-          </div>
-          <div className="user-actions">
-            <div className="role-selection">
-              <label htmlFor={`active-role-${user._id}`}>Change Role:</label>
-              <select 
-                id={`active-role-${user._id}`} 
-                value={user.role}
-                onChange={(e) => updateUserRole(user._id, e.target.value)}
-                className="role-select"
-                disabled={user.role === 'superadmin'}
-              >
-                <option value="editor">Editor</option>
-                <option value="admin">Admin</option>
-                {user.role === 'superadmin' && <option value="superadmin">Super Admin</option>}
-              </select>
-            </div>
-            {user.role !== 'superadmin' && (
-              <button 
-                onClick={() => deleteUser(user._id)}
-                className="btn-delete"
-                title="Delete this user"
-              >
-                Delete
-              </button>
-            )}
-          </div>
-        </div>
-      ))}
+    <div className="users-table-container">
+      <table className="users-table">
+        <thead>
+          <tr>
+            <th className="serial-number-header">#</th>
+            <th onClick={() => onSort('firstName')}>
+              Name {sortConfig.key === 'firstName' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => onSort('userId')}>
+              User ID {sortConfig.key === 'userId' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
+            <th onClick={() => onSort('role')}>
+              Role {sortConfig.key === 'role' && (sortConfig.direction === 'asc' ? '↑' : '↓')}
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedUsers.map((user, index) => (
+            <tr key={user._id} className="user-row">
+              <td className="serial-number-cell">
+                <span className="serial-number">{index + 1}</span>
+              </td>
+              <td className="user-name-cell">
+                <span className="user-name">{user.firstName} {user.lastName}</span>
+              </td>
+              <td className="user-id-cell">
+                <span className="user-id">{user.userId}</span>
+              </td>
+              <td className="user-role-cell">
+                <span className={`role-badge role-${user.role}`}>
+                  {user.role === 'superadmin' ? 'Super Admin' : user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                </span>
+              </td>
+              <td className="user-actions-cell">
+                <div className="table-actions">
+                  <select 
+                    value={user.role}
+                    onChange={(e) => updateUserRole(user._id, e.target.value)}
+                    className="role-select"
+                    disabled={user.role === 'superadmin'}
+                  >
+                    <option value="editor">Editor</option>
+                    <option value="admin">Admin</option>
+                    {user.role === 'superadmin' && <option value="superadmin">Super Admin</option>}
+                  </select>
+                  <button 
+                    onClick={() => deleteUser(user._id)}
+                    className={`btn-delete ${user.role === 'superadmin' ? 'disabled' : ''}`}
+                    disabled={user.role === 'superadmin'}
+                    title={user.role === 'superadmin' ? 'Cannot delete super admin' : 'Delete this user'}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -161,6 +208,15 @@ const AdminDashboard = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
 
   const fetchPendingUsers = useCallback(async () => {
     try {
@@ -379,26 +435,37 @@ const AdminDashboard = () => {
         </div>
 
         {/* Pending Users */}
-        <div className="admin-section pending-users-section">
-          <h2>Pending Users ({pendingUsers.length})</h2>
-          <p className="section-description">
-            Review and approve new user registrations. Assign appropriate roles based on their intended use of the platform.
-          </p>
-          {pendingUsers.length === 0 ? (
-            <div className="no-pending">
-              <p>No users waiting for approval.</p>
-            </div>
-          ) : (
-            <div className="pending-users">
-              {pendingUsers.map(user => (
-                <div key={user._id} className="pending-user-card">
-                  <div className="user-info">
-                    <p className="user-name">{user.firstName} {user.lastName}</p>
-                    <p className="user-id">User ID: {user.userId}</p>
-                  </div>
-                  <div className="user-actions">
-                    <div className="role-selection">
-                      <label htmlFor={`role-${user._id}`}>Assign Role:</label>
+        <AdminSection
+          title="Pending Users"
+          count={pendingUsers.length}
+          description=""
+          isEmpty={pendingUsers.length === 0}
+          emptyMessage="No users waiting for approval."
+        >
+          <div className="users-table-container">
+            <table className="users-table pending-users-table">
+              <thead>
+                <tr>
+                  <th className="serial-number-header">#</th>
+                  <th>Name</th>
+                  <th>User ID</th>
+                  <th>Assign Role</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingUsers.map((user, index) => (
+                  <tr key={user._id} className="user-row pending-user-row">
+                    <td className="serial-number-cell">
+                      <span className="serial-number">{index + 1}</span>
+                    </td>
+                    <td className="user-name-cell">
+                      <span className="user-name">{user.firstName} {user.lastName}</span>
+                    </td>
+                    <td className="user-id-cell">
+                      <span className="user-id">{user.userId}</span>
+                    </td>
+                    <td className="user-role-cell">
                       <select 
                         id={`role-${user._id}`} 
                         defaultValue="editor"
@@ -407,43 +474,49 @@ const AdminDashboard = () => {
                         <option value="editor">Editor</option>
                         <option value="admin">Admin</option>
                       </select>
-                    </div>
-                    <div className="action-buttons">
-                      <button 
-                        onClick={() => approveUser(user._id, document.getElementById(`role-${user._id}`).value)}
-                        className="btn-edit"
-                        title="Approve this user with the selected role"
-                      >
-                        Approve
-                      </button>
-                      <button 
-                        onClick={() => rejectUser(user._id)}
-                        className="btn-delete"
-                        title="Reject this user registration"
-                      >
-                        Deny
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+                    </td>
+                    <td className="user-actions-cell">
+                      <div className="table-actions">
+                        <button 
+                          onClick={() => approveUser(user._id, document.getElementById(`role-${user._id}`).value)}
+                          className="btn-edit"
+                          title="Approve this user with the selected role"
+                        >
+                          Approve
+                        </button>
+                        <button 
+                          onClick={() => rejectUser(user._id)}
+                          className="btn-delete"
+                          title="Reject this user registration"
+                        >
+                          Deny
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </AdminSection>
 
         {/* Approved Users Management */}
-        <div className="admin-section active-users-section">
-          <h2>Approved Users ({stats.activeUsers || 0})</h2>
-          <p className="section-description">
-            View and manage all approved users in the system. You can change roles or delete users if needed.
-          </p>
+        <AdminSection
+          title="Approved Users"
+          count={stats.activeUsers || 0}
+          description=""
+          isEmpty={(stats.activeUsers || 0) === 0}
+          emptyMessage="No approved users found."
+        >
           <ApprovedUsersList 
             key={refreshKey}
             token={token} 
             onUserUpdate={fetchStatistics} 
-            setSuccessMessage={setSuccessMessage} 
+            setSuccessMessage={setSuccessMessage}
+            sortConfig={sortConfig}
+            onSort={handleSort}
           />
-        </div>
+        </AdminSection>
 
       </div>
     </div>
