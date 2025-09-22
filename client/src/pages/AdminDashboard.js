@@ -209,6 +209,7 @@ const AdminDashboard = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
+  const [pendingSortConfig, setPendingSortConfig] = useState({ key: null, direction: 'asc' });
 
   const handleSort = (key) => {
     let direction = 'asc';
@@ -216,6 +217,14 @@ const AdminDashboard = () => {
       direction = 'desc';
     }
     setSortConfig({ key, direction });
+  };
+
+  const handlePendingSort = (key) => {
+    let direction = 'asc';
+    if (pendingSortConfig.key === key && pendingSortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setPendingSortConfig({ key, direction });
   };
 
   const fetchPendingUsers = useCallback(async () => {
@@ -447,14 +456,40 @@ const AdminDashboard = () => {
               <thead>
                 <tr>
                   <th className="serial-number-header">#</th>
-                  <th>Name</th>
-                  <th>User ID</th>
+                  <th onClick={() => handlePendingSort('firstName')}>
+                    Name {pendingSortConfig.key === 'firstName' && (pendingSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
+                  <th onClick={() => handlePendingSort('userId')}>
+                    User ID {pendingSortConfig.key === 'userId' && (pendingSortConfig.direction === 'asc' ? '↑' : '↓')}
+                  </th>
                   <th>Assign Role</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {pendingUsers.map((user, index) => (
+                {[...pendingUsers].sort((a, b) => {
+                  if (!pendingSortConfig.key) return 0;
+                  
+                  let aValue, bValue;
+                  
+                  if (pendingSortConfig.key === 'firstName') {
+                    // For name sorting, combine firstName and lastName, case-insensitive
+                    aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
+                    bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+                  } else {
+                    // For other fields, use the original value
+                    aValue = a[pendingSortConfig.key];
+                    bValue = b[pendingSortConfig.key];
+                  }
+                  
+                  if (aValue < bValue) {
+                    return pendingSortConfig.direction === 'asc' ? -1 : 1;
+                  }
+                  if (aValue > bValue) {
+                    return pendingSortConfig.direction === 'asc' ? 1 : -1;
+                  }
+                  return 0;
+                }).map((user, index) => (
                   <tr key={user._id} className="user-row pending-user-row">
                     <td className="serial-number-cell">
                       <span className="serial-number">{index + 1}</span>

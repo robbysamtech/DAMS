@@ -138,8 +138,6 @@ const Events = () => {
           event.title?.toLowerCase().includes(query) ||
           event.description?.toLowerCase().includes(query) ||
           getAddressDisplay(event).toLowerCase().includes(query) ||
-          event.category?.toLowerCase().includes(query) ||
-          event.tags?.some(tag => tag.toLowerCase().includes(query)) ||
           matchesDateSearch(event, searchQuery)
         );
       });
@@ -427,6 +425,11 @@ const Events = () => {
   const formatTime = (timeString) => {
     if (!timeString) return '';
     
+    // Check if time already has AM/PM
+    if (timeString.includes('AM') || timeString.includes('PM')) {
+      return timeString;
+    }
+    
     const [hours, minutes] = timeString.split(':');
     const hour = parseInt(hours);
     
@@ -472,7 +475,7 @@ const Events = () => {
             <div className="search-input-container">
               <input
                 type="text"
-                placeholder="Search events by title, description, address, tags, or date (day, month, year)..."
+                placeholder="Search events by title, description, address, or date (day, month, year)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="search-input"
@@ -696,11 +699,6 @@ const Events = () => {
             <div className="fullscreen-header-section">
               <div className="fullscreen-title-section">
                 <h1 className="fullscreen-main-title">{selectedEvent.title}</h1>
-                <div className="fullscreen-subtitle">
-                  {selectedEvent.category && (
-                    <span className="category-badge">{selectedEvent.category}</span>
-                  )}
-                </div>
               </div>
             </div>
             
@@ -735,19 +733,11 @@ const Events = () => {
                 
                 {/* Quick Info Cards */}
                 <div className="quick-info-grid">
-                  <div className="info-card primary">
+                  <div className="info-card datetime-combined">
                     <div className="info-card-icon">🗓️</div>
                     <div className="info-card-content">
-                      <h4>Date</h4>
-                      <p>{formatDate(selectedEvent.date)}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="info-card secondary">
-                    <div className="info-card-icon">🕒</div>
-                    <div className="info-card-content">
-                      <h4>Time</h4>
-                      <p>{formatTime(selectedEvent.time)}</p>
+                      <h4>Date & Time</h4>
+                      <p>{formatDate(selectedEvent.date)} at {formatTime(selectedEvent.time)}</p>
                     </div>
                   </div>
                   
@@ -755,7 +745,7 @@ const Events = () => {
                     <div className="info-card-icon">📍</div>
                     <div className="info-card-content">
                       <h4>Location</h4>
-                      <p>{getAddressDisplay(selectedEvent)}</p>
+                      <p>{selectedEvent.address ? getAddressDisplay(selectedEvent) : 'No address provided'}</p>
                     </div>
                   </div>
                 </div>
@@ -765,13 +755,8 @@ const Events = () => {
               <div className="fullscreen-right">
                 {/* Description Section */}
                 <div className="detail-section description-section full-height">
-                  <div className="section-header">
-                    <h2>📝 About This Event</h2>
-                  </div>
-                  <div className="description-content scrollable">
-                    <div className="description-text-scrollable">
-                      <p>{selectedEvent.description}</p>
-                    </div>
+                  <div className="description-content">
+                    <p>{selectedEvent.description}</p>
                   </div>
                   
                   {/* Back button below description */}
@@ -785,20 +770,6 @@ const Events = () => {
                 
                 
                 
-                {/* Tags Section */}
-                {selectedEvent.tags && selectedEvent.tags.length > 0 && (
-                  <div className="detail-section">
-                    <div className="section-header">
-                      <h2>🏷️ Tags</h2>
-                      <div className="section-divider"></div>
-                    </div>
-                    <div className="tags-container">
-                      {selectedEvent.tags.map((tag, index) => (
-                        <span key={index} className="tag-item">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
                 
 
                 

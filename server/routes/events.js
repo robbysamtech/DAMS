@@ -10,7 +10,6 @@ router.get('/', async (req, res) => {
   try {
     const { 
       status = 'draft', 
-      category, 
       eventType, 
       search, 
       page = 1, 
@@ -19,13 +18,11 @@ router.get('/', async (req, res) => {
     
     const filter = {};
     if (status) filter.status = status;
-    if (category) filter.category = category;
     if (eventType) filter.eventType = eventType;
     if (search) {
       filter.$or = [
         { title: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } },
         { 'address.streetAddress': { $regex: search, $options: 'i' } },
         { 'address.city': { $regex: search, $options: 'i' } },
         { 'address.state': { $regex: search, $options: 'i' } },
@@ -79,40 +76,6 @@ router.get('/upcoming', async (req, res) => {
   }
 });
 
-// Get events by category
-router.get('/category/:category', async (req, res) => {
-  try {
-    const { category } = req.params;
-    const { status = 'published', page = 1, limit = 20 } = req.query;
-
-    const filter = { 
-      category: category, 
-      status 
-    };
-
-    const skip = (page - 1) * limit;
-    
-    const events = await Event.find(filter)
-      .populate('creator', 'firstName lastName')
-      .sort({ date: 1, time: 1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-
-    const total = await Event.countDocuments(filter);
-
-    res.json({
-      events,
-      pagination: {
-        current: parseInt(page),
-        total: Math.ceil(total / limit),
-        hasNext: skip + events.length < total,
-        hasPrev: page > 1
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch events by category.' });
-  }
-});
 
 // Get event by ID
 router.get('/:id', async (req, res) => {
@@ -143,12 +106,10 @@ router.post('/', auth, async (req, res) => {
       date,
       time,
       address,
-      category,
       eventType,
       maxAttendees,
       registrationRequired,
       eventImage,
-      tags,
       visibility,
       recurring
     } = req.body;
@@ -165,12 +126,10 @@ router.post('/', auth, async (req, res) => {
       time,
       address,
       creator: req.user._id,
-      category,
       eventType,
       maxAttendees,
       registrationRequired,
       eventImage,
-      tags,
       visibility,
       recurring
     });
@@ -199,12 +158,10 @@ router.put('/:id', auth, async (req, res) => {
       date,
       time,
       address,
-      category,
       eventType,
       maxAttendees,
       registrationRequired,
       eventImage,
-      tags,
       visibility,
       recurring,
       status
@@ -226,12 +183,10 @@ router.put('/:id', auth, async (req, res) => {
     if (date !== undefined) updates.date = date;
     if (time !== undefined) updates.time = time;
     if (address !== undefined) updates.address = address;
-    if (category !== undefined) updates.category = category;
     if (eventType !== undefined) updates.eventType = eventType;
     if (maxAttendees !== undefined) updates.maxAttendees = maxAttendees;
     if (registrationRequired !== undefined) updates.registrationRequired = registrationRequired;
     if (eventImage !== undefined) updates.eventImage = eventImage;
-    if (tags !== undefined) updates.tags = tags;
 
     if (visibility !== undefined) updates.visibility = visibility;
     if (recurring !== undefined) updates.recurring = recurring;
@@ -313,7 +268,6 @@ router.get('/statistics/overview', async (req, res) => {
       totalEvents,
       eventsByStatus,
       eventsByType,
-      eventsByCategory,
       upcomingEventsCount,
       recentEvents
     ] = await Promise.all([
@@ -325,12 +279,6 @@ router.get('/statistics/overview', async (req, res) => {
       Event.aggregate([
         { $group: { _id: '$eventType', count: { $sum: 1 } } },
         { $sort: { count: -1 } }
-      ]),
-      Event.aggregate([
-        { $match: { category: { $exists: true, $ne: '' } } },
-        { $group: { _id: '$category', count: { $sum: 1 } } },
-        { $sort: { count: -1 } },
-        { $limit: 10 }
       ]),
       Event.countDocuments({
         status: 'published',
@@ -346,7 +294,6 @@ router.get('/statistics/overview', async (req, res) => {
       totalEvents,
       eventsByStatus,
       eventsByType,
-      eventsByCategory,
       upcomingEventsCount,
       recentEvents
     });
@@ -362,7 +309,6 @@ router.get('/search/advanced', async (req, res) => {
       query, 
       dateFrom, 
       dateTo, 
-      category, 
       eventType, 
       page = 1, 
       limit = 20 
@@ -374,7 +320,6 @@ router.get('/search/advanced', async (req, res) => {
       filter.$or = [
         { title: { $regex: query, $options: 'i' } },
         { description: { $regex: query, $options: 'i' } },
-        { tags: { $in: [new RegExp(query, 'i')] } },
         { 'address.streetAddress': { $regex: query, $options: 'i' } },
         { 'address.city': { $regex: query, $options: 'i' } },
         { 'address.state': { $regex: query, $options: 'i' } },
@@ -388,7 +333,6 @@ router.get('/search/advanced', async (req, res) => {
       if (dateTo) filter.date.$lte = new Date(dateTo);
     }
     
-    if (category) filter.category = category;
     if (eventType) filter.eventType = eventType;
 
 

@@ -56,11 +56,6 @@ const eventSchema = new mongoose.Schema({
     enum: ['draft', 'published', 'cancelled', 'completed'],
     default: 'draft'
   },
-  category: {
-    type: String,
-    trim: true,
-    maxlength: 200
-  },
   eventType: {
     type: String,
     enum: ['in-person', 'virtual', 'hybrid'],
@@ -77,11 +72,6 @@ const eventSchema = new mongoose.Schema({
   eventImage: {
     type: String
   },
-  tags: [{
-    type: String,
-    trim: true,
-    maxlength: 100
-  }],
 
   metadata: {
     viewCount: {
@@ -130,9 +120,7 @@ const eventSchema = new mongoose.Schema({
 eventSchema.index({ creator: 1 });
 eventSchema.index({ status: 1 });
 eventSchema.index({ date: 1 });
-eventSchema.index({ category: 1 });
 eventSchema.index({ eventType: 1 });
-eventSchema.index({ tags: 1 });
 
 eventSchema.index({ visibility: 1 });
 
